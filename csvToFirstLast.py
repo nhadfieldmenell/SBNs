@@ -9,3 +9,4 @@ for line in orig:
 		firstLast.write(line)
 		tripNum = newTripNum
 	prevLine = line
+firstLast.write(prevLine)

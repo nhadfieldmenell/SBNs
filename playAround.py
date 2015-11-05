@@ -1,94 +1,114 @@
 #trips[][4]: start lat, start long, end lat, end long
 #There is no trip 15707--it skips from 15706 to 15708
 
+
 def normalize(line):
 	tripNum = int(line[:5])
 	latitude = float(line[32:41])
 	longitude = float(line[42:-1])
 	return tripNum,latitude,longitude
+
+
+def createTrips(fn):
+	#1-indexed array
+	#first entry (trips[0]) is all 0's
+	#done to stay consistent with tripIds
+	trips = [[0 for x in range(4)] for x in range(25001)]
+	counter = 0
+	index = 0
+	for line in orig:
+		parsed = normalize(line)
+		if counter%2 == 0:
+			index += 1
 			
+			#only happens to skip 15707
+			if parsed[0] != index:
+				index += 1
+			trips[index][0] = parsed[1]
+			trips[index][1] = parsed[2]
+		else:
+			trips[index][2] = parsed[1]
+			trips[index][3] = parsed[2]
+		counter += 1
+	return trips
+
+
+def minMax(trips):
+	maxLat = float(0)
+	minLat = float(500)
+	maxLong = float(-500)
+	minLong = float(0)
 	
+	for trip in trips:
+		if trip[0] == 0 or trip[1] == 0 or trip[2] == 0 or trip[3] == 0:
+			continue
+			
+		if trip[0] < minLat:
+			minLat = trip[0]
+		elif trip[0] > maxLat:
+			maxLat = trip[0]
+		if trip[2] < minLat:
+			minLat = trip[2]
+		elif trip[2] > maxLat:
+			maxLat = trip[2]
+			
+		if trip[1] < minLong:
+			minLong = trip[1]
+		elif trip[1] > maxLong:
+			maxLong = trip[1]
+		if trip[3] < minLong:
+			minLong = trip[3]
+		elif trip[3] > maxLong:
+			maxLong = trip[3]
+	return maxLat, minLat, maxLong, minLong
+
+	
+def createStartEnd(latLongStep):
+	#each of these arrays hold an array whose first value is the midpoint
+	#of a latitude or longitude line (with radius latLongStep)
+	#the subsuquent values are tripIds that fall on that line
+	startLat = []
+	startLong = []
+	endLat = []
+	endLong = []
+	lat = minLat
+	while lat < maxLat:
+		current = []
+		current2 = []
+		current.append(lat)
+		startLat.append(current)
+		endLat.append(current2)
+		lat += latLongStep
+		
+	lon = minLong
+	while lon < maxLong:
+		current = []
+		current2 = []
+		current.append(lon)
+		startLong.append(current)
+		endLong.append(current2)
+		lon += latLongStep
+		
+	return startLat, startLong, endLat, endLong
+
 
 orig = open('firstLast.txt','r')
 
-#1-indexed array
-#first entry is all 0's
-#done to stay consistent with tripIds
-trips = [[0 for x in range(4)] for x in range(25001)]
-counter = 0
-index = 0
-for line in orig:
-	parsed = normalize(line)
-	if counter%2 == 0:
-		index += 1
-		
-		#only happens to skip 15707
-		if parsed[0] != index:
-			index += 1
-		trips[index][0] = parsed[1]
-		trips[index][1] = parsed[2]
-	else:
-		trips[index][2] = parsed[1]
-		trips[index][3] = parsed[2]
-	counter += 1
-	
-print trips[980][0]
-print trips[981][0]
-	
-maxLat = float(0)
-minLat = float(500)
-maxLong = float(-500)
-minLong = float(0)
+#trips[][4]: start lat, start long, end lat, end long
+trips = createTrips(orig)
 
-for trip in trips:
-	if trip[0] == 0 or trip[1] == 0 or trip[2] == 0 or trip[3] == 0:
-		continue
+#calc the min and max latitute and longitude traversed in system
+minMaxRet = minMax(trips)
+maxLat = minMaxRet[0]
+minLat = minMaxRet[1]
+maxLong = minMaxRet[2]
+minLong = minMaxRet[3]
+
 		
-	if trip[0] < minLat:
-		minLat = trip[0]
-	elif trip[0] > maxLat:
-		maxLat = trip[0]
-	if trip[2] < minLat:
-		minLat = trip[2]
-	elif trip[2] > maxLat:
-		maxLat = trip[2]
-		
-	if trip[1] < minLong:
-		minLong = trip[1]
-	elif trip[1] > maxLong:
-		maxLong = trip[1]
-	if trip[3] < minLong:
-		minLong = trip[3]
-	elif trip[3] > maxLong:
-		maxLong = trip[3]
-		
-#each of these arrays hold an array whose first value is the midpoint
-#of a latitude or longitude line (with radius latLongStep)
-#the subsuquent values are tripIds that fall on that line
-startLat = []
-startLong = []
-endLat = []
-endLong = []
+
+
 latLongStep = 0.003
 
-
-lat = minLat
-while lat < maxLat:
-	current = []
-	current2 = []
-	current.append(lat)
-	startLat.append(current)
-	endLat.append(current2)
-	lat += latLongStep
-	
-lon = minLong
-while lon < maxLong:
-	current = []
-	current2 = []
-	current.append(lon)
-	startLong.append(current)
-	endLong.append(current2)
-	lon += latLongStep
 
 #print startLat[0][0]
 
@@ -98,12 +118,8 @@ for trip in trips:
 	if index == 0:
 		index += 1
 		continue
-		
-	#if index > 500: break
 	
 	if trip[0] == 0 or trip[1] == 0 or trip[2] == 0 or trip[3] == 0:
-		print "HOLLA"
-		print index
 		index += 1
 		continue
 		

@@ -63,6 +63,8 @@ def minMax(trips):
 	return maxLat, minLat, maxLong, minLong
 
 	
+#create arrays of buckets, where each bucket holds a lat/long 
+#and all trips within latLongStep of that point
 def createStartEnd(latLongStep):
 	#each of these arrays hold an array whose first value is the midpoint
 	#of a latitude or longitude line (with radius latLongStep)
@@ -89,8 +91,99 @@ def createStartEnd(latLongStep):
 		endLong.append(current2)
 		lon += latLongStep
 		
+	index = 0
+	addedTo = 0
+	for trip in trips:
+		if index == 0:
+			index += 1
+			continue
+			
+		if trip[0] == 0 or trip[1] == 0 or trip[2] == 0 or trip[3] == 0:
+			index += 1
+			continue
+			
+		adjStartLat = trip[0] - minLat
+		adjIndex = int(adjStartLat/latLongStep)
+		if startLat[adjIndex].count(index) == 0:
+			startLat[adjIndex].append(index)
+			addedTo = adjIndex	
+		if adjIndex+1 < maxLat and startLat[adjIndex+1].count(index) == 0:
+			startLat[adjIndex+1].append(index)
+			
+		adjEndLat = trip[2] - minLat
+		adjIndex = int(adjEndLat/latLongStep)
+		if endLat[adjIndex].count(index) == 0:
+			endLat[adjIndex].append(index)
+		if adjIndex+1 < maxLat and endLat[adjIndex+1].count(index) == 0:
+			endLat[adjIndex+1].append(index)
+			
+		adjStartLong = trip[1] - minLong
+		adjIndex = int(adjStartLong/latLongStep)
+		if startLong[adjIndex].count(index) == 0:
+			startLong[adjIndex].append(index)
+		if adjIndex+1 < maxLong and startLong[adjIndex+1].count(index) == 0:
+			startLong[adjIndex+1].append(index)
+			
+		adjEndLong = trip[3] - minLong
+		adjIndex = int(adjEndLong/latLongStep)
+		if endLong[adjIndex].count(index) == 0:
+			endLong[adjIndex].append(index)
+		if adjIndex+1 < maxLong and endLong[adjIndex+1].count(index) == 0:
+			endLong[adjIndex+1].append(index)
+		index += 1
+		
 	return startLat, startLong, endLat, endLong
 
+
+def findGoodPoints(latArray,longArray,numPoints):
+	bestStartLat = 0
+	bestStartLong = 0
+	numMatches = 0
+	latIndex = 0
+	fewestMatches = 0
+	fewestIndex = 0
+	#array of 2-tuples
+	#first tuple is a 3-tuple: matches, startlat, startlong
+	#second tuple is all of the tripId's that start in that position
+	goodPoints = []
+	for i in range(numPoints):
+		point = []
+		triple = [0,0,0]
+		point.append(triple)
+		blank = []
+		point.append(blank)
+		goodPoints.append(point)	
+		
+	#finds the lat-long square of radius latLongStep that has the most uber pickups
+	for lats in latArray:
+		longIndex = 0
+		for longs in longArray:
+			matches = 0
+			matchArray = []
+			for latI in lats:
+				if longs.count(latI) == 1:
+					matches += 1
+					matchArray.append(latI)
+					
+			if matches > fewestMatches:
+				point = []
+				triple = [matches,latIndex,longIndex]
+				point.append(triple)
+				point.append(matchArray)
+				goodPoints[fewestIndex] = point
+				
+				fewestMatches = goodPoints[0][0][0]
+				fewestIndex = 0
+				
+				for i in range(numPoints):
+					if goodPoints[i][0][0] < fewestMatches:
+						fewestMatches = goodPoints[i][0][0]
+						fewestIndex = i
+						
+			longIndex += 1
+			
+		latIndex += 1
+	return goodPoints
 
 orig = open('firstLast.txt','r')
 
@@ -104,111 +197,26 @@ minLat = minMaxRet[1]
 maxLong = minMaxRet[2]
 minLong = minMaxRet[3]
 
-		
-
 
 latLongStep = 0.003
+startEndRet = createStartEnd(latLongStep)
+startLat = startEndRet[0]
+startLong = startEndRet[1]
+endLat = startEndRet[2]
+endLong = startEndRet[3]
 
 
-#print startLat[0][0]
-
-index = 0
-addedTo = 0
-for trip in trips:
-	if index == 0:
-		index += 1
-		continue
-	
-	if trip[0] == 0 or trip[1] == 0 or trip[2] == 0 or trip[3] == 0:
-		index += 1
-		continue
-		
-	adjStartLat = trip[0] - minLat
-	adjIndex = int(adjStartLat/latLongStep)
-	if startLat[adjIndex].count(index) == 0:
-		startLat[adjIndex].append(index)
-		addedTo = adjIndex	
-	if adjIndex+1 < maxLat and startLat[adjIndex+1].count(index) == 0:
-		startLat[adjIndex+1].append(index)
-		
-	adjEndLat = trip[2] - minLat
-	adjIndex = int(adjEndLat/latLongStep)
-	if endLat[adjIndex].count(index) == 0:
-		endLat[adjIndex].append(index)
-	if adjIndex+1 < maxLat and endLat[adjIndex+1].count(index) == 0:
-		endLat[adjIndex+1].append(index)
-		
-	adjStartLong = trip[1] - minLong
-	adjIndex = int(adjStartLong/latLongStep)
-	if startLong[adjIndex].count(index) == 0:
-		startLong[adjIndex].append(index)
-	if adjIndex+1 < maxLong and startLong[adjIndex+1].count(index) == 0:
-		startLong[adjIndex+1].append(index)
-		
-	adjEndLong = trip[3] - minLong
-	adjIndex = int(adjEndLong/latLongStep)
-	if endLong[adjIndex].count(index) == 0:
-		endLong[adjIndex].append(index)
-	if adjIndex+1 < maxLong and endLong[adjIndex+1].count(index) == 0:
-		endLong[adjIndex+1].append(index)
-	index += 1
-
-
-bestStartLat = 0
-bestStartLong = 0
-numMatches = 0
-latIndex = 0
-fewestMatches = 0
-fewestIndex = 0
 numPoints = 7
-#array of 2-tuples
-#first tuple is a 3-tuple: matches, startlat, startlong
-#second tuple is all of the tripId's that start in that position
-goodPoints = []
-for i in range(numPoints):
-	point = []
-	triple = [0,0,0]
-	point.append(triple)
-	blank = []
-	point.append(blank)
-	goodPoints.append(point)	
+goodStarts = findGoodPoints(startLat,startLong,numPoints)
+goodEnds = findGoodPoints(endLat,endLong,numPoints)
 
-#finds the lat-long square of radius latLongStep that has the most uber pickups
-for lats in startLat:
-	longIndex = 0
-	for longs in startLong:
-		matches = 0
-		matchArray = []
-		for latI in lats:
-			if longs.count(latI) == 1:
-				matches += 1
-				matchArray.append(latI)
-			
-		if matches > fewestMatches:
-			point = []
-			triple = [matches,latIndex,longIndex]
-			point.append(triple)
-			point.append(matchArray)
-			goodPoints[fewestIndex] = point
-			
-			fewestMatches = goodPoints[0][0][0]
-			fewestIndex = 0
-			
-			for i in range(numPoints):
-				if goodPoints[i][0][0] < fewestMatches:
-					fewestMatches = goodPoints[i][0][0]
-					fewestIndex = i
-			
-		longIndex += 1
-			
-	latIndex += 1
 	
 
-for point in goodPoints:
+for point in goodStarts:
 	print point
 
-for track in goodPoints[6][1]:
-	print str(track)+','+str(trips[track][0])
+#for track in goodStarts[6][1]:
+#	print str(track)+','+str(trips[track][0])
 
 			
 """

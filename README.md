@@ -1,2 +1,3 @@
 This project currently only performs manipulations on the GPS traces of 25,000 Uber rides held in origGPS.txt.  toCsv.py converts the original GPS data into csv format.  csvToFirstLast.py represents the csv data with only the first and last points of a trip. getTrip.py takes command line arguments of the trip ID's whose GPS traces are desired and returns those traces.
+
 playAround.py performs the real manipulations on the data.  It has methods to do the following: find the start/end points that have the most pick-ups/drop-offs; find all the trips that start in a specific region and end in a specific region; find the end regions that have the most drop-offs for all rides that originate in a specific region.

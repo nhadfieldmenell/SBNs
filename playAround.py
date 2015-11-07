@@ -235,27 +235,45 @@ def findBestEnd(trips,startIds,latStep,lonStep,minLat,minLon,numLats,numLons):
 		diffTrips.append(tripInfo)
 		
 	dests = [[0 for x in range(numLons)] for x in range(numLats)]
+	destArray = [[[] for x in range(numLons)] for x in range(numLats)]
 	for tripNum in startIds:
 		theTrip = diffTrips[tripNum]
 		dests[theTrip[2]][theTrip[3]] += 1
+		destArray[theTrip[2]][theTrip[3]].append(tripNum)
 		
 	print dests
 	best = 0
 	index = [0,0]
-	alrightIndices = []
+	secondBest = 0
+	secondIndex = [0,0]
+	alrightIndicies = []
 	for i in range(numLats):
 		for j in range(numLons):
-			if dests[i][j] > 30:
-				alrightIndices.append(index)
-			if dests[i][j] > best:
-				best = dests[i][j]
-				index = [i,j]
-				
+			if dests[i][j] > 10:
+				alrightIndicies.append(index)
+			if dests[i][j] > secondBest:
+				if dests[i][j] > best:
+					secondBest = best
+					secondIndex[0] = index[0]
+					secondIndex[1] = index[1]
+					best = dests[i][j]
+					index = [i,j]
+				else:
+					secondBest = dests[i][j]
+					secondIndex = [i,j]
+					
+		
+	print destArray[index[0]][index[1]]		
 	print best
 	print index
+	print "\n"
+	print destArray[secondIndex[0]][secondIndex[1]]	
+	print secondBest
+	print secondIndex
 	return alrightIndicies
 		
 	
+
 
 orig = open('firstLast.txt','r')
 
@@ -269,7 +287,7 @@ maxLon = minMaxRet[2]
 minLon = minMaxRet[3]
 
 
-latLonStep = 0.01
+latLonStep = 0.005
 startEndRet = createStartEnd(latLonStep)
 startLat = startEndRet[0]
 startLon = startEndRet[1]
@@ -302,11 +320,13 @@ goodStarts = findGoodPoints(startLat,startLon,numPoints)
 bestEnds = findBestEnd(trips,goodStarts[0][1],latLonStep,latLonStep,minLat,minLon,len(startLat),len(startLon))
 
 
-	
+
 print "starts"
 for point in goodStarts:
 	print point[0]
-	
+	print startLat[point[0][1]][0]
+	print startLon[point[0][2]][0]
+"""		
 print "ends"
 for point in goodEnds:
 	print point[0]
@@ -315,7 +335,7 @@ for point in goodEnds:
 #for track in goodStarts[6][1]:
 #	print str(track)+','+str(trips[track][0])
 
-			
+"""			
 """
 	
 #for i in range(20):

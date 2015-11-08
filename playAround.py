@@ -222,6 +222,8 @@ def findTrips(startLatNum,startLonNum,endLatNum,endLonNum,startLats,startLons,en
 	
 
 
+#pass in a list of id's that all have the same start region
+#find the end region(s) that hold the most end points from those trips
 def findBestEnd(trips,startIds,latStep,lonStep,minLat,minLon,numLats,numLons):
 	diffTrips = []
 	for trip in trips:

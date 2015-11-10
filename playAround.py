@@ -1,19 +1,35 @@
-#trips[][4]: start lat, start Lon, end lat, end Lon
+import math
+
+#trips[][6]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second]
 #There is no trip 15707--it skips from 15706 to 15708
 
-
+#parse trip id, latitude, and longitude from a raw line of data
 def normalize(line):
 	tripNum = int(line[:5])
 	latitude = float(line[32:41])
 	Lonitude = float(line[42:-1])
-	return tripNum,latitude,Lonitude
+	time = convertTimestamp(line[6:25])
+	return tripNum,latitude,Lonitude,time
 
 
+#pass in a timestamp in form 2007-01-06T08:42:58
+#return a quadruple: day of week (0:sunday,1:monday,2:tuesday,...,6:saturday),hour,minute,second
+def convertTimestamp(stamp):
+	day = int(stamp[9])
+	if day == 7:
+		day = 0
+	hour = int(stamp[11:13])
+	minute = int(stamp[14:16])
+	second = int(stamp[17:19])
+	return day,hour,minute,second
+
+
+#read in trips from file that contains trip start on one line, trip end on next line
 def createTrips(fn):
 	#1-indexed array
 	#first entry (trips[0]) is all 0's
 	#done to stay consistent with tripIds
-	trips = [[0 for x in range(4)] for x in range(25001)]
+	trips = [[0 for x in range(6)] for x in range(25001)]
 	counter = 0
 	index = 0
 	for line in orig:
@@ -26,9 +42,11 @@ def createTrips(fn):
 				index += 1
 			trips[index][0] = parsed[1]
 			trips[index][1] = parsed[2]
+			trips[index][4] = parsed[3]
 		else:
 			trips[index][2] = parsed[1]
 			trips[index][3] = parsed[2]
+			trips[index][5] = parsed[3]
 		counter += 1
 	return trips
 
@@ -205,7 +223,9 @@ def findTrips(startLatNum,startLonNum,endLatNum,endLonNum,startLats,startLons,en
 
 #pass in a list of id's that all have the same start region
 #find the end region(s) that hold the most end points from those trips
-def findBestEnd(trips,startIds,latStep,lonStep,minLat,minLon,numLats,numLons):
+#startLatPos is index in the startLat array of the starting latitude
+#minDist will allow you to input a minimum distance (in miles) for start-end point pairs
+def findBestEnd(trips,startIds,startLatPos,startLonPos,latStep,lonStep,minLat,minLon,numLats,numLons,minDist,gridSize):
 	diffTrips = []
 	for trip in trips:
 		tripInfo = []
@@ -226,11 +246,13 @@ def findBestEnd(trips,startIds,latStep,lonStep,minLat,minLon,numLats,numLons):
 		dests[theTrip[2]][theTrip[3]] += 1
 		destArray[theTrip[2]][theTrip[3]].append(tripNum)
 		
-	print dests
+	#print dests
 	best = 0
 	index = [0,0]
 	secondBest = 0
 	secondIndex = [0,0]
+	minDistBest = 0
+	minDistIndex = [0,0]
 	
 	#alrightIndicies holds all end points that have at 
 	#least alrightMatchNum trips originating at the start point
@@ -250,25 +272,121 @@ def findBestEnd(trips,startIds,latStep,lonStep,minLat,minLon,numLats,numLons):
 				else:
 					secondBest = dests[i][j]
 					secondIndex = [i,j]
+			if dests[i][j] > minDistBest:
+				if math.sqrt(math.pow(i-startLatPos,2)+math.pow(j-startLonPos,2)) >= minDist:
+					minDistBest = dests[i][j]
+					minDistIndex[0] = i
+					minDistIndex[1] = j
 					
 		
 	print "best"
-	print destArray[index[0]][index[1]]		
 	print best
 	print index
-	print "\nsecond best"
-	print destArray[secondIndex[0]][secondIndex[1]]	
+	print destArray[index[0]][index[1]]
+	print "\nsecond best"	
 	print secondBest
 	print secondIndex
+	print destArray[secondIndex[0]][secondIndex[1]]
+	print "\nminDist best"
+	print minDistBest
+	print minDistIndex
+	print destArray[minDistIndex[0]][minDistIndex[1]]
 	return alrightIndicies
 		
 	
 
 
+#finds the number of ride starts per time of day
+#select granularity with hourInc (how many hours each block is)
+#returns list of 3 tuples: start time, end time, # of rides
+#24 should be divisible by hourInc
+def ridesByHour(trips,hourInc):
+	numPeriods = 24/hourInc
+	tripsPerTime = [[0 for x in range(3)] for x in range(numPeriods)]
+	for trip in trips:
+		# because 1-indexed
+		if trip[0] == 0:
+			continue
+		tripsPerTime[trip[4][1]/hourInc][2]+=1
+	for i in range(numPeriods):
+		startHour = i*hourInc
+		endHour = (i+1)*hourInc
+		tripsPerTime[i][0] = startHour
+		tripsPerTime[i][1] = endHour
+	
+	best = 0
+	bestPeriod = [0,0]
+	tot = 0			
+	for i in range(numPeriods):
+		tot += tripsPerTime[i][2]
+		if tripsPerTime[i][2] > best:
+			best = tripsPerTime[i][2]
+			bestPeriod = [tripsPerTime[i][0],tripsPerTime[i][1]]
+	
+	print "tot"
+	print tot
+	print "best period"		
+	print best
+	print bestPeriod
+	for i in range(numPeriods):
+		print str(i) + ": " + str(tripsPerTime[i][2])
+	return tripsPerTime
+
+
+#finds the # of rides per time period per day
+#returns list of list of 3 tuples: tripsPerPeriod[i][j][k]:
+#	i selects day, j selects hour range, k selects from 3 tuple: start time, end time, # of rides
+def ridesByHourAndDay(trips,hourInc):
+	numPeriods = 24/hourInc
+	tripsPerPeriod = [[[0 for x in range(3)] for x in range(numPeriods)] for x in range(7)]
+	for trip in trips:
+		# because 1-indexed
+		if trip[0] == 0:
+			continue
+		tripsPerPeriod[trip[4][0]][trip[4][1]/hourInc][2]+=1
+	for day in range(7):	
+		for i in range(numPeriods):
+			startHour = i*hourInc
+			endHour = (i+1)*hourInc
+			tripsPerPeriod[day][i][0] = startHour
+			tripsPerPeriod[day][i][1] = endHour
+	
+	tot = 0		
+	for day in range(7):
+		for i in range(numPeriods):
+			print str(day) + "," + str(i) + ": " + str(tripsPerPeriod[day][i][2])
+			tot += tripsPerPeriod[day][i][2]
+		
+	numTops = 10
+	#4-tuples: day, period start hour, period end hour, # of trips
+	#holds these tuples for the numTops-th best periods
+	topPeriods = [[0 for x in range(4)] for x in range(numTops)]
+	minTrips = 0
+	minIndex = 0
+	for day in range(7):
+		for period in range(numPeriods):
+			if tripsPerPeriod[day][period][2] > minTrips:
+				topPeriods[minIndex] = [day,tripsPerPeriod[day][period][0],tripsPerPeriod[day][period][1],tripsPerPeriod[day][period][2]]
+				
+				#find new lowest
+				minTrips = tripsPerPeriod[day][period][2]
+				for topIndex in range(numTops):
+					if topPeriods[topIndex][3] <= minTrips:
+						minTrips = topPeriods[topIndex][3]
+						minIndex = topIndex
+	print "tot: " + str(tot)
+	print "top periods"
+	print topPeriods
+
 orig = open('firstLast.txt','r')
 
-#trips[][4]: start lat, start Lon, end lat, end Lon
+#trips[][5]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second]
 trips = createTrips(orig)
+
+ridesByHourAndDay(trips,2)
+
+"""
+ridesByHour(trips,1)
 
 minMaxRet = minMax(trips)
 maxLat = minMaxRet[0]
@@ -302,7 +420,7 @@ endPoint = convertGPS(specEndLat,specEndLon,latStep,lonStep,minLat,minLon)
 
 #theTrips = findTrips(startPoint[0],startPoint[1],endPoint[0],endPoint[1],startLat,startLon,endLat,endLon,trips)
 #print theTrips
-
+"""
 """
 convGPS = convertGPS(37.774, -122.4152,latLonStep,latLonStep,minLat,minLon)
 print convGPS[0]
@@ -311,12 +429,12 @@ print convGPS[1]
 print startLat[80][0]
 print startLon[41][0]
 """
-
+""""
 numPoints = 1
 goodStarts = findGoodPoints(startLat,startLon,numPoints)
 #goodEnds = findGoodPoints(endLat,endLon,numPoints)
 
-bestEnds = findBestEnd(trips,goodStarts[0][1],latStep,lonStep,minLat,minLon,len(startLat),len(startLon))
+bestEnds = findBestEnd(trips,goodStarts[0][1],goodStarts[0][0][1],goodStarts[0][0][2],latStep,lonStep,minLat,minLon,len(startLat),len(startLon),4,gridSize)
 
 
 
@@ -326,6 +444,8 @@ for point in goodStarts:
 	print startLat[point[0][1]][0]
 	print startLon[point[0][2]][0]
 	
+"""
+"""	
 print "ends"
 for point in goodEnds:
 	print point[0]
@@ -334,7 +454,7 @@ for point in goodEnds:
 #for track in goodStarts[6][1]:
 #	print str(track)+','+str(trips[track][0])
 		
-"""
+
 	
 #for i in range(20):
 #	print startLat[i]

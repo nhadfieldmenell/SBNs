@@ -1,7 +1,8 @@
 import math
+import numpy
 
-#trips[][6]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second]
-#There is no trip 15707--it skips from 15706 to 15708
+#trips[][7]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second], dist (in miles)
+#There is no trip 0 or 15707--it skips from 15706 to 15708
 
 #parse trip id, latitude, and longitude from a raw line of data
 def normalize(line):
@@ -29,7 +30,7 @@ def createTrips(fn):
 	#1-indexed array
 	#first entry (trips[0]) is all 0's
 	#done to stay consistent with tripIds
-	trips = [[0 for x in range(6)] for x in range(25001)]
+	trips = [[0 for x in range(7)] for x in range(25001)]
 	counter = 0
 	index = 0
 	for line in orig:
@@ -47,9 +48,16 @@ def createTrips(fn):
 			trips[index][2] = parsed[1]
 			trips[index][3] = parsed[2]
 			trips[index][5] = parsed[3]
+			trips[index][6] = gpsDif(trips[index][0],trips[index][2],trips[index][1],trips[index][3])
 		counter += 1
 	return trips
 
+
+#create a list that contains full info about trip
+#full[][4]: full[][0] is trip day, full[][1][0] is trip start hour, full[][1][1] is start minute, 
+#full[][2] is trip duration(minutes), full[][3] is a list of all gps coordinates (full[][3][0] is latitude, full[][3][1] is longitude)
+def createFull(fn):
+	
 
 #calc the min and max latitute and Lonitude traversed in system
 def minMax(trips):
@@ -354,7 +362,7 @@ def ridesByHourAndDay(trips,hourInc):
 	tot = 0		
 	for day in range(7):
 		for i in range(numPeriods):
-			print str(day) + "," + str(i) + ": " + str(tripsPerPeriod[day][i][2])
+			#print str(day) + "," + str(i) + ": " + str(tripsPerPeriod[day][i][2])
 			tot += tripsPerPeriod[day][i][2]
 		
 	numTops = 10
@@ -376,17 +384,52 @@ def ridesByHourAndDay(trips,hourInc):
 						minIndex = topIndex
 	print "tot: " + str(tot)
 	print "top periods"
-	print topPeriods
+	for i in topPeriods:
+		print i
+
+
+#pass in coordinates for 2 points
+#return distance (in miles) between the two
+def gpsDif(lat1,lat2,lon1,lon2):
+	latDif = lat2-lat1
+	lonDif = lon2-lon1
+	latDist = latDif/0.0145
+	lonDist = lonDif/0.01825
+	return math.sqrt(math.pow(latDist,2)+math.pow(lonDist,2))	
+
+#pass in trips
+#return an array holding the length of each trip
+#array indices do not match up to trip numbers because of no trip 0 or trip 15707
+def tripLengths(trips):
+	tripLengths = []
+	for i in range(len(trips)):
+		if trips[i] == 0:
+			continue
+		tripLengths.append(trips[i][6])
+		
+	print "average distance (miles): " + str(numpy.mean(tripLengths))
+	print "25th percentile: " + str(numpy.percentile(tripLengths,25))	
+	print "50th percentile: " + str(numpy.percentile(tripLengths,50))
+	print "75th percentile: " + str(numpy.percentile(tripLengths,75))
+	print "90th percentile: " + str(numpy.percentile(tripLengths,90))
+	return tripLengths
+
 
 orig = open('firstLast.txt','r')
+fullFn = open('csvGps.txt','r')
 
-#trips[][5]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second]
+#trips[][7]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second], dist (in miles)
 trips = createTrips(orig)
 
-ridesByHourAndDay(trips,2)
+tripLengths(trips)
+
+#print trips[2000]
+
+#tripLengths(trips)
 
 """
 ridesByHour(trips,1)
+ridesByHourAndDay(trips,2)
 
 minMaxRet = minMax(trips)
 maxLat = minMaxRet[0]
@@ -400,6 +443,8 @@ print minLon
 print maxLon
 
 #enter the square edge length to specify grid regions (in miles)
+#1 mile is approximately 0.0145 in latitude in SF area
+#1 mile is approximately 0.01825 in longitude in SF area
 gridSize = 0.5
 latStep = 0.0145*gridSize
 lonStep = 0.01825*gridSize

@@ -65,8 +65,8 @@ def minMax(trips):
 
 	
 #create arrays of buckets, where each bucket holds a lat/Lon 
-#and all trips within latLonStep of that point
-def createStartEnd(latLonStep):
+#and all trips within latStep/lonStep of that point
+def createStartEnd(latStep,lonStep):
 	#each of these arrays hold an array whose first value is the midpoint
 	#of a latitude or Lonitude line (with radius latLonStep)
 	#the subsuquent values are tripIds that fall on that line
@@ -81,7 +81,7 @@ def createStartEnd(latLonStep):
 		current.append(lat)
 		startLat.append(current)
 		endLat.append(current2)
-		lat += latLonStep
+		lat += latStep
 		
 	lon = minLon
 	while lon <= maxLon:
@@ -90,7 +90,7 @@ def createStartEnd(latLonStep):
 		current.append(lon)
 		startLon.append(current)
 		endLon.append(current2)
-		lon += latLonStep
+		lon += lonStep
 		
 	index = 0
 	addedTo = 0
@@ -104,45 +104,26 @@ def createStartEnd(latLonStep):
 			continue
 			
 		adjStartLat = trip[0] - minLat
-		adjIndex = int(adjStartLat/latLonStep)
+		adjIndex = int(adjStartLat/latStep)
 		if startLat[adjIndex].count(index) == 0:
 			startLat[adjIndex].append(index)
 			addedTo = adjIndex
-		"""
-		if adjIndex+1 < maxLat:
-			if startLat[adjIndex+1].count(index) == 0:
-				startLat[adjIndex+1].append(index)
-		"""
 			
 		adjEndLat = trip[2] - minLat
-		adjIndex = int(adjEndLat/latLonStep)
+		adjIndex = int(adjEndLat/latStep)
 		if endLat[adjIndex].count(index) == 0:
 			endLat[adjIndex].append(index)
-		"""
-		if adjIndex+1 < maxLat:
-			if endLat[adjIndex+1].count(index) == 0:
-				endLat[adjIndex+1].append(index)
-		"""
 			
 		adjStartLon = trip[1] - minLon
-		adjIndex = int(adjStartLon/latLonStep)
+		adjIndex = int(adjStartLon/lonStep)
 		if startLon[adjIndex].count(index) == 0:
 			startLon[adjIndex].append(index)
-		"""
-		if adjIndex+1 < maxLon:
-			if startLon[adjIndex+1].count(index) == 0:
-				startLon[adjIndex+1].append(index)
-		"""
 			
 		adjEndLon = trip[3] - minLon
-		adjIndex = int(adjEndLon/latLonStep)
+		adjIndex = int(adjEndLon/lonStep)
 		if endLon[adjIndex].count(index) == 0:
 			endLon[adjIndex].append(index)
-		"""
-		if adjIndex+1 < maxLon:
-			if endLon[adjIndex+1].count(index) == 0:
-				endLon[adjIndex+1].append(index)
-		"""
+	
 		index += 1
 		
 	return startLat, startLon, endLat, endLon
@@ -236,6 +217,8 @@ def findBestEnd(trips,startIds,latStep,lonStep,minLat,minLon,numLats,numLons):
 		tripInfo.append(endInfo[1])
 		diffTrips.append(tripInfo)
 		
+	#dests is a 2D array representing the grid of the city each grid space holds the 
+	#indices of the trips that started at the start point and end at that grid space
 	dests = [[0 for x in range(numLons)] for x in range(numLats)]
 	destArray = [[[] for x in range(numLons)] for x in range(numLats)]
 	for tripNum in startIds:
@@ -248,10 +231,14 @@ def findBestEnd(trips,startIds,latStep,lonStep,minLat,minLon,numLats,numLons):
 	index = [0,0]
 	secondBest = 0
 	secondIndex = [0,0]
+	
+	#alrightIndicies holds all end points that have at 
+	#least alrightMatchNum trips originating at the start point
 	alrightIndicies = []
+	alrightMatchNum = 10;
 	for i in range(numLats):
 		for j in range(numLons):
-			if dests[i][j] > 10:
+			if dests[i][j] > alrightMatchNum:
 				alrightIndicies.append(index)
 			if dests[i][j] > secondBest:
 				if dests[i][j] > best:
@@ -265,10 +252,11 @@ def findBestEnd(trips,startIds,latStep,lonStep,minLat,minLon,numLats,numLons):
 					secondIndex = [i,j]
 					
 		
+	print "best"
 	print destArray[index[0]][index[1]]		
 	print best
 	print index
-	print "\n"
+	print "\nsecond best"
 	print destArray[secondIndex[0]][secondIndex[1]]	
 	print secondBest
 	print secondIndex
@@ -288,9 +276,18 @@ minLat = minMaxRet[1]
 maxLon = minMaxRet[2]
 minLon = minMaxRet[3]
 
+print minLat
+print maxLat
+print minLon
+print maxLon
 
-latLonStep = 0.005
-startEndRet = createStartEnd(latLonStep)
+#enter the square edge length to specify grid regions (in miles)
+gridSize = 0.5
+latStep = 0.0145*gridSize
+lonStep = 0.01825*gridSize
+
+
+startEndRet = createStartEnd(latStep,lonStep)
 startLat = startEndRet[0]
 startLon = startEndRet[1]
 endLat = startEndRet[2]
@@ -300,8 +297,8 @@ specStartLat = float(37.788929)
 specStartLon = float(-122.399598)
 specEndLat = float(37.754739)
 specEndLon = float(  -122.415317)
-startPoint = convertGPS(specStartLat,specStartLon,latLonStep,latLonStep,minLat,minLon)
-endPoint = convertGPS(specEndLat,specEndLon,latLonStep,latLonStep,minLat,minLon)
+startPoint = convertGPS(specStartLat,specStartLon,latStep,lonStep,minLat,minLon)
+endPoint = convertGPS(specEndLat,specEndLon,latStep,lonStep,minLat,minLon)
 
 #theTrips = findTrips(startPoint[0],startPoint[1],endPoint[0],endPoint[1],startLat,startLon,endLat,endLon,trips)
 #print theTrips
@@ -319,7 +316,7 @@ numPoints = 1
 goodStarts = findGoodPoints(startLat,startLon,numPoints)
 #goodEnds = findGoodPoints(endLat,endLon,numPoints)
 
-bestEnds = findBestEnd(trips,goodStarts[0][1],latLonStep,latLonStep,minLat,minLon,len(startLat),len(startLon))
+bestEnds = findBestEnd(trips,goodStarts[0][1],latStep,lonStep,minLat,minLon,len(startLat),len(startLon))
 
 
 
@@ -328,7 +325,7 @@ for point in goodStarts:
 	print point[0]
 	print startLat[point[0][1]][0]
 	print startLon[point[0][2]][0]
-"""		
+	
 print "ends"
 for point in goodEnds:
 	print point[0]
@@ -336,8 +333,7 @@ for point in goodEnds:
 
 #for track in goodStarts[6][1]:
 #	print str(track)+','+str(trips[track][0])
-
-"""			
+		
 """
 	
 #for i in range(20):

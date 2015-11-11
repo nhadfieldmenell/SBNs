@@ -1,9 +1,6 @@
 import math
 import numpy
 
-#trips[][7]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second], dist (in miles)
-#There is no trip 0 or 15707--it skips from 15706 to 15708
-
 #parse trip id, latitude, and longitude from a raw line of data
 def normalize(line):
 	tripNum = int(line[:5])
@@ -26,7 +23,9 @@ def convertTimestamp(stamp):
 
 
 #read in trips from file that contains trip start on one line, trip end on next line
-def createTrips(fn):
+#trips[][7]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second], dist (in miles)
+#There is no trip 0 or 15707--it skips from 15706 to 15708
+def createTrips(orig):
 	#1-indexed array
 	#first entry (trips[0]) is all 0's
 	#done to stay consistent with tripIds
@@ -54,10 +53,52 @@ def createTrips(fn):
 
 
 #create a list that contains full info about trip
-#full[][4]: full[][0] is trip day, full[][1][0] is trip start hour, full[][1][1] is start minute, 
-#full[][2] is trip duration(minutes), full[][3] is a list of all gps coordinates (full[][3][0] is latitude, full[][3][1] is longitude)
-def createFull(fn):
+#full[][3]: full[][0] is trip start [day,hour,minute,second], full[][1] is trip duration(minutes),
+#full[][2] is a list of all coordinate positions in the order they appear (full[][2][0] is latitude, full[][2][1] is longitude)
+def createFull(fn,trips,latStep,lonStep,minLat,minLon):
+	fullTrips = [[[] for x in range(3)] for x in range(25001)]
 	
+	#find the day, hour, minute, duration
+	for i in range(len(trips)):
+		if trips[i][0] == 0:
+			continue
+		fullTrips[i][0] = trips[i][4]
+		tripStartMin = trips[i][4][1]*60+trips[i][4][2]
+		tripEndMin = trips[i][5][1]*60+trips[i][5][2]
+		#if trip spans 2 days
+		if trips[i][4][0] != trips[i][5][0]:
+			tripEndMin += 60*24
+		fullTrips[i][1] = tripEndMin-tripStartMin
+		
+	previousTripNum = 0
+	previousGridSpot = [0,0]
+	#create a path on the grid
+	for line in fn:
+		normalized = normalize(line)
+		tripId = normalized[0]
+		latitude = normalized[1]
+		longitude = normalized[2]
+		gridSpot = convertGPS(latitude,longitude,latStep,lonStep,minLat,minLon)
+		
+		#new trip
+		if tripId != previousTripNum:
+			previousTripNum = tripId
+			previousGridSpot[0] = gridSpot[0]
+			previousGridSpot[1] = gridSpot[1]
+			theSpot = []
+			theSpot.append(gridSpot[0])
+			theSpot.append(gridSpot[1])
+			fullTrips[tripId][2].append(theSpot)
+		else:
+			if gridSpot[0] != previousGridSpot[0] or gridSpot[1] != previousGridSpot[1]:
+				previousGridSpot[0] = gridSpot[0]
+				previousGridSpot[1] = gridSpot[1]
+				theSpot = []
+				theSpot.append(gridSpot[0])
+				theSpot.append(gridSpot[1])
+				fullTrips[tripId][2].append(theSpot)
+	
+	return fullTrips
 
 #calc the min and max latitute and Lonitude traversed in system
 def minMax(trips):
@@ -397,6 +438,7 @@ def gpsDif(lat1,lat2,lon1,lon2):
 	lonDist = lonDif/0.01825
 	return math.sqrt(math.pow(latDist,2)+math.pow(lonDist,2))	
 
+
 #pass in trips
 #return an array holding the length of each trip
 #array indices do not match up to trip numbers because of no trip 0 or trip 15707
@@ -418,18 +460,15 @@ def tripLengths(trips):
 orig = open('firstLast.txt','r')
 fullFn = open('csvGps.txt','r')
 
+#enter the square edge length to specify grid regions (in miles)
+#1 mile is approximately 0.0145 in latitude in SF area
+#1 mile is approximately 0.01825 in longitude in SF area
+gridSize = 0.1
+latStep = 0.0145*gridSize
+lonStep = 0.01825*gridSize
+
 #trips[][7]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second], dist (in miles)
 trips = createTrips(orig)
-
-tripLengths(trips)
-
-#print trips[2000]
-
-#tripLengths(trips)
-
-"""
-ridesByHour(trips,1)
-ridesByHourAndDay(trips,2)
 
 minMaxRet = minMax(trips)
 maxLat = minMaxRet[0]
@@ -437,17 +476,21 @@ minLat = minMaxRet[1]
 maxLon = minMaxRet[2]
 minLon = minMaxRet[3]
 
+fullTrips = createFull(fullFn,trips,latStep,lonStep,minLat,minLon)
+
+
+"""
+tripLengths(trips)
+
+ridesByHour(trips,1)
+ridesByHourAndDay(trips,2)
+
+
+
 print minLat
 print maxLat
 print minLon
 print maxLon
-
-#enter the square edge length to specify grid regions (in miles)
-#1 mile is approximately 0.0145 in latitude in SF area
-#1 mile is approximately 0.01825 in longitude in SF area
-gridSize = 0.5
-latStep = 0.0145*gridSize
-lonStep = 0.01825*gridSize
 
 
 startEndRet = createStartEnd(latStep,lonStep)

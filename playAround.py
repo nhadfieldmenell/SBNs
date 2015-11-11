@@ -47,7 +47,7 @@ def createTrips(orig):
 			trips[index][2] = parsed[1]
 			trips[index][3] = parsed[2]
 			trips[index][5] = parsed[3]
-			trips[index][6] = gpsDist(trips[index][0],trips[index][2],trips[index][1],trips[index][3])
+			trips[index][6] = gpsDist(trips[index][0],trips[index][1],trips[index][2],trips[index][3])
 		counter += 1
 	return trips
 
@@ -99,6 +99,7 @@ def createFull(fn,trips,latStep,lonStep,minLat,minLon):
 				fullTrips[tripId][2].append(theSpot)
 	
 	return fullTrips
+
 
 #calc the min and max latitute and Lonitude traversed in system
 def minMax(trips):
@@ -431,7 +432,7 @@ def ridesByHourAndDay(trips,hourInc):
 
 #pass in coordinates for 2 points
 #return distance (in miles) between the two
-def gpsDist(lat1,lat2,lon1,lon2):
+def gpsDist(lat1,lon1,lat2,lon2):
 	latDif = lat2-lat1
 	lonDif = lon2-lon1
 	latDist = latDif/0.0145
@@ -466,19 +467,27 @@ def tripLengths(trips):
 	return tripLengths
 
 
+#pass in start and end grid points
+#return string of the form "startLatGrid,startLonGrid,endLatGrid,endLonGrid"
+def ptsToString(lat1,lon1,lat2,lon2):
+	return str(lat1)+","+str(lon1)+","+str(lat2)+","+str(lon2)
+
 #pass in full trips, width of latitude in grid, width of longitude in grid
-def pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep):
+def pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,pointsOut):
 	numTrips = len(fullTrips)
 	
-	#aToB[startLat][startLon][endLat][endLon] hods the number of trips that traverse A then B in that order
-	aToB = [[[[0 for x in lonGridSpots] for x in latGridSpots] for x in lonGridSpots] for x in latGridSpots]
+	#aToB is a dict whose keys are strings of the form "startLatGrid,startLonGrid,endLatGrid,endLonGrid"
+	#values are # of trips that traverse that path
+	aToB = {}
 	
 	#tripTraversals[i] holds a list 4-tuples, startLat, startLon, endLat, endLon for each trip
 	#it only holds the traversals that are longer than minDist
-	tripTraversals = [[] for x in range(fullTrips)]
+	tripTraversals = [[] for x in range(numTrips)]
 	
 	for tripIndex in range(numTrips):
-		if fullTrips[tripIndex][0] = []:
+		pointsOut.write("trip " + str(tripIndex) + "\n")
+		print tripIndex
+		if fullTrips[tripIndex][0] == []:
 			continue
 		coordList = fullTrips[tripIndex][2]
 		coordListLen = len(coordList)
@@ -489,18 +498,34 @@ def pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep):
 			for endIndex in range(coordListLen-1,startIndex,-1):
 				endPoint = coordList[endIndex]
 				startPoint = coordList[startIndex]
+				tripString = ptsToString(startPoint[0],startPoint[1],endPoint[0],endPoint[1])
 				if gridDist(startPoint[0],startPoint[1],endPoint[0],endPoint[1],latStep,lonStep) < minDist:
 					continue
-				startEnd = [startPoint[0],startPoint[1],endPoint[0],endPoint[1]]
-				elif tripTraversals[tripIndex].count(startEnd) == 0:
-					tripTraversals[tripIndex].append(startEnd)
-					aToB[startEnd[0],startEnd[1],startEnd[2],startEnd[3]] += 1
+				elif tripTraversals[tripIndex].count(tripString) == 0:
+					tripTraversals[tripIndex].append(tripString)
+					pointsOut.write(tripString + "\n")
+					if tripString in aToB:
+						aToB[tripString] += 1
+					else:
+						aToB[tripString] = 1
 					
+	best = 0
+	bestKey = ""
+	for key in aToB.keys():
+		if aToB[key] > best:
+			best = aToB[key]
+			bestKey = key
 	
-				
+	tripsWithPoints = []
+	for i in range(numTrips):
+		if tripTraversals[i].count(bestKey) == 1:
+			tripsWithPoints.append(i)
+			
+	print tripsWithPoints
 
 orig = open('firstLast.txt','r')
 fullFn = open('csvGps.txt','r')
+pointsOut = open('aToB.txt','w')
 
 #enter the square edge length to specify grid regions (in miles)
 #1 mile is approximately 0.0145 in latitude in SF area
@@ -517,8 +542,16 @@ maxLat = minMaxRet[0]
 minLat = minMaxRet[1]
 maxLon = minMaxRet[2]
 minLon = minMaxRet[3]
+latGridSpots = int((maxLat-minLat)/latStep) + 1
+lonGridSpots = int((maxLon-minLon)/lonStep) + 1
+
+minDist = 0.5
+
+pointsOut.write("grid size " + str(gridSize) +"\n")
+pointsOut.write("minDist " + str(minDist) + "\n")
 
 fullTrips = createFull(fullFn,trips,latStep,lonStep,minLat,minLon)
+pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,pointsOut)
 
 
 """

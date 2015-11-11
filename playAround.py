@@ -47,7 +47,7 @@ def createTrips(orig):
 			trips[index][2] = parsed[1]
 			trips[index][3] = parsed[2]
 			trips[index][5] = parsed[3]
-			trips[index][6] = gpsDif(trips[index][0],trips[index][2],trips[index][1],trips[index][3])
+			trips[index][6] = gpsDist(trips[index][0],trips[index][2],trips[index][1],trips[index][3])
 		counter += 1
 	return trips
 
@@ -431,13 +431,22 @@ def ridesByHourAndDay(trips,hourInc):
 
 #pass in coordinates for 2 points
 #return distance (in miles) between the two
-def gpsDif(lat1,lat2,lon1,lon2):
+def gpsDist(lat1,lat2,lon1,lon2):
 	latDif = lat2-lat1
 	lonDif = lon2-lon1
 	latDist = latDif/0.0145
 	lonDist = lonDif/0.01825
 	return math.sqrt(math.pow(latDist,2)+math.pow(lonDist,2))	
 
+
+#pass in grid spots for 2 points
+#return distance (in miles) between the two
+def gridDist(lat1,lon1,lat2,lon2,latStep,lonStep):
+	latDif = (lat2-lat1)*latStep
+	lonDif = (lon2-lon1)*lonStep
+	latDist = latDif/0.0145
+	lonDist = lonDif/0.01825
+	return math.sqrt(math.pow(latDist,2)+math.pow(lonDist,2))
 
 #pass in trips
 #return an array holding the length of each trip
@@ -456,6 +465,39 @@ def tripLengths(trips):
 	print "90th percentile: " + str(numpy.percentile(tripLengths,90))
 	return tripLengths
 
+
+#pass in full trips, width of latitude in grid, width of longitude in grid
+def pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep):
+	numTrips = len(fullTrips)
+	
+	#aToB[startLat][startLon][endLat][endLon] hods the number of trips that traverse A then B in that order
+	aToB = [[[[0 for x in lonGridSpots] for x in latGridSpots] for x in lonGridSpots] for x in latGridSpots]
+	
+	#tripTraversals[i] holds a list 4-tuples, startLat, startLon, endLat, endLon for each trip
+	#it only holds the traversals that are longer than minDist
+	tripTraversals = [[] for x in range(fullTrips)]
+	
+	for tripIndex in range(numTrips):
+		if fullTrips[tripIndex][0] = []:
+			continue
+		coordList = fullTrips[tripIndex][2]
+		coordListLen = len(coordList)
+		for startIndex in range(coordListLen):
+			#iterate backwards through list to save time
+			#once you see one that is closer than minDist, stop looking at the ones that came earlier in the trip
+			#assumes that trip gets continually farther from start point
+			for endIndex in range(coordListLen-1,startIndex,-1):
+				endPoint = coordList[endIndex]
+				startPoint = coordList[startIndex]
+				if gridDist(startPoint[0],startPoint[1],endPoint[0],endPoint[1],latStep,lonStep) < minDist:
+					continue
+				startEnd = [startPoint[0],startPoint[1],endPoint[0],endPoint[1]]
+				elif tripTraversals[tripIndex].count(startEnd) == 0:
+					tripTraversals[tripIndex].append(startEnd)
+					aToB[startEnd[0],startEnd[1],startEnd[2],startEnd[3]] += 1
+					
+	
+				
 
 orig = open('firstLast.txt','r')
 fullFn = open('csvGps.txt','r')

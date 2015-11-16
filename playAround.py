@@ -56,7 +56,8 @@ def createTrips(orig):
 
 #create a list that contains full info about trip
 #full[][3]: full[][0] is trip start [day,hour,minute,second], full[][1] is trip duration(minutes),
-#full[][2] is a list of all coordinate positions in the order they appear (full[][2][0] is latitude, full[][2][1] is longitude)
+#full[][2] is a list of all coordinate positions in the order they appear
+#(full[][2][i][0] is latitude, full[][2][i][1] is longitude, full[][2][i][2] is time)
 def createFull(fn,trips,latStep,lonStep,minLat,minLon):
 	fullTrips = [[[] for x in range(3)] for x in range(25001)]
 	
@@ -80,6 +81,7 @@ def createFull(fn,trips,latStep,lonStep,minLat,minLon):
 		tripId = normalized[0]
 		latitude = normalized[1]
 		longitude = normalized[2]
+		time = normalized[3]
 		gridSpot = convertGPS(latitude,longitude,latStep,lonStep,minLat,minLon)
 		
 		#new trip
@@ -90,6 +92,7 @@ def createFull(fn,trips,latStep,lonStep,minLat,minLon):
 			theSpot = []
 			theSpot.append(gridSpot[0])
 			theSpot.append(gridSpot[1])
+			theSpot.append(time)
 			fullTrips[tripId][2].append(theSpot)
 		else:
 			if gridSpot[0] != previousGridSpot[0] or gridSpot[1] != previousGridSpot[1]:
@@ -98,6 +101,7 @@ def createFull(fn,trips,latStep,lonStep,minLat,minLon):
 				theSpot = []
 				theSpot.append(gridSpot[0])
 				theSpot.append(gridSpot[1])
+				theSpot.append(time)
 				fullTrips[tripId][2].append(theSpot)
 	
 	return fullTrips
@@ -482,6 +486,19 @@ def ptsToString(lat1,lon1,lat2,lon2):
 	return str(lat1)+","+str(lon1)+","+str(lat2)+","+str(lon2)
 
 
+#pass string of the form "startLatGrid,startLonGrid,endLatGrid,endLonGrid"
+#return start and end grid points
+def stringToPts(string):
+	lastComma = -1
+	pts = []
+	for i in range(len(string)):
+		if string[i] == ",":
+			pts.append(string[lastComma+1:i])
+			lastComma = i
+	pts.append(string[lastComma+1:])
+	return pts
+		
+
 #pass in full trips, width of latitude in grid, width of longitude in grid
 def pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,pointsOut,gridSize):
 	pointsOut.write("grid size " + str(gridSize) +"\n")
@@ -532,8 +549,38 @@ def pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,points
 	for i in range(numTrips):
 		if tripTraversals[i].count(bestKey) == 1:
 			tripsWithPoints.append(i)
-			
+	
 	print tripsWithPoints
+	numTWP = len(tripsWithPoints)
+	print numTWP
+	
+	
+	startLat = int(stringToPts(bestKey)[0])
+	startLon = int(stringToPts(bestKey)[1])
+	endLat = int(stringToPts(bestKey)[2])
+	endLon = int(stringToPts(bestKey)[3])
+	
+	#time from first point in start region to first point in end region		
+	timeToTraverse = [[] for x in range(24)]
+	
+	for tripID in tripsWithPoints:
+		startTime = -1
+		endTime = -1
+		startHour = -1
+		for point in fullTrips[tripID][2]:
+			if point[0] == startLat and point[1] == startLon:
+				time = point[2]
+				startHour = time[1]
+				startTime = 24*60*time[0] + 60*time[1] + time[2]
+			if point[0] == endLat and point[1] == endLon:
+				time = point[2]
+				endTime = 24*60*time[0] + 60*time[1] + time[2]
+		timeToTraverse[startHour].append(endTime-startTime)
+		
+	for i in range(len(timeToTraverse)):
+		if len(timeToTraverse[i]) != 0:
+			print str(i) + ": " + str(sum(timeToTraverse[i])/float(len(timeToTraverse[i])))
+	
 
 
 #return a list of all the ID's of trips that traverse tripString
@@ -673,7 +720,7 @@ def getDistTripsByPeriod(trips,day,startHr,numHrs,minDist):
 
 orig = open('firstLast.txt','r')
 fullFn = open('csvGps.txt','r')
-pointsOut = open('aToB.txt','w')
+#pointsOut = open('aToB.txt','w')
 #pointsIn = open('aToB.txt','r')
 
 #enter the square edge length to specify grid regions (in miles)
@@ -686,6 +733,7 @@ lonStep = 0.01825*gridSize
 #trips[][7]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second], dist (in miles)
 trips = createTrips(orig)
 
+minDist = 1.5
 
 minMaxRet = minMax(trips)
 maxLat = minMaxRet[0]
@@ -695,24 +743,10 @@ minLon = minMaxRet[3]
 latGridSpots = int((maxLat-minLat)/latStep) + 1
 lonGridSpots = int((maxLon-minLon)/lonStep) + 1
 
-minDist = 2
-
-startEndRet = createStartEnd(latStep,lonStep,trips)
-startLat = startEndRet[0]
-startLon = startEndRet[1]
-endLat = startEndRet[2]
-endLon = startEndRet[3]
-
-numPoints = 1
-goodStarts = findGoodPoints(startLat,startLon,numPoints)
-
-bestEnds = findBestEnd(trips,goodStarts[0][1],goodStarts[0][0][1],goodStarts[0][0][2],latStep,lonStep,minLat,minLon,len(startLat),len(startLon),2,gridSize)
-
-
 #getDistTripsByPeriod(trips,0,0,2,1.5)
 
-#bestStAndEnPrd(trips,0,4,2,latStep,lonStep,5,minLat,minLon)
-#getTripsByPeriod(trips,0,0,2)
+bestStAndEnPrd(trips,1,6,4,latStep,lonStep,5,minLat,minLon)
+#getTripsByPeriod(trips,1,6,4)
 #readPtsFromFile(pointsIn)
 #fullTrips = createFull(fullFn,trips,latStep,lonStep,minLat,minLon)
 #pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,pointsOut,gridSize)

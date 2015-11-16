@@ -1,5 +1,7 @@
 import math
 import numpy
+#bin numbers coorespond to south-western corner of region
+
 
 #parse trip id, latitude, and longitude from a raw line of data
 def normalize(line):
@@ -23,7 +25,7 @@ def convertTimestamp(stamp):
 
 
 #read in trips from file that contains trip start on one line, trip end on next line
-#trips[][7]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second], dist (in miles)
+#trips[][7]: 0-start lat, 1-start Lon, 2-end lat, 3-end Lon, 4-start[day,hour,minute,second], 5-end[day,hour,minute,second], 6-dist (in miles)
 #There is no trip 0 or 15707--it skips from 15706 to 15708
 def createTrips(orig):
 	#1-indexed array
@@ -134,9 +136,9 @@ def minMax(trips):
 	
 #create arrays of buckets, where each bucket holds a lat/Lon 
 #and all trips within latStep/lonStep of that point
-def createStartEnd(latStep,lonStep):
-	#each of these arrays hold an array whose first value is the midpoint
-	#of a latitude or Lonitude line (with radius latLonStep)
+def createStartEnd(latStep,lonStep,theTrips):
+	#each of these arrays hold an array whose first value is the end
+	#of a latitude or Lonitude line (with length lat/LonStep)
 	#the subsuquent values are tripIds that fall on that line
 	startLat = []
 	startLon = []
@@ -162,7 +164,7 @@ def createStartEnd(latStep,lonStep):
 		
 	index = 0
 	addedTo = 0
-	for trip in trips:
+	for trip in theTrips:
 		if index == 0:
 			index += 1
 			continue
@@ -198,6 +200,7 @@ def createStartEnd(latStep,lonStep):
 
 
 #finds points that have the most overlapping trips (either starts or ends)
+#pass in arrays of start lat/lon or end lat/lon and the number of good points to find
 def findGoodPoints(latArray,LonArray,numPoints):
 	bestStartLat = 0
 	bestStartLon = 0
@@ -256,6 +259,12 @@ def convertGPS(lat,lon,latStep,lonStep,minLat,minLon):
 	lonInt = int((lon - minLon)/lonStep)
 	return latInt,lonInt
 
+
+#pass in bin numbers for lat/lon and return the corresponding GPS
+def binToGPS(latBin,lonBin,latStep,lonStep,minLat,minLon):
+	latGPS = minLat+latBin*latStep
+	lonGPS = minLon+lonBin*lonStep
+	return latGPS,lonGPS
 
 #pass in bucket numbers for GPS points rather than actual points
 def findTrips(startLatNum,startLonNum,endLatNum,endLonNum,startLats,startLons,endLats,endLons,trips):
@@ -472,15 +481,18 @@ def tripLengths(trips):
 def ptsToString(lat1,lon1,lat2,lon2):
 	return str(lat1)+","+str(lon1)+","+str(lat2)+","+str(lon2)
 
+
 #pass in full trips, width of latitude in grid, width of longitude in grid
-def pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,pointsOut):
+def pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,pointsOut,gridSize):
+	pointsOut.write("grid size " + str(gridSize) +"\n")
+	pointsOut.write("minDist " + str(minDist) + "\n")
 	numTrips = len(fullTrips)
 	
 	#aToB is a dict whose keys are strings of the form "startLatGrid,startLonGrid,endLatGrid,endLonGrid"
 	#values are # of trips that traverse that path
 	aToB = {}
 	
-	#tripTraversals[i] holds a list 4-tuples, startLat, startLon, endLat, endLon for each trip
+	#tripTraversals[i] holds a list strings "startLat,startLon,endLat,endLon" for each trip
 	#it only holds the traversals that are longer than minDist
 	tripTraversals = [[] for x in range(numTrips)]
 	
@@ -523,19 +535,157 @@ def pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,points
 			
 	print tripsWithPoints
 
+
+#return a list of all the ID's of trips that traverse tripString
+def indicesFromTraversals(tripTraversals,tripString):
+	traversing = []
+	for i in range(len(tripTraversals)):
+		if tripTraversals[i].count(tripString) == 1:
+			traversing.append(i)
+	return traversing
+
+
+#populate dict aToB with trip strings stored in aToB.txt
+def readPtsFromFile(pointsIn):
+	numTrips = 25001
+	#aToB is a dict whose keys are strings of the form "startLatGrid,startLonGrid,endLatGrid,endLonGrid"
+	#values are # of trips that traverse that path
+	aToB = {}
+	
+	#tripTraversals[i] holds a list strings "startLat,startLon,endLat,endLon" for each trip
+	#it only holds the traversals that are longer than minDist
+	tripTraversals = [[] for x in range(numTrips)]
+	tripId = 0
+	for line in pointsIn:
+		if line[0] == "g" or line[0] == "m":
+			continue
+		if line[0] == "t":
+			tripId = int(line[5:-1])
+			continue
+		theLine = line[:-1]
+		tripTraversals[tripId].append(theLine)
+		if theLine in aToB:
+			aToB[theLine] += 1
+		else:
+			aToB[theLine] = 1
+	
+	
+	numBests = 10
+	#bestArray[][0]: count, bestArray[][1]: key
+	bestArray = [[0 for x in range(2)] for x in range(numBests)]
+	minBest = 0
+	minIndex = 0
+	for key in aToB.keys():
+		score = aToB[key]
+		if score > minBest:
+			bestArray[minIndex][0] = score
+			bestArray[minIndex][1] = key
+			minBest = score
+			for i in range(len(bestArray)):
+				if bestArray[i][0] <= minBest:
+					minBest = bestArray[i][0]
+					minIndex = i
+					
+	print bestArray
+	print indicesFromTraversals(tripTraversals,bestArray[0][1])
+	print indicesFromTraversals(tripTraversals,bestArray[3][1])
+	print indicesFromTraversals(tripTraversals,bestArray[7][1])
+			
+	"""
+	best = 0
+	bestKey = ""
+	for key in aToB.keys():
+		if aToB[key] > best:
+			best = aToB[key]
+			bestKey = key
+	
+	tripsWithPoints = []
+	for i in range(numTrips):
+		if tripTraversals[i].count(bestKey) == 1:
+			tripsWithPoints.append(i)
+			
+	print len(tripsWithPoints)
+	"""
+
+
+#store in tripsInPeriod the id's of all trips within a numHrs period (hours) starting on day at startHr
+def getTripsByPeriod(trips,day,startHr,numHrs):
+	tripsInPeriod = []
+	for tripNum in range(len(trips)):
+		if trips[tripNum][0] == 0:
+			continue
+		
+		#the or takes care of the case where a period spans midnight 
+		if (trips[tripNum][4][0] == day and trips[tripNum][4][1] >= startHr and trips[tripNum][4][1] < startHr + numHrs) or (trips[tripNum][4][0] == day+1 and trips[tripNum][4][1] + 24 < startHr + numHrs):
+			tripsInPeriod.append(tripNum)
+			
+	return tripsInPeriod
+
+
+#pass in trips, day, start hour, period length (hours), latStep, lonStep, number of good points to find
+#yields the most popular start points and end points for that period
+def bestStAndEnPrd(trips,day,startHr,numHrs,latStep,lonStep,numPoints,minLat,minLon):
+	tripsInPeriod = getTripsByPeriod(trips,day,startHr,numHrs)
+	theseTrips = []
+	#indexes[i] holds the tripID of the ith entry in theseTrips
+	indexes = []
+	for tripNum in tripsInPeriod:
+		indexes.append(tripNum)
+		theseTrips.append(trips[tripNum])
+		"""
+		startLats.append(trips[tripNum][0])
+		startLons.append(trips[tripNum][1])
+		endLats.append(trips[tripNum][2])
+		endLons.append(trips[tripNum][3])
+		"""
+	startEnd = createStartEnd(latStep,lonStep,theseTrips)	
+	startLats = startEnd[0]
+	startLons = startEnd[1]
+	endLats = startEnd[2]
+	endLons = startEnd[3]
+	
+	goodStarts = findGoodPoints(startLats,startLons,numPoints)
+	goodEnds = findGoodPoints(endLats,endLons,numPoints)
+	print "starts"
+	for start in goodStarts:
+		gps = binToGPS(start[0][1],start[0][2],latStep,lonStep,minLat,minLon)
+		print str(start[0]) + "," + str(gps[0]) + "," + str(gps[1])
+	print "ends"
+	for end in goodEnds:
+		gps = binToGPS(end[0][1],end[0][2],latStep,lonStep,minLat,minLon)
+		print str(end[0]) + "," + str(gps[0]) + "," + str(gps[1])
+	#print goodStarts
+	#print goodEnds
+	
+
+
+#yields all trips longer than minDist that occured during the specified hour
+def getDistTripsByPeriod(trips,day,startHr,numHrs,minDist):
+	tripsInPeriod = getTripsByPeriod(trips,day,startHr,numHrs)
+	longTrips = []
+	for tripId in tripsInPeriod:
+		thisTrip = trips[tripId]
+		if gpsDist(thisTrip[0],thisTrip[1],thisTrip[2],thisTrip[3]) >= minDist:
+			longTrips.append(tripId)
+			
+	print longTrips
+
+
 orig = open('firstLast.txt','r')
 fullFn = open('csvGps.txt','r')
 pointsOut = open('aToB.txt','w')
+#pointsIn = open('aToB.txt','r')
 
 #enter the square edge length to specify grid regions (in miles)
 #1 mile is approximately 0.0145 in latitude in SF area
 #1 mile is approximately 0.01825 in longitude in SF area
-gridSize = 0.1
+gridSize = 0.4
 latStep = 0.0145*gridSize
 lonStep = 0.01825*gridSize
 
 #trips[][7]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second], dist (in miles)
 trips = createTrips(orig)
+
 
 minMaxRet = minMax(trips)
 maxLat = minMaxRet[0]
@@ -545,13 +695,27 @@ minLon = minMaxRet[3]
 latGridSpots = int((maxLat-minLat)/latStep) + 1
 lonGridSpots = int((maxLon-minLon)/lonStep) + 1
 
-minDist = 0.5
+minDist = 2
 
-pointsOut.write("grid size " + str(gridSize) +"\n")
-pointsOut.write("minDist " + str(minDist) + "\n")
+startEndRet = createStartEnd(latStep,lonStep,trips)
+startLat = startEndRet[0]
+startLon = startEndRet[1]
+endLat = startEndRet[2]
+endLon = startEndRet[3]
 
-fullTrips = createFull(fullFn,trips,latStep,lonStep,minLat,minLon)
-pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,pointsOut)
+numPoints = 1
+goodStarts = findGoodPoints(startLat,startLon,numPoints)
+
+bestEnds = findBestEnd(trips,goodStarts[0][1],goodStarts[0][0][1],goodStarts[0][0][2],latStep,lonStep,minLat,minLon,len(startLat),len(startLon),2,gridSize)
+
+
+#getDistTripsByPeriod(trips,0,0,2,1.5)
+
+#bestStAndEnPrd(trips,0,4,2,latStep,lonStep,5,minLat,minLon)
+#getTripsByPeriod(trips,0,0,2)
+#readPtsFromFile(pointsIn)
+#fullTrips = createFull(fullFn,trips,latStep,lonStep,minLat,minLon)
+#pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,pointsOut,gridSize)
 
 
 """
@@ -631,7 +795,26 @@ for point in goodEnds:
 #for i in range(20):
 #	print startLon[i]
 
+minMaxRet = minMax(trips)
+maxLat = minMaxRet[0]
+minLat = minMaxRet[1]
+maxLon = minMaxRet[2]
+minLon = minMaxRet[3]
+latGridSpots = int((maxLat-minLat)/latStep) + 1
+lonGridSpots = int((maxLon-minLon)/lonStep) + 1
 
+minDist = 2
+
+startEndRet = createStartEnd(latStep,lonStep,trips)
+startLat = startEndRet[0]
+startLon = startEndRet[1]
+endLat = startEndRet[2]
+endLon = startEndRet[3]
+
+numPoints = 1
+goodStarts = findGoodPoints(startLat,startLon,numPoints)
+
+bestEnds = findBestEnd(trips,goodStarts[0][1],goodStarts[0][0][1],goodStarts[0][0][2],latStep,lonStep,minLat,minLon,len(startLat),len(startLon),1.5,gridSize)
 """
 	
 #print str(minLat) + ',' + str(maxLat) + ',' + str(minLon) + ',' + str(maxLon)

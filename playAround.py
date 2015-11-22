@@ -75,6 +75,13 @@ def createFull(fn,trips,latStep,lonStep,minLat,minLon):
 		
 	previousTripNum = 0
 	previousGridSpot = [0,0]
+	
+	numDiags = 0
+	prevBad = 0
+	
+	#key: string(lat,lon), value: # trips that traverse that string
+	spotsTraversed = {}
+	
 	#create a path on the grid
 	for line in fn:
 		normalized = normalize(line)
@@ -94,8 +101,28 @@ def createFull(fn,trips,latStep,lonStep,minLat,minLon):
 			theSpot.append(gridSpot[1])
 			theSpot.append(time)
 			fullTrips[tripId][2].append(theSpot)
+			
+			spotString = pointToString(gridSpot[0],gridSpot[1])
+			if spotString in spotsTraversed:
+				spotsTraversed[spotString] += 1
+			else:
+				spotsTraversed[spotString] = 1
 		else:
 			if gridSpot[0] != previousGridSpot[0] or gridSpot[1] != previousGridSpot[1]:
+				if abs(gridSpot[0] - previousGridSpot[0]) + abs(gridSpot[1] - previousGridSpot[1]) > 1 and prevBad != tripId:
+				#if ((abs(gridSpot[0] - previousGridSpot[0]) >= 1 and abs(gridSpot[1] - previousGridSpot[1]) >= 1) or abs(gridSpot[0] - previousGridSpot[0]) + abs(gridSpot[1] - previousGridSpot[1]) > 2) and prevBad != tripId:
+					prevBad = tripId
+					#print tripId
+					#print str(gridSpot[0]) + "," + str(previousGridSpot[0]) + "," + str(gridSpot[1]) + "," + str(previousGridSpot[1])
+					numDiags += 1
+				spotString = pointToString(gridSpot[0],gridSpot[1])
+				if spotString in spotsTraversed:
+					spotsTraversed[spotString] += 1
+				else:
+					spotsTraversed[spotString] = 1
+				
+				
+				
 				previousGridSpot[0] = gridSpot[0]
 				previousGridSpot[1] = gridSpot[1]
 				theSpot = []
@@ -103,6 +130,30 @@ def createFull(fn,trips,latStep,lonStep,minLat,minLon):
 				theSpot.append(gridSpot[1])
 				theSpot.append(time)
 				fullTrips[tripId][2].append(theSpot)
+				
+				
+	
+	print numDiags
+	
+	maxSpot = 0
+	bestSpot = ""
+	for key in spotsTraversed.keys():
+		if spotsTraversed[key] > maxSpot:
+			maxSpot = spotsTraversed[key]
+			bestSpot = key
+			
+	print bestSpot + ": " + str(maxSpot)
+	bins = stringToPts(bestSpot)
+	bestCoords = binToGPS(int(bins[0]),int(bins[1]),latStep,lonStep,minLat,minLon)
+	print str(bestCoords[0])+","+str(bestCoords[1])
+	
+	#all trips that pass through bestSpot
+	tripsWithPt = []
+	for tripId in range(len(fullTrips)):
+		for point in fullTrips[tripId][2]:
+			if point[0] == bins[0] and point[1] == bins[1]:
+				tripsWithPt.append(tripId)
+	#print tripsWithPt
 	
 	return fullTrips
 
@@ -486,6 +537,11 @@ def ptsToString(lat1,lon1,lat2,lon2):
 	return str(lat1)+","+str(lon1)+","+str(lat2)+","+str(lon2)
 
 
+#pass in point
+#return string "lat,lon"
+def pointToString(lat,lon):
+	return str(lat)+","+str(lon)
+
 #pass string of the form "startLatGrid,startLonGrid,endLatGrid,endLonGrid"
 #return start and end grid points
 def stringToPts(string):
@@ -493,9 +549,9 @@ def stringToPts(string):
 	pts = []
 	for i in range(len(string)):
 		if string[i] == ",":
-			pts.append(string[lastComma+1:i])
+			pts.append(int(string[lastComma+1:i]))
 			lastComma = i
-	pts.append(string[lastComma+1:])
+	pts.append(int(string[lastComma+1:]))
 	return pts
 		
 
@@ -745,10 +801,10 @@ lonGridSpots = int((maxLon-minLon)/lonStep) + 1
 
 #getDistTripsByPeriod(trips,0,0,2,1.5)
 
-bestStAndEnPrd(trips,1,6,4,latStep,lonStep,5,minLat,minLon)
+#bestStAndEnPrd(trips,1,6,4,latStep,lonStep,5,minLat,minLon)
 #getTripsByPeriod(trips,1,6,4)
 #readPtsFromFile(pointsIn)
-#fullTrips = createFull(fullFn,trips,latStep,lonStep,minLat,minLon)
+fullTrips = createFull(fullFn,trips,latStep,lonStep,minLat,minLon)
 #pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,pointsOut,gridSize)
 
 

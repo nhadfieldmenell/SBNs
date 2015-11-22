@@ -188,7 +188,8 @@ def minMax(trips):
 			maxLon = trip[3]
 	return maxLat, minLat, maxLon, minLon
 
-	
+
+
 #create arrays of buckets, where each bucket holds a lat/Lon 
 #and all trips within latStep/lonStep of that point
 def createStartEnd(latStep,lonStep,theTrips):

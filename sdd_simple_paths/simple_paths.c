@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include "sddapi.h"
 
-#define gridX 6
-#define gridY 6
+#define gridX 5
+#define gridY 5
 
 // build with: sudo gcc -O2 -std=c99 simple_paths.c -Iinclude -Llib -lsdd -lm -o simple_paths
 
@@ -33,7 +33,7 @@ int** copyGrid(int remGrid[gridX][gridY]){
 // 3 |   |   |   |   |
 //   +---+---+---+---+
 
-//find all paths going from x to y in the grid
+//find all simple paths going from point A to point B in the grid
 //remGrid has dimensions numX x numY. Holds a 1 in (x,y) if Axy has been assigned, 0 if Axy not assigned
 //do not change remGrid; rather, duplicate it and change the new one
 SddNode* paths(SddManager* m, int startX, int startY, int endX, int endY, int remGrid[gridX][gridY]){
@@ -62,8 +62,11 @@ SddNode* paths(SddManager* m, int startX, int startY, int endX, int endY, int re
 		}
 	}
 
+	//use same grid for all 4 by never overwriting remGrid
 	newGrid[startX][startY] = 1;
 
+
+	//disjoin all possible next steps
 	SddNode* orNode = sdd_manager_false(m);
 
 	int newX = startX-1;
@@ -91,6 +94,30 @@ SddNode* paths(SddManager* m, int startX, int startY, int endX, int endY, int re
 	return retNode;
 }
 
+//return an SDD representing a disjunction over all possible paths to all possible endpoints in the grid
+SddNode* allPossible(SddManager* m, int startX, int startY){
+	int i,j;
+
+	SddNode* retNode = sdd_manager_false(m);
+
+	int remGrid[gridX][gridY];
+	for (i = 0; i < gridX; i++){
+		for (j = 0; j < gridY; j++){
+			remGrid[i][j] = 0;
+		}
+	}
+
+	for (i=0; i < gridX; i++){
+		for (j=0; j < gridY; j++){
+			if (!(i == startX && j == startY)){
+				retNode = sdd_disjoin(retNode,paths(m,startX,startY,i,j,remGrid),m);
+			}
+		}
+	}
+
+	return retNode;
+}
+
 int main(int argc, char** argv) {
 	int i,j;
 
@@ -109,11 +136,12 @@ int main(int argc, char** argv) {
 		}
 	}
 	
-	SddNode* node = paths(m,0,0,2,2,remGrid);
+	//SddNode* node = paths(m,0,0,2,1,remGrid);
 	//node = sdd_condition(1,node,m);
-	//node = sdd_condition(4,node,m);
 	//node = sdd_condition(-3,node,m);
 	//node = sdd_condition(-2,node,m);
+	SddNode* node = allPossible(m,0,0);
+	//node = sdd_condition(2,node,m);
 	int model_count = sdd_model_count(node,m);
 	printf("model_count: %d\n",model_count);
 	

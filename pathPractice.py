@@ -71,11 +71,11 @@ def paths(numX,numY,startX,startY,endX,endY,remGrid):
 		
 
 	
-numX = 4
-numY = 4
+numX = 6
+numY = 6
 remGrid = [[0 for x in range(numX)] for y in range(numY)]
 remGrid = np.array(remGrid)
-paths = paths(numX,numY,3,3,1,1,remGrid)
+paths = paths(numX,numY,0,0,2,2,remGrid)
 
 prevPaths = {}
 uniquePaths = []
@@ -100,6 +100,14 @@ for path in paths:
 		prevPaths[pathString] = 1
 		thisPath = np.copy(remGrid)
 		uniquePaths.append(thisPath)
+		"""
+		for y in range(numY):
+			for x in range(numX):
+				sys.stdout.write(str(remGrid[x,y]))
+			sys.stdout.write("\n")
+		sys.stdout.write("\n")
+		"""
+	else:
 		for y in range(numY):
 			for x in range(numX):
 				sys.stdout.write(str(remGrid[x,y]))

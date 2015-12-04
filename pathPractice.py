@@ -108,6 +108,7 @@ for path in paths:
 		sys.stdout.write("\n")
 		"""
 	else:
+		continue
 		for y in range(numY):
 			for x in range(numX):
 				sys.stdout.write(str(remGrid[x,y]))

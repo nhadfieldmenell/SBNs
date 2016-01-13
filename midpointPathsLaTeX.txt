@@ -1,0 +1,2 @@
+$\alpha(G,i,j)=(\bigwedge\limits_{xy\space\epsilon\space G}-A_{xy})\vee(\bigvee\limits_{mn\space \epsilon\space G\space s.t.\space m\space\epsilon\space \{i,j\}}A_{mn} \wedge(\bigwedge\limits_{mp\space\epsilon\space G\space s.t. \space p != n}-A_{mp})\wedge\alpha(G\backslash m,n,\{i,j\}-m))$
+$\beta(G,s) =\bigvee\limits_{si,sj\space\epsilon\space G}\alpha(G\backslash s,i,j) $

@@ -37,6 +37,8 @@ def everything(edges):
 
 	return retList
 
+
+#for a connected graph where each edge (i,j) has a corresponding (j,i)
 def allGraphsDirections(edges,thisEdge):
 
 	retList = [thisEdge[1]]
@@ -54,13 +56,13 @@ def allGraphsDirections(edges,thisEdge):
 
 	oppEdge = [thisEdge[1],thisEdge[0]]
 
-	print thisEdge
-	print oppEdge
+	#print thisEdge
+	#print oppEdge
 
-	print newEdges
+	#print newEdges
 	newEdges.pop(newEdges.index(oppEdge))
 
-	print "here"
+	#print "here"
 
 	nextSteps = []
 
@@ -108,8 +110,8 @@ edges = [[0,1],[1,3],[1,4],[3,2],[5,0],[0,6]]
 
 #print translateOutput(output)
 
-#print everything(edges)
-#print len(everything(edges))
+print everything(edges)
+print len(everything(edges))
 
 doubEdges = edges[:]
 for edge in edges:

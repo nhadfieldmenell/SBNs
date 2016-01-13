@@ -67,6 +67,7 @@ if __name__ == '__main__':
 
     start,goal = 1,(dimension[0]+1)*(dimension[1]+1)
     paths = GraphSet.paths(start, goal)
+    paths
     #tl.draw(paths.choice())
     print GraphSet
     print paths.len()

@@ -67,10 +67,12 @@ if __name__ == '__main__':
 
     start,goal = 1,(dimension[0]+1)*(dimension[1]+1)
     paths = GraphSet.paths(1,1)
+    midpoint = 2
     #paths = GraphSet.paths(start, goal)
     for i in range(start,goal):
         for j in range(i+1,goal+1):
-            paths = GraphSet.union(paths,GraphSet.paths(i,j))
+            if i != midpoint and j != midpoint:
+                paths = GraphSet.union(paths,GraphSet.paths(i,j))
 
     pathsThruMidpoint = paths.including(2)
     print pathsThruMidpoint.len()

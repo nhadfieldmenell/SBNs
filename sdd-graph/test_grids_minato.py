@@ -71,6 +71,9 @@ if __name__ == '__main__':
     for i in range(start,goal):
         for j in range(i+1,goal+1):
             paths = GraphSet.union(paths,GraphSet.paths(i,j))
+
+    pathsThruMidpoint = paths.including(2)
+    print pathsThruMidpoint.len()
     #tl.draw(paths.choice())
     print GraphSet
     print paths.len()

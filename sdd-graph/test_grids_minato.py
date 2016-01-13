@@ -66,15 +66,16 @@ if __name__ == '__main__':
     GraphSet.set_universe(universe)
 
     start,goal = 1,(dimension[0]+1)*(dimension[1]+1)
+    #create an empty GraphSet
     paths = GraphSet.paths(1,1)
-    midpoint = 2
+    midpoint = 3
     #paths = GraphSet.paths(start, goal)
     for i in range(start,goal):
         for j in range(i+1,goal+1):
             if i != midpoint and j != midpoint:
                 paths = GraphSet.union(paths,GraphSet.paths(i,j))
 
-    pathsThruMidpoint = paths.including(2)
+    pathsThruMidpoint = paths.including(midpoint)
     print pathsThruMidpoint.len()
     #tl.draw(paths.choice())
     print GraphSet

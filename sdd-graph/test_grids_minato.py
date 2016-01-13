@@ -69,7 +69,8 @@ if __name__ == '__main__':
     paths = GraphSet.paths(1,1)
     #paths = GraphSet.paths(start, goal)
     for i in range(start,goal):
-        paths = GraphSet.union(paths,GraphSet.paths(i,goal))
+        for j in range(i+1,goal+1):
+            paths = GraphSet.union(paths,GraphSet.paths(i,j))
     #tl.draw(paths.choice())
     print GraphSet
     print paths.len()

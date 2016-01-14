@@ -4,7 +4,7 @@ from time import time
 import sys
 import pickle
 
-import sdd
+#import sdd
 
 def draw_grid(model,dimension):
     for i in xrange(dimension):
@@ -82,11 +82,11 @@ if __name__ == '__main__':
     print paths.len()
 
     #dim = (dimension[0]+1,dimension[1]+1)
-    """ AC: SAVE ZDD TO FILE
+    #""" AC: SAVE ZDD TO FILE
     f = open("asdf-%d-%d.zdd" % dim,"w")
     paths.dump(f)
     f.close()
-    """
+    #"""
 
     """ AC: CREATE GRAPH?
     nodes = [None] + [ (x,y) for x in xrange(dim[0]) for y in xrange(dim[1]) ]

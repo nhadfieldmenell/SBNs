@@ -84,7 +84,7 @@ if __name__ == '__main__':
     #dim = (dimension[0]+1,dimension[1]+1)
     #""" AC: SAVE ZDD TO FILE
     f = open("asdf-%d-%d.zdd" % dim,"w")
-    paths.dump(f)
+    pathsThruMidpoint.dump(f)
     f.close()
     #"""
 

@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     pathsThruMidpoint = paths.including(midpoint)
     print pathsThruMidpoint.len()
-    #tl.draw(paths.choice())
+    tl.draw(pathsThruMidpoint.choice())
     print GraphSet
     print paths.len()
 

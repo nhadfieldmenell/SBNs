@@ -68,7 +68,6 @@ if __name__ == '__main__':
     start,goal = 1,(dimension[0]+1)*(dimension[1]+1)
     #create an empty GraphSet
     paths = GraphSet()
-    #paths = GraphSet.paths(1,1)
     midpoint = 3
     #paths = GraphSet.paths(start, goal)
     for i in range(start,goal):

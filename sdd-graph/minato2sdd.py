@@ -180,12 +180,12 @@ if __name__ == '__main__':
 
     # load file
     import pickle
+    dimension = (5,5)
     graph_filename = "asdf-%d-%d.graph.pickle" % dimension
     f = open(graph_filename,'r')
     graph = pickle.load(f)
     f.close()
 
-    dimension = (5,5)
 
     # create a map from edge to its zdd/sdd variable index
     edge_to_index = {}

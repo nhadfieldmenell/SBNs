@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
     # save to file
     import pickle
-    with open(filename,'wb') as output:
+    with open(graph_filename,'wb') as output:
         pickle.dump(graph,output)
 
 

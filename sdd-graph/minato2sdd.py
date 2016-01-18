@@ -4,6 +4,31 @@ from vtrees import vtrees
 import sdd
 import time
 
+def draw_grid(model,edge_to_index,dimension):
+    for i in xrange(dimension[0]):
+        for j in xrange(dimension[1]):
+            sys.stdout.write('.')
+            if j < dimension[1]-1:
+                edge = (i,j),(i,j+1)
+                index = edge_to_index[edge]
+                sys.stdout.write('-' if model[index] else ' ')
+        sys.stdout.write('\n')
+        if i < dimension[0]-1:
+            for j in xrange(dimension[1]):
+                edge = (i,j),(i+1,j)
+                index = edge_to_index[edge]
+                sys.stdout.write('|' if model[index] else ' ')
+                sys.stdout.write(' ')
+        sys.stdout.write('\n')
+
+def print_grids(alpha,edge_to_index,dimension,manager):
+    from inf import models
+    var_count = sdd.sdd_manager_var_count(manager)
+    print "COUNT:", sdd.sdd_model_count(alpha,manager)
+    for model in models.models(alpha,sdd.sdd_manager_vtree(manager)):
+        print models.str_model(model,var_count=var_count)
+        draw_grid(model,edge_to_index,dimension)
+
 def zero_normalize_sdd(alpha,vtree,manager):
     if sdd.sdd_node_is_false(alpha): return alpha
 
@@ -150,3 +175,24 @@ if __name__ == '__main__':
     sdd.sdd_manager_garbage_collect(manager)
     print "live size:", sdd.sdd_manager_live_count(manager)
     print "dead size:", sdd.sdd_manager_dead_count(manager)
+
+    # variable dimension is dimension of grid, i.e., m-x-n, rows-by-columns
+
+    # load file
+    import pickle
+    graph_filename = "asdf-%d-%d.graph.pickle" % dimension
+    f = open(graph_filename,'r')
+    graph = pickle.load(f)
+    f.close()
+
+    # create a map from edge to its zdd/sdd variable index
+    edge_to_index = {}
+    for node in graph:
+        for index,neighbor in graph[node]:
+            edge = node,neighbor
+            edge_to_index[edge] = index
+            edge = neighbor,node
+            edge_to_index[edge] = index
+
+    # print all paths of sdd
+    print_grids(alpha,edge_to_index,dimension,manager)

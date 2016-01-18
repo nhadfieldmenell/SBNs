@@ -88,19 +88,21 @@ if __name__ == '__main__':
     f.close()
     #"""
 
-    """ AC: CREATE GRAPH?
+     """ AC: SAVE GRAPH """
     nodes = [None] + [ (x,y) for x in xrange(dim[0]) for y in xrange(dim[1]) ]
     from collections import defaultdict
     graph = defaultdict(list)
-    for index,edge in enumerate(paths.universe()):
+    for index,edge in enumerate(pathsThruMidpoint.universe()):
         x,y = edge
         x,y = nodes[x],nodes[y]
         graph[x].append( (index+1,y) )
         graph[y].append( (index+1,x) )
+    graph_filename = "asdf-%d-%d.graph.pickle" % dim
 
-    #graph_filename = "asdf-%d-%d.graph.pickle" % dim
-    #save_grid_graph(graph_filename,graph)
-    """
+    # save to file
+    import pickle
+    with open(filename,'wb') as output:
+        pickle.dump(graph,output)
 
 
     #sdd_filename = "output/paths/paths-%d.sdd" % dimension

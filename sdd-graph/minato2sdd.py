@@ -185,6 +185,8 @@ if __name__ == '__main__':
     graph = pickle.load(f)
     f.close()
 
+    dimension = (5,5)
+
     # create a map from edge to its zdd/sdd variable index
     edge_to_index = {}
     for node in graph:

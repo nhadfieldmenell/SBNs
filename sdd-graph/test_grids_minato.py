@@ -88,7 +88,7 @@ if __name__ == '__main__':
     f.close()
     #"""
 
-     """ AC: SAVE GRAPH """
+    """ AC: SAVE GRAPH """
     nodes = [None] + [ (x,y) for x in xrange(dim[0]) for y in xrange(dim[1]) ]
     from collections import defaultdict
     graph = defaultdict(list)

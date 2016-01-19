@@ -24,7 +24,9 @@ def draw_grid(model,edge_to_index,dimension):
 def print_grids(alpha,edge_to_index,dimension,manager):
     from inf import models
     var_count = sdd.sdd_manager_var_count(manager)
+    print "lala"
     print "COUNT:", sdd.sdd_model_count(alpha,manager)
+    print "lala2"
     for model in models.models(alpha,sdd.sdd_manager_vtree(manager)):
         print models.str_model(model,var_count=var_count)
         draw_grid(model,edge_to_index,dimension)
@@ -195,8 +197,6 @@ if __name__ == '__main__':
             edge_to_index[edge] = index
             edge = neighbor,node
             edge_to_index[edge] = index
-
-    print "la"
 
     # print all paths of sdd
     print_grids(alpha,edge_to_index,dimension,manager)

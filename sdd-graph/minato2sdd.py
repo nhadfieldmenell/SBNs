@@ -178,6 +178,8 @@ if __name__ == '__main__':
 
     # variable dimension is dimension of grid, i.e., m-x-n, rows-by-columns
 
+    print "here"
+
     # load file
     import pickle
     dimension = (int(sys.argv[2]),int(sys.argv[3]))

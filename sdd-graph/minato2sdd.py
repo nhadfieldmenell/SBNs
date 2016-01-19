@@ -178,8 +178,6 @@ if __name__ == '__main__':
 
     # variable dimension is dimension of grid, i.e., m-x-n, rows-by-columns
 
-    print "here"
-
     # load file
     import pickle
     dimension = (int(sys.argv[2]),int(sys.argv[3]))
@@ -197,6 +195,8 @@ if __name__ == '__main__':
             edge_to_index[edge] = index
             edge = neighbor,node
             edge_to_index[edge] = index
+
+    print "la"
 
     # print all paths of sdd
     print_grids(alpha,edge_to_index,dimension,manager)

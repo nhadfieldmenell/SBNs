@@ -171,10 +171,10 @@ if __name__ == '__main__':
     print "before garbage collecting..." 
     print "live size:", sdd.sdd_manager_live_count(manager)
     print "dead size:", sdd.sdd_manager_dead_count(manager)
-    """print "garbage collecting..."
+    print "garbage collecting..."
     sdd.sdd_manager_garbage_collect(manager)
     print "live size:", sdd.sdd_manager_live_count(manager)
-    print "dead size:", sdd.sdd_manager_dead_count(manager)"""
+    print "dead size:", sdd.sdd_manager_dead_count(manager)
 
     # variable dimension is dimension of grid, i.e., m-x-n, rows-by-columns
 

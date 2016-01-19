@@ -180,7 +180,7 @@ if __name__ == '__main__':
 
     # load file
     import pickle
-    dimension = (sys.argv[2],sys.argv[3])
+    dimension = (int(sys.argv[2]),int(sys.argv[3]))
     graph_filename = "asdf-%d-%d.graph.pickle" % dimension
     f = open(graph_filename,'r')
     graph = pickle.load(f)

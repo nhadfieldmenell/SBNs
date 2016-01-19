@@ -137,8 +137,8 @@ def start_manager(var_count,order):
 if __name__ == '__main__':
     import sys
 
-    if len(sys.argv) != 2:
-        print "usage: %s [BDD_FILENAME]" % sys.argv[0]
+    if len(sys.argv) != 4:
+        print "usage: %s [BDD_FILENAME] [GRID-M] [GRID-N]" % sys.argv[0]
         exit(1)
 
     filename = sys.argv[1]
@@ -180,7 +180,7 @@ if __name__ == '__main__':
 
     # load file
     import pickle
-    dimension = (5,5)
+    dimension = (sys.argv[2],sys.argv[3])
     graph_filename = "asdf-%d-%d.graph.pickle" % dimension
     f = open(graph_filename,'r')
     graph = pickle.load(f)

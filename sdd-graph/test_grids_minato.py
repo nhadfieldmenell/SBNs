@@ -79,7 +79,7 @@ if __name__ == '__main__':
     print pathsThruMidpoint.len()
     #tl.draw(pathsThruMidpoint.choice())
     print GraphSet
-    print paths.len()
+    print "number of paths: " + str(paths.len())
 
     #dim = (dimension[0]+1,dimension[1]+1)
     #""" AC: SAVE ZDD TO FILE

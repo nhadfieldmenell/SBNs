@@ -167,17 +167,6 @@ if __name__ == '__main__':
     sdd.sdd_vtree_save(filename + ".vtree",vtree)
     #sdd.sdd_vtree_save_as_dot(filename +".vtree.dot",vtree)
 
-    print "===================="
-    print "before garbage collecting..." 
-    print "live size:", sdd.sdd_manager_live_count(manager)
-    print "dead size:", sdd.sdd_manager_dead_count(manager)
-    print "garbage collecting..."
-    sdd.sdd_manager_garbage_collect(manager)
-    print "live size:", sdd.sdd_manager_live_count(manager)
-    print "dead size:", sdd.sdd_manager_dead_count(manager)
-
-    # variable dimension is dimension of grid, i.e., m-x-n, rows-by-columns
-
     # load file
     import pickle
     dimension = (int(sys.argv[2]),int(sys.argv[3]))
@@ -198,3 +187,16 @@ if __name__ == '__main__':
 
     # print all paths of sdd
     print_grids(alpha,edge_to_index,dimension,manager)
+
+    print "===================="
+    print "before garbage collecting..." 
+    print "live size:", sdd.sdd_manager_live_count(manager)
+    print "dead size:", sdd.sdd_manager_dead_count(manager)
+    print "garbage collecting..."
+    sdd.sdd_manager_garbage_collect(manager)
+    print "live size:", sdd.sdd_manager_live_count(manager)
+    print "dead size:", sdd.sdd_manager_dead_count(manager)
+
+    # variable dimension is dimension of grid, i.e., m-x-n, rows-by-columns
+
+    

@@ -68,7 +68,7 @@ if __name__ == '__main__':
     start,goal = 1,(dimension[0]+1)*(dimension[1]+1)
     #create an empty GraphSet
     paths = GraphSet()
-    midpoint = 3
+    midpoint = 1
     #paths = GraphSet.paths(start, goal)
     for i in range(start,goal):
         for j in range(i+1,goal+1):
@@ -77,7 +77,6 @@ if __name__ == '__main__':
 
     pathsThruMidpoint = paths.including(midpoint)
     #tl.draw(pathsThruMidpoint.choice())
-    print GraphSet
     print "number of paths through midpoint: " + str(pathsThruMidpoint.len())
 
     #dim = (dimension[0]+1,dimension[1]+1)

@@ -7,6 +7,15 @@ import sdd
 #from structure import cardinality
 from collections import defaultdict
 
+def global_model_count(alpha,manager):
+    mc = sdd.sdd_model_count(alpha,manager)
+    var_count = sdd.sdd_manager_var_count(manager)
+    var_used = sdd.sdd_variables(alpha,manager)
+    for used in var_used[1:]:
+        if not used:
+            mc = 2*mc
+    return mc
+
 def all_false_term(var_list,manager):
     alpha = sdd.sdd_manager_true(manager)
     for var in var_list:
@@ -128,7 +137,8 @@ def draw_grid(model,m,n,g):
 def print_grids(alpha,m,n,g,manager):
     from inf import models
     var_count = m*(n-1) + (m-1)*n
-    print "COUNT:", sdd.sdd_model_count(alpha,manager)
+    #print "COUNT:", sdd.sdd_model_count(alpha,manager)
+    print "COUNT:", global_model_count(alpha,manager)
     for model in models.models(alpha,sdd.sdd_manager_vtree(manager)):
         print models.str_model(model,var_count=var_count)
         draw_grid(model,m,n,g)
@@ -141,7 +151,7 @@ def _encode_grid_aux(source,sink,nodes,graph,manager,
     if cache and key in cache:
         return cache[key]
 
-    if False: # INITIALIZATION FOR (S,T) PATHS
+    if True: # INITIALIZATION FOR (S,T) PATHS
         if sink not in nodes: # unreachable
             return sdd.sdd_manager_false(manager)
 
@@ -253,6 +263,7 @@ def encode_graph(g,manager):
 
     print "model count..."
     print "sdd mc  :", sdd.sdd_model_count(alpha,manager)
+    print "sdd mc-g:", global_model_count(alpha,manager)
 
     #print "minimizing ..."
     #sdd.sdd_ref(alpha,manager)
@@ -295,7 +306,7 @@ if __name__ == '__main__':
     manager = start_manager(g)
     alpha = encode_graph(g,manager)
     #sdd.sdd_deref(alpha,manager)
-    #print_grids(alpha,m,n,g,manager)
+    print_grids(alpha,m,n,g,manager)
 
     """ UNCOMMENT TO SAVE SDD/VTREE
     sdd_filename = "paths-%d-%d.sdd" % (m,n)

@@ -4,35 +4,20 @@ from vtrees import vtrees
 import sdd
 import time
 
-def draw_grid(model,edge_to_index,dimension):
-    for i in xrange(dimension[0]):
-        for j in xrange(dimension[1]):
-            sys.stdout.write('.')
-            if j < dimension[1]-1:
-                edge = (i,j),(i,j+1)
-                index = edge_to_index[edge]
-                sys.stdout.write('-' if model[index] else ' ')
-        sys.stdout.write('\n')
-        if i < dimension[0]-1:
-            for j in xrange(dimension[1]):
-                edge = (i,j),(i+1,j)
-                index = edge_to_index[edge]
-                sys.stdout.write('|' if model[index] else ' ')
-                sys.stdout.write(' ')
-        sys.stdout.write('\n')
-
-def print_grids(alpha,edge_to_index,dimension,manager):
-    from inf import models
+def global_model_count(alpha,manager):
+    mc = sdd.sdd_model_count(alpha,manager)
     var_count = sdd.sdd_manager_var_count(manager)
-    print "COUNT:", sdd.sdd_model_count(alpha,manager)
-    for model in models.models(alpha,sdd.sdd_manager_vtree(manager)):
-        print models.str_model(model,var_count=var_count)
-        draw_grid(model,edge_to_index,dimension)
+    var_used = sdd.sdd_variables(alpha,manager)
+    for used in var_used[1:]:
+        if not used:
+            mc = 2*mc
+    return mc
 
-def zero_normalize_sdd(alpha,vtree,manager):
+def zero_normalize_sdd(alpha,alpha_vtree,vtree,manager):
     if sdd.sdd_node_is_false(alpha): return alpha
 
-    if vtree == sdd.sdd_vtree_of(alpha):
+    #if vtree == sdd.sdd_vtree_of(alpha):
+    if vtree == alpha_vtree:
         return alpha
 
     if sdd.sdd_vtree_is_leaf(vtree):
@@ -41,8 +26,8 @@ def zero_normalize_sdd(alpha,vtree,manager):
         return nlit
 
     left,right = sdd.sdd_vtree_left(vtree),sdd.sdd_vtree_right(vtree)
-    beta_left  = zero_normalize_sdd(alpha,left,manager)
-    beta_right = zero_normalize_sdd(alpha,right,manager)
+    beta_left  = zero_normalize_sdd(alpha,alpha_vtree,left,manager)
+    beta_right = zero_normalize_sdd(alpha,alpha_vtree,right,manager)
     beta = sdd.sdd_conjoin(beta_left,beta_right,manager)
     return beta
 
@@ -61,9 +46,10 @@ def pre_parse_bdd(filename):
     return len(bdd_vars),node_count
 
 def parse_bdd(filename):
+
     var_count,node_count = pre_parse_bdd(filename)
-    print "var count:", var_count
-    print "node count:", node_count
+    print "   zdd var count:", var_count
+    print "  zdd node count:", node_count
 
     manager = start_manager(var_count,range(1,var_count+1))
     root = sdd.sdd_manager_vtree(manager)
@@ -82,20 +68,20 @@ def parse_bdd(filename):
         lo_lit = sdd.sdd_manager_literal(-dvar,manager)
 
         if   lo == 'T':
-            lo_sdd = sdd.sdd_manager_true(manager)
+            lo_sdd,lo_vtree = sdd.sdd_manager_true(manager),None
         elif lo == 'B':
-            lo_sdd = sdd.sdd_manager_false(manager)
+            lo_sdd,lo_vtree = sdd.sdd_manager_false(manager),None
         else:
             lo_id = int(lo)
-            lo_sdd = nodes[id2index[lo_id]]
+            lo_sdd,lo_vtree = nodes[id2index[lo_id]]
 
         if   hi == 'T':
-            hi_sdd = sdd.sdd_manager_true(manager)
+            hi_sdd,hi_vtree = sdd.sdd_manager_true(manager),None
         elif hi == 'B':
-            hi_sdd = sdd.sdd_manager_false(manager)
+            hi_sdd,hi_vtree = sdd.sdd_manager_false(manager),None
         else:
             hi_id = int(hi)
-            hi_sdd = nodes[id2index[hi_id]]
+            hi_sdd,hi_vtree = nodes[id2index[hi_id]]
 
         #v1,v2 = sdd.sdd_vtree_of(hi_lit),sdd.sdd_vtree_of(hi_sdd)
         #vt = sdd.sdd_vtree_lca(v1,v2,root)
@@ -104,22 +90,21 @@ def parse_bdd(filename):
         vt = sdd.sdd_vtree_right(vt)
 
         if dvar < var_count:
-            hi_sdd = zero_normalize_sdd(hi_sdd,vt,manager)
+            hi_sdd = zero_normalize_sdd(hi_sdd,hi_vtree,vt,manager)
+            lo_sdd = zero_normalize_sdd(lo_sdd,lo_vtree,vt,manager)
+            vt = sdd.sdd_vtree_parent(vt)
+
         hi_sdd = sdd.sdd_conjoin(hi_lit,hi_sdd,manager)
-
-        if dvar < var_count:
-            lo_sdd = zero_normalize_sdd(lo_sdd,vt,manager)
         lo_sdd = sdd.sdd_conjoin(lo_lit,lo_sdd,manager)
-
         alpha = sdd.sdd_disjoin(hi_sdd,lo_sdd,manager)
 
-        nodes[index] = alpha
+        nodes[index] = (alpha,vt)
         id2index[nid] = index
         index += 1
             
     f.close()
 
-    return manager,nodes[-1]
+    return manager,nodes[-1][0]
 
 def start_manager(var_count,order):
     #vtree = sdd.sdd_vtree_new_with_var_order(var_count,order,"right")
@@ -137,8 +122,8 @@ def start_manager(var_count,order):
 if __name__ == '__main__':
     import sys
 
-    if len(sys.argv) != 4:
-        print "usage: %s [BDD_FILENAME] [GRID-M] [GRID-N]" % sys.argv[0]
+    if len(sys.argv) != 2:
+        print "usage: %s [BDD_FILENAME]" % sys.argv[0]
         exit(1)
 
     filename = sys.argv[1]
@@ -149,6 +134,7 @@ if __name__ == '__main__':
     print "      sdd node count: %d" % sdd.sdd_count(alpha)
     print "            sdd size: %d" % sdd.sdd_size(alpha)
     print "     sdd model count: %d" % sdd.sdd_model_count(alpha,manager)
+    print "  global model count: %d" % global_model_count(alpha,manager)
     print "       read bdd time: %.3fs" % (end-start)
 
     """
@@ -167,27 +153,6 @@ if __name__ == '__main__':
     sdd.sdd_vtree_save(filename + ".vtree",vtree)
     #sdd.sdd_vtree_save_as_dot(filename +".vtree.dot",vtree)
 
-    # load file
-    import pickle
-    dimension = (int(sys.argv[2]),int(sys.argv[3]))
-    graph_filename = "asdf-%d-%d.graph.pickle" % dimension
-    f = open(graph_filename,'r')
-    graph = pickle.load(f)
-    f.close()
-
-
-    # create a map from edge to its zdd/sdd variable index
-    edge_to_index = {}
-    for node in graph:
-        for index,neighbor in graph[node]:
-            edge = node,neighbor
-            edge_to_index[edge] = index
-            edge = neighbor,node
-            edge_to_index[edge] = index
-
-    # print all paths of sdd
-    print_grids(alpha,edge_to_index,dimension,manager)
-
     print "===================="
     print "before garbage collecting..." 
     print "live size:", sdd.sdd_manager_live_count(manager)
@@ -196,7 +161,3 @@ if __name__ == '__main__':
     sdd.sdd_manager_garbage_collect(manager)
     print "live size:", sdd.sdd_manager_live_count(manager)
     print "dead size:", sdd.sdd_manager_dead_count(manager)
-
-    # variable dimension is dimension of grid, i.e., m-x-n, rows-by-columns
-
-    

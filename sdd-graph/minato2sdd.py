@@ -156,7 +156,7 @@ if __name__ == '__main__':
 
 
     dimension = (int(sys.argv[2]),int(sys.argv[3]))
-    #print_grids(alpha, dimension, manager)
+    print_grids(alpha, dimension, manager)
     
 
     print "===================="

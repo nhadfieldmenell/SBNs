@@ -3,6 +3,7 @@
 from vtrees import vtrees
 import sdd
 import time
+from test_grids_minato import print_grids
 
 def global_model_count(alpha,manager):
     mc = sdd.sdd_model_count(alpha,manager)
@@ -122,8 +123,8 @@ def start_manager(var_count,order):
 if __name__ == '__main__':
     import sys
 
-    if len(sys.argv) != 2:
-        print "usage: %s [BDD_FILENAME]" % sys.argv[0]
+    if len(sys.argv) != 4:
+        print "usage: %s [BDD_FILENAME] [GRID-M] [GRID-N]" % sys.argv[0]
         exit(1)
 
     filename = sys.argv[1]
@@ -152,6 +153,11 @@ if __name__ == '__main__':
     vtree = sdd.sdd_manager_vtree(manager)
     sdd.sdd_vtree_save(filename + ".vtree",vtree)
     #sdd.sdd_vtree_save_as_dot(filename +".vtree.dot",vtree)
+
+
+    dimension = (int(sys.argv[2]),int(sys.argv[3]))
+    print_grids(alpha, dimension, manager)
+    
 
     print "===================="
     print "before garbage collecting..." 

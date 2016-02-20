@@ -26,7 +26,8 @@ def print_grids(alpha,dimension,manager):
     from inf import models
     #var_count = 2*dimension*(dimension-1)
     #var_count = 2*dimension*(dimension-1) + dimension*dimension
-    print "COUNT:", sdd.sdd_model_count(alpha,manager)
+    
+ "COUNT:", sdd.sdd_model_count(alpha,manager)
     for model in models.models(alpha,sdd.sdd_manager_vtree(manager)):
         print models.str_model(model,var_count=var_count)
         draw_grid(model,dimension)
@@ -68,7 +69,7 @@ if __name__ == '__main__':
     start,goal = 1,(dimension[0]+1)*(dimension[1]+1)
     #create an empty GraphSet
     paths = GraphSet()
-    midpoint = 4
+    midpoint = 2
     #paths = GraphSet.paths(start, goal)
     for i in range(start,goal):
         for j in range(i+1,goal+1):

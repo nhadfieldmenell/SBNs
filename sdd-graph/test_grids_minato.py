@@ -27,7 +27,7 @@ def print_grids(alpha,dimension,manager):
     #var_count = 2*dimension*(dimension-1)
     #var_count = 2*dimension*(dimension-1) + dimension*dimension
     
- "COUNT:", sdd.sdd_model_count(alpha,manager)
+    print "COUNT:", sdd.sdd_model_count(alpha,manager)
     for model in models.models(alpha,sdd.sdd_manager_vtree(manager)):
         print models.str_model(model,var_count=var_count)
         draw_grid(model,dimension)

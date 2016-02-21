@@ -127,7 +127,7 @@ if __name__ == '__main__':
         print "usage: %s [GRID-M] [GRID-N]" % sys.argv[0]
         exit(1)
 
-    m,n = sys.argv[1],sys.argv[2]
+    m,n = int(sys.argv[1]),int(sys.argv[2])
     filename = fnPrefix = ("asdf-%d-%d" % (m,n))
 
     start = time.time()

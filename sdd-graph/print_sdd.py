@@ -11,7 +11,7 @@ if __name__ == '__main__':
 	
     import sys
 
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 3:
         print "usage: %s [GRID-M] [GRID-N]" % sys.argv[0]
         exit(1)
 

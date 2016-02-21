@@ -23,9 +23,10 @@ if __name__ == '__main__':
     manager = sdd.sdd_manager_new(vtree)
     sdd.sdd_vtree_free(vtree)
     alpha = sdd.sdd_read(('%s.sdd' % fnPrefix),manager)
-    graph = pickle.load(open(gFn,'rb'))
+    #graph = pickle.load(open(gFn,'rb'))
+    graph = Graph.grid_graph(m,n)
 
-    print graph
+    #print graph
 
-    #g.print_grids(alpha,m,n,graph,manager)
+    g.print_grids(alpha,m,n,graph,manager)
 

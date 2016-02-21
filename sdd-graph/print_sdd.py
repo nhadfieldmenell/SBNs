@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import test_graphs as g
+import test_graph as g
 import sys
 import pickle
 import sdd

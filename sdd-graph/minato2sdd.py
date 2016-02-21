@@ -123,14 +123,15 @@ def start_manager(var_count,order):
 if __name__ == '__main__':
     import sys
 
-    if len(sys.argv) != 4:
-        print "usage: %s [BDD_FILENAME] [GRID-M] [GRID-N]" % sys.argv[0]
+    if len(sys.argv) != 3:
+        print "usage: %s [GRID-M] [GRID-N]" % sys.argv[0]
         exit(1)
 
-    filename = sys.argv[1]
+    m,n = sys.argv[1],sys.argv[2]
+    filename = fnPrefix = ("asdf-%d-%d" % (m,n))
 
     start = time.time()
-    manager,alpha = parse_bdd(filename)
+    manager,alpha = parse_bdd(filename+".zdd")
     end = time.time()
     print "      sdd node count: %d" % sdd.sdd_count(alpha)
     print "            sdd size: %d" % sdd.sdd_size(alpha)
@@ -155,8 +156,7 @@ if __name__ == '__main__':
     #sdd.sdd_vtree_save_as_dot(filename +".vtree.dot",vtree)
 
 
-    dimension = (int(sys.argv[2]),int(sys.argv[3]))
-    print_grids(alpha, dimension, manager)
+    
     
 
     print "===================="

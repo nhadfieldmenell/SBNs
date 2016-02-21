@@ -56,11 +56,12 @@ def save_grid_graph(filename,graph):
 # 1568758030464750013214100
 # 182413291514248049241470885236 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print "usage: %s [GRID-M] [GRID-N]" % sys.argv[0]
+    if len(sys.argv) != 4:
+        print "usage: %s [GRID-M] [GRID-N] [MIDPOINT]" % sys.argv[0]
         exit(1)
     dim = (int(sys.argv[1]),int(sys.argv[2]))
     dimension = (dim[0]-1,dim[1]-1)
+    midpoint = int(sys.argv[3])
     #dimension = (1,1)
 
     from graphillion import GraphSet
@@ -71,7 +72,6 @@ if __name__ == '__main__':
     start,goal = 1,(dimension[0]+1)*(dimension[1]+1)
     #create an empty GraphSet
     paths = GraphSet()
-    midpoint = 2
     #paths = GraphSet.paths(start, goal)
     for i in range(start,goal):
         for j in range(i+1,goal+1):

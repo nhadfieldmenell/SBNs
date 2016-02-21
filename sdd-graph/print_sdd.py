@@ -25,5 +25,7 @@ if __name__ == '__main__':
     alpha = sdd.sdd_read(('%s.sdd' % fnPrefix),manager)
     graph = pickle.load(open(gFn,'rb'))
 
-    g.print_grids(alpha,m,n,graph,manager)
+    print graph[1]
+
+    #g.print_grids(alpha,m,n,graph,manager)
 

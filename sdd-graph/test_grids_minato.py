@@ -25,9 +25,9 @@ def draw_grid(model,dimension):
 def print_grids(alpha,dimension,manager):
     #import pdb; pdb.set_trace()
     from inf import models
-    #var_count = 2*dimension*(dimension-1)
+    var_count = 2*dimension*(dimension-1)
     #var_count = 2*dimension*(dimension-1) + dimension*dimension
-    var_count = 2*dimension[0]*dimension[1] - dimension[0] - dimension[1]
+    #var_count = 2*dimension[0]*dimension[1] - dimension[0] - dimension[1]
     
     print "COUNT:", sdd.sdd_model_count(alpha,manager)
     for model in models.models(alpha,sdd.sdd_manager_vtree(manager)):
@@ -81,6 +81,7 @@ if __name__ == '__main__':
     pathsThruMidpoint = paths.including(midpoint)
     #tl.draw(pathsThruMidpoint.choice())
     print "number of paths through midpoint: " + str(pathsThruMidpoint.len())
+    print paths.universe()
 
     #dim = (dimension[0]+1,dimension[1]+1)
     #""" AC: SAVE ZDD TO FILE

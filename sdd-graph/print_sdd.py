@@ -16,7 +16,7 @@ if __name__ == '__main__':
         exit(1)
 
     m,n = (int(sys.argv[1]),int(sys.argv[2]))
-    fnPrefix = ("asdf-%d-%d.zdd" % (m,n))
+    fnPrefix = ("asdf-%d-%d" % (m,n))
     gFn = ("asdf-%d-%d.graph.pickle" % (m,n))
 
     vtree = sdd.sdd_vtree_read('%s.vtree' % fnPrefix)

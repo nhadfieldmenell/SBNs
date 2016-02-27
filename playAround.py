@@ -1,4 +1,4 @@
-
+#!/usr/bin/python
 
 import math
 import numpy
@@ -61,103 +61,105 @@ def createTrips(orig):
 #full[][2] is a list of all coordinate positions in the order they appear
 #(full[][2][i][0] is latitude, full[][2][i][1] is longitude, full[][2][i][2] is time)
 def createFull(fn,trips,latStep,lonStep,minLat,minLon):
-	fullTrips = [[[] for x in range(3)] for x in range(25001)]
-	
-	#find the day, hour, minute, duration
-	for i in range(len(trips)):
-		if trips[i][0] == 0:
-			continue
-		fullTrips[i][0] = trips[i][4]
-		tripStartMin = trips[i][4][1]*60+trips[i][4][2]
-		tripEndMin = trips[i][5][1]*60+trips[i][5][2]
-		#if trip spans 2 days
-		if trips[i][4][0] != trips[i][5][0]:
-			tripEndMin += 60*24
-		fullTrips[i][1] = tripEndMin-tripStartMin
+    fullTrips = [[[] for x in range(3)] for x in range(25001)]
+
+#find the day, hour, minute, duration
+    for i in range(len(trips)):
+        if trips[i][0] == 0:
+            continue
+        fullTrips[i][0] = trips[i][4]
+        tripStartMin = trips[i][4][1]*60+trips[i][4][2]
+        tripEndMin = trips[i][5][1]*60+trips[i][5][2]
+#if trip spans 2 days
+        if trips[i][4][0] != trips[i][5][0]:
+            tripEndMin += 60*24
+        fullTrips[i][1] = tripEndMin-tripStartMin
 		
-	previousTripNum = 0
-	previousGridSpot = [0,0]
-	
-	numDiags = 0
-	prevBad = 0
-	
-	#key: string(lat,lon), value: # trips that traverse that string
-	spotsTraversed = {}
-	
-	#create a path on the grid
-	for line in fn:
-		normalized = normalize(line)
-		tripId = normalized[0]
-		latitude = normalized[1]
-		longitude = normalized[2]
-		time = normalized[3]
-		gridSpot = convertGPS(latitude,longitude,latStep,lonStep,minLat,minLon)
-		
-		#new trip
-		if tripId != previousTripNum:
-			previousTripNum = tripId
-			previousGridSpot[0] = gridSpot[0]
-			previousGridSpot[1] = gridSpot[1]
-			theSpot = []
-			theSpot.append(gridSpot[0])
-			theSpot.append(gridSpot[1])
-			theSpot.append(time)
-			fullTrips[tripId][2].append(theSpot)
-			
-			spotString = pointToString(gridSpot[0],gridSpot[1])
-			if spotString in spotsTraversed:
-				spotsTraversed[spotString] += 1
-			else:
-				spotsTraversed[spotString] = 1
-		else:
-			if gridSpot[0] != previousGridSpot[0] or gridSpot[1] != previousGridSpot[1]:
-				if abs(gridSpot[0] - previousGridSpot[0]) + abs(gridSpot[1] - previousGridSpot[1]) > 1 and prevBad != tripId:
+    previousTripNum = 0
+    previousGridSpot = [0,0]
+
+    numDiags = 0
+    prevBad = 0
+
+#key: string(lat,lon), value: # trips that traverse that string
+    spotsTraversed = {}
+
+#create a path on the grid
+    for line in fn:
+        normalized = normalize(line)
+        tripId = normalized[0]
+        latitude = normalized[1]
+        longitude = normalized[2]
+        time = normalized[3]
+        gridSpot = convertGPS(latitude,longitude,latStep,lonStep,minLat,minLon)
+
+#new trip
+        if tripId != previousTripNum:
+            previousTripNum = tripId
+            previousGridSpot[0] = gridSpot[0]
+            previousGridSpot[1] = gridSpot[1]
+            theSpot = []
+            theSpot.append(gridSpot[0])
+            theSpot.append(gridSpot[1])
+            theSpot.append(time)
+            fullTrips[tripId][2].append(theSpot)
+
+            spotString = pointToString(gridSpot[0],gridSpot[1])
+            if spotString in spotsTraversed:
+                spotsTraversed[spotString] += 1
+            else:
+                spotsTraversed[spotString] = 1
+        else:
+            if gridSpot[0] != previousGridSpot[0] or gridSpot[1] != previousGridSpot[1]:
+                if abs(gridSpot[0] - previousGridSpot[0]) + abs(gridSpot[1] - previousGridSpot[1]) > 1 and prevBad != tripId:
 				#if ((abs(gridSpot[0] - previousGridSpot[0]) >= 1 and abs(gridSpot[1] - previousGridSpot[1]) >= 1) or abs(gridSpot[0] - previousGridSpot[0]) + abs(gridSpot[1] - previousGridSpot[1]) > 2) and prevBad != tripId:
-					prevBad = tripId
+                    prevBad = tripId
 					#print tripId
 					#print str(gridSpot[0]) + "," + str(previousGridSpot[0]) + "," + str(gridSpot[1]) + "," + str(previousGridSpot[1])
-					numDiags += 1
-				spotString = pointToString(gridSpot[0],gridSpot[1])
-				if spotString in spotsTraversed:
-					spotsTraversed[spotString] += 1
-				else:
-					spotsTraversed[spotString] = 1
+                    numDiags += 1
+                spotString = pointToString(gridSpot[0],gridSpot[1])
+                if spotString in spotsTraversed:
+                    spotsTraversed[spotString] += 1
+                else:
+                    spotsTraversed[spotString] = 1
 				
 				
 				
-				previousGridSpot[0] = gridSpot[0]
-				previousGridSpot[1] = gridSpot[1]
-				theSpot = []
-				theSpot.append(gridSpot[0])
-				theSpot.append(gridSpot[1])
-				theSpot.append(time)
-				fullTrips[tripId][2].append(theSpot)
+                previousGridSpot[0] = gridSpot[0]
+                previousGridSpot[1] = gridSpot[1]
+                theSpot = []
+                theSpot.append(gridSpot[0])
+                theSpot.append(gridSpot[1])
+                theSpot.append(time)
+                fullTrips[tripId][2].append(theSpot)
 				
 				
 	
-	print numDiags
-	
-	maxSpot = 0
-	bestSpot = ""
-	for key in spotsTraversed.keys():
-		if spotsTraversed[key] > maxSpot:
-			maxSpot = spotsTraversed[key]
-			bestSpot = key
+    print numDiags
+
+    maxSpot = 0
+    bestSpot = ""
+    for key in spotsTraversed.keys():
+        if spotsTraversed[key] > maxSpot:
+            maxSpot = spotsTraversed[key]
+            bestSpot = key
 			
-	print bestSpot + ": " + str(maxSpot)
-	bins = stringToPts(bestSpot)
-	bestCoords = binToGPS(int(bins[0]),int(bins[1]),latStep,lonStep,minLat,minLon)
-	print str(bestCoords[0])+","+str(bestCoords[1])
+    print bestSpot + ": " + str(maxSpot)
+    bins = stringToPts(bestSpot)
+    bestCoords = binToGPS(int(bins[0]),int(bins[1]),latStep,lonStep,minLat,minLon)
+    print str(bestCoords[0])+","+str(bestCoords[1])
+
+#all trips that pass through bestSpot
+    tripsWithPt = []
+    for tripId in range(len(fullTrips)):
+        for point in fullTrips[tripId][2]:
+            if point[0] == bins[0] and point[1] == bins[1]:
+                tripsWithPt.append(tripId)
+                break
+    print tripsWithPt
+    print "test"
 	
-	#all trips that pass through bestSpot
-	tripsWithPt = []
-	for tripId in range(len(fullTrips)):
-		for point in fullTrips[tripId][2]:
-			if point[0] == bins[0] and point[1] == bins[1]:
-				tripsWithPt.append(tripId)
-	#print tripsWithPt
-	
-	return fullTrips
+    return fullTrips
 
 
 #calc the min and max latitute and Lonitude traversed in system
@@ -777,137 +779,144 @@ def getDistTripsByPeriod(trips,day,startHr,numHrs,minDist):
 	print longTrips
 
 
-orig = open('firstLast.txt','r')
-fullFn = open('csvGps.txt','r')
+
+def main():
+    orig = open('firstLast.txt','r')
+    fullFn = open('csvGps.txt','r')
 #pointsOut = open('aToB.txt','w')
 #pointsIn = open('aToB.txt','r')
 
 #enter the square edge length to specify grid regions (in miles)
 #1 mile is approximately 0.0145 in latitude in SF area
 #1 mile is approximately 0.01825 in longitude in SF area
-gridSize = 0.4
-latStep = 0.0145*gridSize
-lonStep = 0.01825*gridSize
+    gridSize = 0.3
+    latStep = 0.0145*gridSize
+    lonStep = 0.01825*gridSize
 
 #trips[][7]: start lat, start Lon, end lat, end Lon, start[day,hour,minute,second], end[day,hour,minute,second], dist (in miles)
-trips = createTrips(orig)
+    trips = createTrips(orig)
 
-minDist = 1.5
+    minDist = 1.5
 
-minMaxRet = minMax(trips)
-maxLat = minMaxRet[0]
-minLat = minMaxRet[1]
-maxLon = minMaxRet[2]
-minLon = minMaxRet[3]
-latGridSpots = int((maxLat-minLat)/latStep) + 1
-lonGridSpots = int((maxLon-minLon)/lonStep) + 1
+    minMaxRet = minMax(trips)
+    maxLat = minMaxRet[0]
+    minLat = minMaxRet[1]
+    maxLon = minMaxRet[2]
+    minLon = minMaxRet[3]
+    latGridSpots = int((maxLat-minLat)/latStep) + 1
+    lonGridSpots = int((maxLon-minLon)/lonStep) + 1
 
 #getDistTripsByPeriod(trips,0,0,2,1.5)
 
 #bestStAndEnPrd(trips,1,6,4,latStep,lonStep,5,minLat,minLon)
 #getTripsByPeriod(trips,1,6,4)
 #readPtsFromFile(pointsIn)
-fullTrips = createFull(fullFn,trips,latStep,lonStep,minLat,minLon)
+    fullTrips = createFull(fullFn,trips,latStep,lonStep,minLat,minLon)
+    print fullTrips[1]
+
 #pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,pointsOut,gridSize)
 
 
-"""
-tripLengths(trips)
+    """
+    tripLengths(trips)
 
-ridesByHour(trips,1)
-ridesByHourAndDay(trips,2)
-
-
-
-print minLat
-print maxLat
-print minLon
-print maxLon
+    ridesByHour(trips,1)
+    ridesByHourAndDay(trips,2)
 
 
-startEndRet = createStartEnd(latStep,lonStep)
-startLat = startEndRet[0]
-startLon = startEndRet[1]
-endLat = startEndRet[2]
-endLon = startEndRet[3]
 
-specStartLat = float(37.788929)
-specStartLon = float(-122.399598)
-specEndLat = float(37.754739)
-specEndLon = float(  -122.415317)
-startPoint = convertGPS(specStartLat,specStartLon,latStep,lonStep,minLat,minLon)
-endPoint = convertGPS(specEndLat,specEndLon,latStep,lonStep,minLat,minLon)
+    print minLat
+    print maxLat
+    print minLon
+    print maxLon
+
+
+    startEndRet = createStartEnd(latStep,lonStep)
+    startLat = startEndRet[0]
+    startLon = startEndRet[1]
+    endLat = startEndRet[2]
+    endLon = startEndRet[3]
+
+    specStartLat = float(37.788929)
+    specStartLon = float(-122.399598)
+    specEndLat = float(37.754739)
+    specEndLon = float(  -122.415317)
+    startPoint = convertGPS(specStartLat,specStartLon,latStep,lonStep,minLat,minLon)
+    endPoint = convertGPS(specEndLat,specEndLon,latStep,lonStep,minLat,minLon)
 
 #theTrips = findTrips(startPoint[0],startPoint[1],endPoint[0],endPoint[1],startLat,startLon,endLat,endLon,trips)
 #print theTrips
-"""
-"""
-convGPS = convertGPS(37.774, -122.4152,latLonStep,latLonStep,minLat,minLon)
-print convGPS[0]
-print convGPS[1]
+    """
+    """
+    convGPS = convertGPS(37.774, -122.4152,latLonStep,latLonStep,minLat,minLon)
+    print convGPS[0]
+    print convGPS[1]
 
-print startLat[80][0]
-print startLon[41][0]
-"""
-""""
-numPoints = 1
-goodStarts = findGoodPoints(startLat,startLon,numPoints)
+    print startLat[80][0]
+    print startLon[41][0]
+    """
+    """"
+    numPoints = 1
+    goodStarts = findGoodPoints(startLat,startLon,numPoints)
 #goodEnds = findGoodPoints(endLat,endLon,numPoints)
 
-bestEnds = findBestEnd(trips,goodStarts[0][1],goodStarts[0][0][1],goodStarts[0][0][2],latStep,lonStep,minLat,minLon,len(startLat),len(startLon),4,gridSize)
+    bestEnds = findBestEnd(trips,goodStarts[0][1],goodStarts[0][0][1],goodStarts[0][0][2],latStep,lonStep,minLat,minLon,len(startLat),len(startLon),4,gridSize)
 
 
 
-print "starts"
-for point in goodStarts:
-	print point[0]
-	print startLat[point[0][1]][0]
-	print startLon[point[0][2]][0]
-	
-"""
-"""	
-print "ends"
-for point in goodEnds:
-	print point[0]
-	
+    print "starts"
+    for point in goodStarts:
+        print point[0]
+        print startLat[point[0][1]][0]
+        print startLon[point[0][2]][0]
+        
+    """
+    """	
+    print "ends"
+    for point in goodEnds:
+        print point[0]
+        
 
 #for track in goodStarts[6][1]:
 #	print str(track)+','+str(trips[track][0])
-		
+            
 
-	
+        
 #for i in range(20):
 #	print startLat[i]
-	
+        
 #for i in range(20):
 #	print endLat[i]
 #	
 #for i in range(20):
 #	print startLon[i]
-	
+        
 #for i in range(20):
 #	print startLon[i]
 
-minMaxRet = minMax(trips)
-maxLat = minMaxRet[0]
-minLat = minMaxRet[1]
-maxLon = minMaxRet[2]
-minLon = minMaxRet[3]
-latGridSpots = int((maxLat-minLat)/latStep) + 1
-lonGridSpots = int((maxLon-minLon)/lonStep) + 1
+    minMaxRet = minMax(trips)
+    maxLat = minMaxRet[0]
+    minLat = minMaxRet[1]
+    maxLon = minMaxRet[2]
+    minLon = minMaxRet[3]
+    latGridSpots = int((maxLat-minLat)/latStep) + 1
+    lonGridSpots = int((maxLon-minLon)/lonStep) + 1
 
-minDist = 2
+    minDist = 2
 
-startEndRet = createStartEnd(latStep,lonStep,trips)
-startLat = startEndRet[0]
-startLon = startEndRet[1]
-endLat = startEndRet[2]
-endLon = startEndRet[3]
+    startEndRet = createStartEnd(latStep,lonStep,trips)
+    startLat = startEndRet[0]
+    startLon = startEndRet[1]
+    endLat = startEndRet[2]
+    endLon = startEndRet[3]
 
-numPoints = 1
-goodStarts = findGoodPoints(startLat,startLon,numPoints)
+    numPoints = 1
+    goodStarts = findGoodPoints(startLat,startLon,numPoints)
 
-bestEnds = findBestEnd(trips,goodStarts[0][1],goodStarts[0][0][1],goodStarts[0][0][2],latStep,lonStep,minLat,minLon,len(startLat),len(startLon),1.5,gridSize)
-"""
-	
+    bestEnds = findBestEnd(trips,goodStarts[0][1],goodStarts[0][0][1],goodStarts[0][0][2],latStep,lonStep,minLat,minLon,len(startLat),len(startLon),1.5,gridSize)
+    """
+        
 #print str(minLat) + ',' + str(maxLat) + ',' + str(minLon) + ',' + str(maxLon)
+
+if __name__ == '__main__':
+    main()

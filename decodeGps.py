@@ -157,7 +157,6 @@ def createFull(fn,trips,latStep,lonStep,minLat,minLon):
                 tripsWithPt.append(tripId)
                 break
     print tripsWithPt
-    print "test"
 	
     return fullTrips
 

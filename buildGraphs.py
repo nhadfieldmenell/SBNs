@@ -28,6 +28,50 @@ class Graph(object):
         self.lat_step = float((max_lat-min_lat)/rows)
         self.lon_step = float((max_lon-min_lon)/cols)
 
+        self.diags = self.create_diags()
+        self.num_edges = self.diags[self.rows+self.cols-2]
+        print self.num_edges
+
+    def create_diags(self):
+        """Creates a diagonals array for the graph
+
+        Diagonals are used in the ordering of edges for our graph representation.
+        For a point (i,j), there are diag_full[i+j] total edges that appeared in previous diagonals.
+
+        Returns:
+            An array that counts the number of edges occurring before a specified diagonal.
+        """
+
+        num_diags = self.rows + self.cols - 2
+        diag_counts = [0 for i in range(num_diags)]
+        for diag_index in range(num_diags):
+            first = (0,0)
+            second = (0,0)
+            if diag_index < self.rows - 1:
+                first = (diag_index+1,0)
+            elif diag_index == self.rows - 1:
+                first = (diag_index,0)
+            else:
+                first = (self.rows-1,diag_index-self.rows+1)
+            if diag_index < self.cols - 1:
+                second = (0,diag_index+1)
+            elif diag_index == self.cols - 1:
+                second = (0,diag_index)
+            else:
+                second = (diag_index-self.cols+1,self.cols-1)
+            print str(first) + " " + str(second)
+            diag_counts[diag_index] = dist_points(first,second) 
+       
+        """holds the sum of edges in diagonals previous to a given edge"""
+        diag_full = [0 for i in range(num_diags + 1)]
+        for i in range(1,num_diags+1):
+            diag_full[i] = diag_full[i-1] + diag_counts[i-1]
+
+        print diag_counts
+        print diag_full
+        return diag_full
+
+
     def gps_to_coords(self,lat,lon):
         """Determines the coodinates on the graph corresponding to a given gps point.
 
@@ -198,29 +242,14 @@ class Path(object):
             Each entry is 1 if the corresponding edge is used, 0 otherwise.
 
         """
-        num_diags = self.graph.rows + self.graph.cols - 2
-        diag_counts = [0 for i in range(num_diags)]
-        for diag_index in range(num_diags):
-            first = (0,0)
-            second = (0,0)
-            if diag_index < self.graph.rows - 1:
-                first = (diag_index+1,0)
-            elif diag_index == self.graph.rows - 1:
-                first = (diag_index,0)
-            else:
-                first = (self.graph.rows-1,diag_index-self.graph.rows+1)
-            if diag_index < self.graph.cols - 1:
-                second = (0,diag_index+1)
-            elif diag_index == self.graph.cols - 1:
-                second = (0,diag_index)
-            else:
-                second = (diag_index-self.graph.cols+1,self.graph.cols-1)
-            print str(first) + " " + str(second)
-            diag_counts[diag_index] = dist_points(first,second) 
-        
 
-        print diag_counts
+        edge_to_index = [0 for i in range(self.graph.num_edges)]
 
+        for row in range(self.graph.rows - 1):
+            for col in range(self.graph.cols - 1):
+                if self.path[row][col]:
+                    if self.path[row][col+1]:
+                        continue
 
 def main():
     full_fn = open('csvGps.txt','r')
@@ -229,8 +258,8 @@ def main():
     max_lat = 37.808
     min_lon = -122.515
     max_lon = -122.38
-    rows = 5 
-    cols = 3 
+    rows = 3 
+    cols = 5 
     g = Graph(min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256

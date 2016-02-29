@@ -131,12 +131,13 @@ class Path(object):
         self.line_num = line_num
         self.bad_graph = False
         self.path = self.find_path()
+        print self.trip_id
         print self.path
         self.edges = self.path_to_edges()
-        print self.edges
-        for i in range(len(self.edges)):
-            if self.edges[i]:
-                print i
+        #print self.edges
+        #for i in range(len(self.edges)):
+        #    if self.edges[i]:
+        #        print i
 
     def find_path(self):
         """Finds the line number for the path and returns a path grid for that path
@@ -256,21 +257,21 @@ class Path(object):
                 if self.path[row][col]:
                     if row + col < self.graph.cols - 1:
                         if col < self.graph.cols - 1 and self.path[row][col + 1]:
-                            print "(%d,%d) (%d,%d)" % (row, col, row, col + 1)
+                            #print "(%d,%d) (%d,%d)" % (row, col, row, col + 1)
                             edge_number = self.graph.diags[row + col] + 2 * row
                             edges[edge_number] = 1
                         if row < self.graph.rows - 1 and self.path[row + 1][col]:
-                            print "(%d,%d) (%d,%d)" % (row, col, row + 1, col)
+                            #print "(%d,%d) (%d,%d)" % (row, col, row + 1, col)
                             edge_number = self.graph.diags[row + col] + 1 + 2 * row
                             edges[edge_number] = 1
                     else:
                         col_dist = self.graph.cols - col - 1
                         if col < self.graph.cols - 1 and self.path[row][col + 1]:
-                            print "(%d,%d) (%d,%d)" % (row, col, row, col + 1)
+                            #print "(%d,%d) (%d,%d)" % (row, col, row, col + 1)
                             edge_number = self.graph.diags[row + col] + 2 * col_dist  - 1
                             edges[edge_number] = 1
                         if row < self.graph.rows - 1 and self.path[row + 1][col]:
-                            print "(%d,%d) (%d,%d)" % (row, col, row + 1, col)
+                            #print "(%d,%d) (%d,%d)" % (row, col, row + 1, col)
                             edge_number = self.graph.diags[row + col] + 2 * col_dist
                             edges[edge_number] = 1
                         
@@ -280,6 +281,7 @@ class Path(object):
 
 def main():
     full_fn = open('csvGps.txt','r')
+    orig_fn = open('firstLast.txt','r')
 
     """full SF coords
     min_lat = 37.72
@@ -294,17 +296,34 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
 
-    rows = 5 
-    cols = 5 
+    rows = 12 
+    cols = 12 
     g = Graph(min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256
 
+    trips = dg.createTrips(orig_fn)
+
+    full_trips,best_coords,trips_with_point = dg.create_full(full_fn,trips,
+                                                            g.lat_step,
+                                                            g.lon_step,
+                                                            g.min_lat,
+                                                            g.min_lon)
+    print best_coords
+    print len(trips_with_point)
+    print g.gps_to_coords(best_coords[0],best_coords[1])
+
+    full_fn.close()
+    full_fn = open('csvGps.txt','r')
     #print g.gps_to_coords(try_lat,try_lon)
 
-    trip_id = int(sys.argv[1])
+    for i in range(10,25):
+        full_fn.close()
+        full_fn = open('csvGps.txt','r')
+        p = Path(trips_with_point[i],g,full_fn)
 
-    p = Path(trip_id,g,full_fn)
+    #trip_id = int(sys.argv[1])
+    #p = Path(trip_id,g,full_fn)
     
 if __name__ == '__main__':
     main()

@@ -60,7 +60,7 @@ def createTrips(orig):
 #full[][3]: full[][0] is trip start [day,hour,minute,second], full[][1] is trip duration(minutes),
 #full[][2] is a list of all coordinate positions in the order they appear
 #(full[][2][i][0] is latitude, full[][2][i][1] is longitude, full[][2][i][2] is time)
-def createFull(fn,trips,latStep,lonStep,minLat,minLon):
+def create_full(fn,trips,latStep,lonStep,minLat,minLon):
     fullTrips = [[[] for x in range(3)] for x in range(25001)]
 
 #find the day, hour, minute, duration
@@ -135,7 +135,7 @@ def createFull(fn,trips,latStep,lonStep,minLat,minLon):
 				
 				
 	
-    print numDiags
+    #print numDiags
 
     maxSpot = 0
     bestSpot = ""
@@ -144,10 +144,10 @@ def createFull(fn,trips,latStep,lonStep,minLat,minLon):
             maxSpot = spotsTraversed[key]
             bestSpot = key
 			
-    print bestSpot + ": " + str(maxSpot)
+    #print bestSpot + ": " + str(maxSpot)
     bins = stringToPts(bestSpot)
     bestCoords = binToGPS(int(bins[0]),int(bins[1]),latStep,lonStep,minLat,minLon)
-    print str(bestCoords[0])+","+str(bestCoords[1])
+    #print str(bestCoords[0])+","+str(bestCoords[1])
 
 #all trips that pass through bestSpot
     tripsWithPt = []
@@ -156,9 +156,9 @@ def createFull(fn,trips,latStep,lonStep,minLat,minLon):
             if point[0] == bins[0] and point[1] == bins[1]:
                 tripsWithPt.append(tripId)
                 break
-    print tripsWithPt
+    #print tripsWithPt
 	
-    return fullTrips
+    return fullTrips, bestCoords, tripsWithPt
 
 
 #calc the min and max latitute and Lonitude traversed in system
@@ -810,8 +810,8 @@ def main():
 #bestStAndEnPrd(trips,1,6,4,latStep,lonStep,5,minLat,minLon)
 #getTripsByPeriod(trips,1,6,4)
 #readPtsFromFile(pointsIn)
-    fullTrips = createFull(fullFn,trips,latStep,lonStep,minLat,minLon)
-    print fullTrips[1]
+    fullTrips,best_coords,trips_with_pt = create_full(fullFn,trips,latStep,lonStep,minLat,minLon)
+    print fullTrips[0][1]
 
 #pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,pointsOut,gridSize)
 

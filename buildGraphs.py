@@ -1,4 +1,7 @@
 #!/usr/bin/python
+import sys
+import numpy as np
+import decodeGps as dg
 
 class Graph(object):
     """Object that holds edge/node information for a gps graph.
@@ -25,7 +28,6 @@ class Graph(object):
         self.lat_step = float((max_lat-min_lat)/rows)
         self.lon_step = float((max_lon-min_lon)/cols)
 
-
     def gps_to_coords(self,lat,lon):
         """Determines the coodinates on the graph corresponding to a given gps point.
 
@@ -41,24 +43,203 @@ class Graph(object):
         if (lat < self.min_lat or lat > self.max_lat or lon < self.min_lon or lon > self.max_lon):
             return (-1,-1)
 
-        lat_spot = int((lat-self.min_lat)/self.lat_step)
+        lat_spot = int((self.max_lat-lat)/self.lat_step)
         lon_spot = int((lon-self.min_lon)/self.lon_step)
-        print self.min_lon
-        print lon
         return (lat_spot,lon_spot)
 
+def dist_points(x,y):
+    """Finds the shortest distance between two points in a grid graph.
+        
+    Args:
+        x: a tuple (i,j)
+        y: a tuple (i,j)
+
+    Returns:
+        An integer which is the shortest path distance between the points.
+    """
+
+    return abs(x[0]-y[0]) + abs(x[1]-y[1])
+
+class Path(object):
+    """A path in the graph g. 
+
+    Holds a grid representative of the graph, traversed nodes are True, others are False.
+    Creates an edge mapping of all active edges in the graph.
+    Any gps coordinates that are outside of the graph are not included.
+
+    Attributes:
+        trip_id: int valued trip id for the path in the gps document.
+        graph: the graph object over which we are creating the path.
+        fn: file descriptor for the original csv gps file.
+        line_num: the initial line of the trip (default to -1 if first line unknown).
+        lines: the lines of the gps file held in an array.
+        gps_length: the number of lines from the gps file.
+        path: a 2-d numpy array representing the path on the graph.
+            matrix positions are 1 if the path traverses that node, 0 otherwise
+    """
+    def __init__(self,trip_id,graph,fn,line_num=-1):
+        self.graph = graph
+        self.lines = fn.readlines()
+        self.gps_length = len(self.lines)
+        self.trip_id = trip_id
+        self.line_num = line_num
+        self.bad_graph = False
+        self.path = self.find_path()
+        print self.path
+        self.path_to_edges()
+
+    def find_path(self):
+        """Finds the line number for the path and returns a path grid for that path
+
+        Finds the first line of data for that path in the gps file.
+        Sets the line_num if it is already set.
+
+        Returns:
+            A grid wid dimensions equal to those of the input graph.
+        """
+        
+        if self.line_num != -1:
+            return self.create_path()
+
+        max_line = self.gps_length - 1
+        min_line = 0
+        last_id = dg.normalize(self.lines[-1])[0]
+        pivot = int((self.trip_id-1)/float(last_id)*self.gps_length)
+        cur_id = dg.normalize(self.lines[pivot])[0]
+        while cur_id != self.trip_id:
+            if cur_id < self.trip_id:
+                min_line = pivot
+            else:
+                max_line = pivot
+            #TODO: could make this run in essentially constant time by hopping predetermined distance
+            pivot = (min_line + max_line) / 2
+            cur_id = dg.normalize(self.lines[pivot])[0]
+
+        while  dg.normalize(self.lines[pivot])[0] == self.trip_id:
+            pivot -= 1
+
+        pivot += 1
+        self.line_num = pivot
+        return self.create_path()
+
+
+    def create_path(self):
+        """Creates the path grid for the path's trip_id.
+
+        It creates an array to model the graph's dimensions.
+        Array spots are 1 if the path traverses them.
+        Array spots are 0 if path doesnt traverse them.
+        If a coordinate is outside the graph, do not include it in the graph.
+        Finds the longest collection of points in between exits from the graph.
+        
+        TODO: implement this
+        Mark a path as bad if it is not a legal path (if two nodes are visited
+        sequentially, but are not adjacent).
+
+        Returns:
+            A numpy array with dimensions equal to those of the input graph.
+            Grid spots are 1 if the path traverses them, 0 otherwise.
+        """
+
+        matrices = []
+        matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
+        cur_line = self.line_num
+        normalized = dg.normalize(self.lines[cur_line])
+        matrices_index = 0
+        while normalized[0] == self.trip_id:
+            lat = normalized[1]
+            lon = normalized[2]
+            coords = self.graph.gps_to_coords(lat,lon)
+            if coords[0] == -1:
+                matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
+                matrices_index += 1
+            
+            elif not matrices[matrices_index][0][coords[0]][coords[1]]:
+                matrices[matrices_index][1] += 1
+                matrices[matrices_index][0][coords[0]][coords[1]] = 1
+
+            cur_line += 1
+            normalized = dg.normalize(self.lines[cur_line])
+
+        best_index = 0
+        best_score = 0
+        for matrix_index in range(len(matrices)):
+            if matrices[matrix_index][1] > best_score:
+                best_score = matrices[matrix_index][1]
+                best_index = matrix_index
+
+        return matrices[best_index][0]
+
+
+
+    def path_to_edges(self):
+        """Maps the node path to edges used.
+
+        Determines which edges are used in the node path.
+        Returned array is 0-indexed, but the sdd interpretation has this 1-indexed.
+
+        This representation
+            X 0 X 2 X
+            1   3   6
+            X 4 X 7 X
+            5   8  10
+            X 9 X 11X
+
+        Sdd representation
+            X 1 X 3 X
+            2   4   7
+            X 5 X 8 X
+            6   9  11
+            X 10X 12X
+
+
+        Returns:
+            An array of length cols*(rows-1) + rows*(cols-1).
+            Each entry is 1 if the corresponding edge is used, 0 otherwise.
+
+        """
+        num_diags = self.graph.rows + self.graph.cols - 2
+        diag_counts = [0 for i in range(num_diags)]
+        for diag_index in range(num_diags):
+            first = (0,0)
+            second = (0,0)
+            if diag_index < self.graph.rows - 1:
+                first = (diag_index+1,0)
+            elif diag_index == self.graph.rows - 1:
+                first = (diag_index,0)
+            else:
+                first = (self.graph.rows-1,diag_index-self.graph.rows+1)
+            if diag_index < self.graph.cols - 1:
+                second = (0,diag_index+1)
+            elif diag_index == self.graph.cols - 1:
+                second = (0,diag_index)
+            else:
+                second = (diag_index-self.graph.cols+1,self.graph.cols-1)
+            print str(first) + " " + str(second)
+            diag_counts[diag_index] = dist_points(first,second) 
+        
+
+        print diag_counts
+
+
 def main():
+    full_fn = open('csvGps.txt','r')
+
     min_lat = 37.72
     max_lat = 37.808
     min_lon = -122.515
     max_lon = -122.38
-    rows = 10
-    cols = 10
+    rows = 5 
+    cols = 3 
     g = Graph(min_lat,max_lat,min_lon,max_lon,rows,cols)
-    try_lat = 37.735760
-    try_lon = -122.448849 
+    try_lat = 37.721396 
+    try_lon = -122.400256
+
     print g.gps_to_coords(try_lat,try_lon)
-    
+
+    trip_id = int(sys.argv[1])
+
+    p = Path(trip_id,g,full_fn)
     
 if __name__ == '__main__':
     main()

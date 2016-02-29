@@ -30,7 +30,7 @@ class Graph(object):
 
         self.diags = self.create_diags()
         self.num_edges = self.diags[self.rows+self.cols-2]
-        print self.num_edges
+        #print self.num_edges
 
     def create_diags(self):
         """Creates a diagonals array for the graph
@@ -59,7 +59,7 @@ class Graph(object):
                 second = (0,diag_index)
             else:
                 second = (diag_index-self.cols+1,self.cols-1)
-            print str(first) + " " + str(second)
+            #print str(first) + " " + str(second)
             diag_counts[diag_index] = dist_points(first,second) 
        
         """holds the sum of edges in diagonals previous to a given edge"""
@@ -120,6 +120,8 @@ class Path(object):
         gps_length: the number of lines from the gps file.
         path: a 2-d numpy array representing the path on the graph.
             matrix positions are 1 if the path traverses that node, 0 otherwise
+        edges: an array that holds a 1 if the edge corresponding to the index 
+            is used, 0 otherwise.
     """
     def __init__(self,trip_id,graph,fn,line_num=-1):
         self.graph = graph
@@ -130,7 +132,11 @@ class Path(object):
         self.bad_graph = False
         self.path = self.find_path()
         print self.path
-        self.path_to_edges()
+        self.edges = self.path_to_edges()
+        print self.edges
+        for i in range(len(self.edges)):
+            if self.edges[i]:
+                print i
 
     def find_path(self):
         """Finds the line number for the path and returns a path grid for that path
@@ -243,28 +249,58 @@ class Path(object):
 
         """
 
-        edge_to_index = [0 for i in range(self.graph.num_edges)]
+        edges = [0 for i in range(self.graph.num_edges)]
 
-        for row in range(self.graph.rows - 1):
-            for col in range(self.graph.cols - 1):
+        for row in range(self.graph.rows):
+            for col in range(self.graph.cols):
                 if self.path[row][col]:
-                    if self.path[row][col+1]:
-                        continue
+                    if row + col < self.graph.cols - 1:
+                        if col < self.graph.cols - 1 and self.path[row][col + 1]:
+                            print "(%d,%d) (%d,%d)" % (row, col, row, col + 1)
+                            edge_number = self.graph.diags[row + col] + 2 * row
+                            edges[edge_number] = 1
+                        if row < self.graph.rows - 1 and self.path[row + 1][col]:
+                            print "(%d,%d) (%d,%d)" % (row, col, row + 1, col)
+                            edge_number = self.graph.diags[row + col] + 1 + 2 * row
+                            edges[edge_number] = 1
+                    else:
+                        col_dist = self.graph.cols - col - 1
+                        if col < self.graph.cols - 1 and self.path[row][col + 1]:
+                            print "(%d,%d) (%d,%d)" % (row, col, row, col + 1)
+                            edge_number = self.graph.diags[row + col] + 2 * col_dist  - 1
+                            edges[edge_number] = 1
+                        if row < self.graph.rows - 1 and self.path[row + 1][col]:
+                            print "(%d,%d) (%d,%d)" % (row, col, row + 1, col)
+                            edge_number = self.graph.diags[row + col] + 2 * col_dist
+                            edges[edge_number] = 1
+                        
+
+        return edges
+
 
 def main():
     full_fn = open('csvGps.txt','r')
 
+    """full SF coords
     min_lat = 37.72
     max_lat = 37.808
     min_lon = -122.515
     max_lon = -122.38
-    rows = 3 
+    """
+
+    """SF action coords (3.8x3.3 mi)"""
+    min_lat = 37.755
+    max_lat = 37.803
+    min_lon = -122.46
+    max_lon = -122.39
+
+    rows = 5 
     cols = 5 
     g = Graph(min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256
 
-    print g.gps_to_coords(try_lat,try_lon)
+    #print g.gps_to_coords(try_lat,try_lon)
 
     trip_id = int(sys.argv[1])
 

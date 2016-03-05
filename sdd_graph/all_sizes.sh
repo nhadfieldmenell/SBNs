@@ -5,5 +5,5 @@ do
     echo $((((i*i)/2)+(i/2)))
     time python test_grids_minato.py $i $i $((((i*i)/2)+(i/2)))
     python minato2sdd.py $i $i
-    python print_sdd.py $i $i
+    #python print_sdd.py $i $i
 done

@@ -75,8 +75,8 @@ if __name__ == '__main__':
     #paths = GraphSet.paths(start, goal)
     for i in range(start,goal):
         for j in range(i+1,goal+1):
-            if i != midpoint: # and j != midpoint:
-                paths = GraphSet.union(paths,GraphSet.paths(i,j))
+            #if i != midpoint: # and j != midpoint:
+            paths = GraphSet.union(paths,GraphSet.paths(i,j))
 
     pathsThruMidpoint = paths.including(midpoint)
     #tl.draw(pathsThruMidpoint.choice())

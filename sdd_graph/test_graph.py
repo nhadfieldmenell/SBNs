@@ -118,6 +118,7 @@ class Graph:
         return edges
 
 def draw_grid(model,m,n,g):
+    print "model_length: %d" % len(model)
     for i in xrange(m):
         for j in xrange(n):
             sys.stdout.write('.')

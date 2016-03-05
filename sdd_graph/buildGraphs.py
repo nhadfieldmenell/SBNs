@@ -2,7 +2,7 @@
 import sys
 import numpy as np
 import decodeGps as dg
-from sdd_graph import test_graph as tg
+import test_graph as tg
 
 class Graph(object):
     """Object that holds edge/node information for a gps graph.

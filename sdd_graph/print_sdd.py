@@ -33,5 +33,5 @@ if __name__ == '__main__':
     size_file.close()
 
     """THIS IS IMPORTANT"""
-    #g.print_grids(alpha,m,n,graph,manager)
+    g.print_grids(alpha,m,n,graph,manager)
 

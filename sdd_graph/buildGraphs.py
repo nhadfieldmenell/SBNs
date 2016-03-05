@@ -136,7 +136,8 @@ class Path(object):
         print self.path
         self.edges = self.path_to_edges()
         """this changes the edge list to be 1-indexed for draw_grids"""
-        self.edges.insert(0,0)
+        self.draw_edges = self.edges[:]
+        self.draw_edges.insert(0,0)
         #print self.edges
         #for i in range(len(self.edges)):
         #    if self.edges[i]:
@@ -146,7 +147,7 @@ class Path(object):
         """Prints the path edges according to test_graph's draw grids method."""
 
         grid = tg.Graph.grid_graph(self.graph.rows,self.graph.cols)
-        tg.draw_grid(self.edges,self.graph.rows,self.graph.cols,grid)
+        tg.draw_grid(self.draw_edges,self.graph.rows,self.graph.cols,grid)
 
 
     def find_path(self):
@@ -306,8 +307,8 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
 
-    rows = 3 
-    cols = 3 
+    rows = 12 
+    cols = 12 
     g = Graph(min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256

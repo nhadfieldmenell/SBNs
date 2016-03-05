@@ -135,6 +135,8 @@ class Path(object):
         print self.trip_id
         print self.path
         self.edges = self.path_to_edges()
+        """this changes the edge list to be 1-indexed for draw_grids"""
+        self.edges.insert(0,0)
         #print self.edges
         #for i in range(len(self.edges)):
         #    if self.edges[i]:

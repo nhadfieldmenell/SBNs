@@ -307,8 +307,8 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
 
-    rows = 10 
-    cols = 10 
+    rows = 11 
+    cols = 11 
     g = Graph(min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256

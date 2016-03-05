@@ -2,6 +2,7 @@
 import sys
 import numpy as np
 import decodeGps as dg
+from sdd_graph import test_graph as tg
 
 class Graph(object):
     """Object that holds edge/node information for a gps graph.
@@ -132,13 +133,19 @@ class Path(object):
         self.bad_graph = False
         self.path = self.find_path()
         print self.trip_id
-        print self.path
+        #print self.path
         self.edges = self.path_to_edges()
-        print self.edges
         #print self.edges
         #for i in range(len(self.edges)):
         #    if self.edges[i]:
         #        print i
+
+    def print_path(self):
+        """Prints the path edges according to test_graph's draw grids method."""
+
+        grid = tg.Graph.grid_graph(self.graph.rows,self.graph.cols)
+        tg.draw_grid(self.edges,self.graph.rows,self.graph.cols,grid)
+
 
     def find_path(self):
         """Finds the line number for the path and returns a path grid for that path
@@ -322,6 +329,7 @@ def main():
         full_fn.close()
         full_fn = open('csvGps.txt','r')
         p = Path(trips_with_point[i],g,full_fn)
+        p.print_path()
 
     #trip_id = int(sys.argv[1])
     #p = Path(trip_id,g,full_fn)

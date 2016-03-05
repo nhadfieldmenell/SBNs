@@ -133,7 +133,7 @@ class Path(object):
         self.bad_graph = False
         self.path = self.find_path()
         print self.trip_id
-        #print self.path
+        print self.path
         self.edges = self.path_to_edges()
         #print self.edges
         #for i in range(len(self.edges)):

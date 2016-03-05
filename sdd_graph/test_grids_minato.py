@@ -75,15 +75,15 @@ if __name__ == '__main__':
     #paths = GraphSet.paths(start, goal)
     for i in range(start,goal):
         for j in range(i+1,goal+1):
-            if i != midpoint and j != midpoint:
+            if i != midpoint: # and j != midpoint:
                 paths = GraphSet.union(paths,GraphSet.paths(i,j))
 
     pathsThruMidpoint = paths.including(midpoint)
     #tl.draw(pathsThruMidpoint.choice())
     print "number of paths through midpoint: " + str(pathsThruMidpoint.len())
     #print paths.universe()
-    #for p in pathsThruMidpoint:
-    #    print p
+    for p in pathsThruMidpoint:
+        print p
 
     #dim = (dimension[0]+1,dimension[1]+1)
     #""" AC: SAVE ZDD TO FILE

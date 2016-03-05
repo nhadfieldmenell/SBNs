@@ -288,7 +288,7 @@ class Path(object):
 
 
 def main():
-    full_fn = open('csvGps.txt','r')
+    full_fn = open('csvGPS.txt','r')
     orig_fn = open('firstLast.txt','r')
 
     """full SF coords
@@ -322,12 +322,12 @@ def main():
     print g.gps_to_coords(best_coords[0],best_coords[1])
 
     full_fn.close()
-    full_fn = open('csvGps.txt','r')
+    full_fn = open('csvGPS.txt','r')
     #print g.gps_to_coords(try_lat,try_lon)
 
     for i in range(10,25):
         full_fn.close()
-        full_fn = open('csvGps.txt','r')
+        full_fn = open('csvGPS.txt','r')
         p = Path(trips_with_point[i],g,full_fn)
         p.print_path()
 

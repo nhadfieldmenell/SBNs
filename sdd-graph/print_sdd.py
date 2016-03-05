@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     size_file = open('graph_sizes.txt','a')
     size_file.write("%dx%d size: %d\n" % (m,n,sdd.sdd_size(alpha)))
-    size_file.write("%dx%d model count: %d\n" % (m,n,sdd.model_count(alpha,manager)))
+    size_file.write("%dx%d model count: %d\n" % (m,n,sdd.sdd_model_count(alpha,manager)))
     size_file.write("%dx%d global model count: %d\n" % (m,n,g.global_model_count(alpha,manager)))
     size_file.close()
 

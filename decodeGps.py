@@ -811,7 +811,8 @@ def main():
 #getTripsByPeriod(trips,1,6,4)
 #readPtsFromFile(pointsIn)
     fullTrips,best_coords,trips_with_pt = create_full(fullFn,trips,latStep,lonStep,minLat,minLon)
-    print fullTrips[0][1]
+    print trips_with_pt
+    #print fullTrips[0][1]
 
 #pointAtoB(fullTrips,latGridSpots,lonGridSpots,minDist,latStep,lonStep,pointsOut,gridSize)
 

@@ -134,6 +134,7 @@ class Path(object):
         print self.trip_id
         print self.path
         self.edges = self.path_to_edges()
+        print self.edges
         #print self.edges
         #for i in range(len(self.edges)):
         #    if self.edges[i]:

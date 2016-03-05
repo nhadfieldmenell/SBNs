@@ -27,9 +27,9 @@ if __name__ == '__main__':
     graph = g.Graph.grid_graph(m,n)
 
     size_file = open('graph_sizes.txt','a')
-    size_file.write "%dx%d size: %d\n" % (m,n,sdd.sdd_size(alpha))
-    size_file.write "%dx%d model count: %d\n" % (m,n,sdd.model_count(alpha,manager))
-    size_file.write "%dx%d global model count: %d\n" % (m,n,g.global_model_count(alpha,manager))
+    size_file.write("%dx%d size: %d\n" % (m,n,sdd.sdd_size(alpha)))
+    size_file.write("%dx%d model count: %d\n" % (m,n,sdd.model_count(alpha,manager)))
+    size_file.write("%dx%d global model count: %d\n" % (m,n,g.global_model_count(alpha,manager)))
     size_file.close()
 
     """THIS IS IMPORTANT"""

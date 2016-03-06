@@ -240,8 +240,8 @@ class Path(object):
         self.line_num = self.find_path()
         self.path,self.edges,self.good = self.create_path()
         self.next_line = 0
-        print self.trip_id
-        print self.path
+        #print self.trip_id
+        #print self.path
         #self.edges_alt = self.path_to_edges()
         """this changes the edge list to be 1-indexed for draw_grids"""
         self.draw_edges = self.edges[:]
@@ -461,6 +461,7 @@ def create_all(graph):
         line_num = p.next_line
         trip_id = dg.normalize(lines[line_num])[0]
         p = Path(trip_id,graph,full_fn,line_num)
+        print p.next_line
         full_fn.close()
         paths[trip_id] = p
     return paths

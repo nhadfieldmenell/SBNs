@@ -529,7 +529,7 @@ def main():
     print g.trip_id2line_num[20]
     print "2"
     for i in range(100,125):
-        trip_id =  g.node2trip_ids[i]
+        trip_id =  g.node2trip_ids[g.best_node][i]
         print trip_id
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)

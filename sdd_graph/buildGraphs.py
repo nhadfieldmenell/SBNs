@@ -220,12 +220,12 @@ class Path(object):
         self.path,self.edges,self.good = self.create_path()
         print self.trip_id
         print self.path
-        self.edges_alt = self.path_to_edges()
+        #self.edges_alt = self.path_to_edges()
         """this changes the edge list to be 1-indexed for draw_grids"""
         self.draw_edges = self.edges[:]
         self.draw_edges.insert(0,0)
-        self.draw_edges_alt = self.edges_alt[:]
-        self.draw_edges_alt.insert(0,0)
+        #self.draw_edges_alt = self.edges_alt[:]
+        #self.draw_edges_alt.insert(0,0)
         #print self.edges
         #for i in range(len(self.edges)):
         #    if self.edges[i]:
@@ -235,7 +235,7 @@ class Path(object):
         """Prints the path edges according to test_graph's draw grids method."""
 
         grid = tg.Graph.grid_graph(self.graph.rows,self.graph.cols)
-        tg.draw_grid(self.draw_edges_alt,self.graph.rows,self.graph.cols,grid)
+        #tg.draw_grid(self.draw_edges_alt,self.graph.rows,self.graph.cols,grid)
         tg.draw_grid(self.draw_edges,self.graph.rows,self.graph.cols,grid)
         
 
@@ -429,6 +429,8 @@ def main():
     
     full_fn = open('csvGPS.txt','r')
     p = Path(1,g,full_fn,1)
+    lines = full_fn.readlines()
+    print lines[27]
 
     return
 

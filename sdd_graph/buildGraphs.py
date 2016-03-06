@@ -239,6 +239,7 @@ class Path(object):
         self.bad_graph = False
         self.line_num = self.find_path()
         self.path,self.edges,self.good = self.create_path()
+        self.next_line = 0
         print self.trip_id
         print self.path
         #self.edges_alt = self.path_to_edges()
@@ -304,6 +305,8 @@ class Path(object):
         Array spots are 0 if path doesnt traverse them.
         If a coordinate is outside the graph, do not include it in the graph.
         Finds the longest collection of points in between exits from the graph.
+        Updates graph node visit information by calling graph.node_visit().
+        Sets self.next_line value.
         
         TODO: implement this
         Mark a path as bad if it is not a legal path (if two nodes are visited
@@ -355,9 +358,11 @@ class Path(object):
             prev_coords = coords
 
             cur_line += 1
+            if cur_line == len(self.lines):
+                break
             normalized = dg.normalize(self.lines[cur_line])
 
-        print "Cur_line @ the end: %d" % cur_line
+        self.next_line = cur_line
         best_index = 0
         best_score = 0
         for matrix_index in range(len(matrices)):
@@ -429,6 +434,40 @@ class Path(object):
 
         return edges
 
+def create_all(graph):
+    """Creates a dict containing every path in the file.
+
+    Used to determine the best node and paths through that node.
+
+    Attributes:
+        graph: the graph.
+
+    Returns:
+        dict of paths, indexed by trip_id
+    """
+    full_fn = open('csvGPS.txt','r')
+    lines = full_fn.readlines()
+    file_length = len(lines)
+    full_fn.close()
+    full_fn = open('csvGPS.txt','r')
+    trip_id = 1
+    line_num = 0
+    paths = {}
+    p = Path(trip_id,graph,full_fn,line_num)
+    full_fn.close()
+    paths[trip_id] = p
+    while p.next_line != file_length:
+        full_fn = open('csvGPS.txt','r')
+        line_num = p.next_line
+        trip_id = dg.normalize(line_num)[0]
+        p = Path(trip_id,graph,full_fn,line_num)
+        full_fn.close()
+        paths[trip_id] = p
+    return paths
+        
+
+
+
 
 def main():
     full_fn = open('csvGPS.txt','r')
@@ -447,8 +486,8 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
 
-    rows = 3 # 11 
-    cols = 3 # 11 
+    rows = 11 
+    cols = 11 
     g = Graph(min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256
@@ -462,7 +501,6 @@ def main():
     print lines[0]
     print lines[27]
     full_fn.close()
-    """
 
     for i in (20,21,22,23,24,25,26,27,28):
         full_fn = open('csvGPS.txt','r')
@@ -473,6 +511,11 @@ def main():
     print g.node2trip_ids
     print g.best_node_score
     print g.best_node
+    """
+    create_all(g)
+    print g.best_node_score
+    print g.best_node
+    
 
 
     return

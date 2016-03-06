@@ -80,17 +80,17 @@ class Graph(object):
         edge_number = 0
 
         if row + col < self.cols - 1:
-            if col_n == col + 1 
+            if col_n == col + 1: 
                 #print "(%d,%d) (%d,%d)" % (row, col, row, col + 1)
                 edge_number = self.diags[row + col] + 2 * row
                 #edges[edge_number] = 1
-            elif row_n == row + 1
+            elif row_n == row + 1:
                 #print "(%d,%d) (%d,%d)" % (row, col, row + 1, col)
                 edge_number = self.diags[row + col] + 1 + 2 * row
                 #edges[edge_number] = 1
         else:
             col_dist = self.cols - col - 1
-            if col_n == col + 1 
+            if col_n == col + 1: 
                 #print "(%d,%d) (%d,%d)" % (row, col, row, col + 1)
                 edge_number = self.diags[row + col] + 2 * col_dist  - 1
                 #edges[edge_number] = 1

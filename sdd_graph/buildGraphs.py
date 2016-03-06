@@ -167,6 +167,24 @@ class Graph(object):
         return diag_full
 
 
+    def node_to_coords(self,node_num):
+        """determines (row,col) for a given node
+
+        node ordering:
+        1 2 3
+        4 5 6
+        7 8 9
+
+        Attributes:
+            node_num: node index according to the numbering shown above
+
+        Returns:
+            (row,col): corresponding coordinates.
+        """
+        row = (node_num - 1) / self.cols
+        col = (node_num - 1) % self.cols
+        return (row,col)
+
     def coords_to_node(self,row,col):
         """determines the node index of a coordinate in the path graph
 
@@ -494,10 +512,16 @@ def main():
     max_lon = -122.39
 
     rows = 11 
-    cols = 11 
+    cols = 9 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256
+
+    node_num = g.coords_to_node(2,4)
+    print node_num
+    print g.node_to_coords(node_num)
+
+    return
 
     """
     full_fn = open('csvGPS.txt','r')

@@ -312,7 +312,7 @@ class Path(object):
             lon = normalized[2]
             coords = self.graph.gps_to_coords(lat,lon)
 
-            if prev_coords != (-1,-1) and coords[0] != -1 and cords != prev_coords:
+            if prev_coords != (-1,-1) and coords[0] != -1 and coords != prev_coords:
                 edge_num = self.graph.edge_num(prev_coords[0],prev_coords[1],coords[0],coords[1])
                 if edge_num == -1:
                     good_graphs[matrices_index] = False

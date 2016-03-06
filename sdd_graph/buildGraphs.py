@@ -428,10 +428,11 @@ def main():
 
     
     full_fn = open('csvGPS.txt','r')
-    p = Path(1,g,full_fn,1)
+    p = Path(1,g,full_fn,0)
     full_fn.close()
     full_fn = open('csvGPS.txt','r')
     lines = full_fn.readlines()
+    print lines[0]
     print lines[27]
     full_fn.close()
 

@@ -217,7 +217,7 @@ class Path(object):
         self.line_num = line_num
         self.bad_graph = False
         self.line_num = self.find_path()
-        self.path,self.edges,self.good = self.find_path()
+        self.path,self.edges,self.good = self.create_path()
         print self.trip_id
         print self.path
         self.edges_alt = self.path_to_edges()

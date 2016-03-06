@@ -278,10 +278,10 @@ class Path(object):
         if self.line_num != -1:
             return self.line_num
 
-        max_line = self.gps_length - 1
+        max_line = self.graph.gps_length - 1
         min_line = 0
         last_id = dg.normalize(self.graph.lines[-1])[0]
-        pivot = int((self.trip_id-1)/float(last_id)*self.gps_length)
+        pivot = int((self.trip_id-1)/float(last_id)*self.graph.gps_length)
         cur_id = dg.normalize(self.graph.lines[pivot])[0]
         while cur_id != self.trip_id:
             if cur_id < self.trip_id:
@@ -525,9 +525,7 @@ def main():
     
 
     #print g.trip_id2line_num
-    print "1"
     print g.trip_id2line_num[20]
-    print "2"
     for i in range(100,125):
         trip_id =  g.node2trip_ids[g.best_node][i]
         print trip_id

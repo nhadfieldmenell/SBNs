@@ -19,7 +19,9 @@ class Graph(object):
         cols: the number of columns for the graph
     """
 
-    def __init__(self,min_lat,max_lat,min_lon,max_lon,rows,cols):
+    def __init__(self,fn,min_lat,max_lat,min_lon,max_lon,rows,cols):
+        self.lines = fn.readlines()
+        self.gps_length = len(self.lines)
         self.rows = rows
         self.cols = cols
         self.min_lat = min_lat
@@ -233,8 +235,6 @@ class Path(object):
     @profile
     def __init__(self,trip_id,graph,fn,line_num=-1):
         self.graph = graph
-        self.lines = fn.readlines()
-        self.gps_length = len(self.lines)
         self.trip_id = trip_id
         self.line_num = line_num
         self.bad_graph = False
@@ -278,9 +278,9 @@ class Path(object):
 
         max_line = self.gps_length - 1
         min_line = 0
-        last_id = dg.normalize(self.lines[-1])[0]
+        last_id = dg.normalize(self.graph.lines[-1])[0]
         pivot = int((self.trip_id-1)/float(last_id)*self.gps_length)
-        cur_id = dg.normalize(self.lines[pivot])[0]
+        cur_id = dg.normalize(self.graph.lines[pivot])[0]
         while cur_id != self.trip_id:
             if cur_id < self.trip_id:
                 min_line = pivot
@@ -288,9 +288,9 @@ class Path(object):
                 max_line = pivot
             #TODO: could make this run in essentially constant time by hopping predetermined distance
             pivot = (min_line + max_line) / 2
-            cur_id = dg.normalize(self.lines[pivot])[0]
+            cur_id = dg.normalize(self.graph.lines[pivot])[0]
 
-        while  dg.normalize(self.lines[pivot])[0] == self.trip_id:
+        while  dg.normalize(self.graph.lines[pivot])[0] == self.trip_id:
             pivot -= 1
 
         pivot += 1
@@ -332,7 +332,7 @@ class Path(object):
         good_graphs.append(True)
         nodes_visited = []
         nodes_visited.append([])
-        normalized = dg.normalize(self.lines[cur_line])
+        normalized = dg.normalize(self.graph.lines[cur_line])
         matrices_index = 0
         prev_coords = (-1,-1)
         while normalized[0] == self.trip_id:
@@ -361,9 +361,9 @@ class Path(object):
             prev_coords = coords
 
             cur_line += 1
-            if cur_line == len(self.lines):
+            if cur_line == len(self.graph.lines):
                 break
-            normalized = dg.normalize(self.lines[cur_line])
+            normalized = dg.normalize(self.graph.lines[cur_line])
 
         self.next_line = cur_line
         best_index = 0
@@ -456,10 +456,10 @@ def create_all(graph):
     full_fn = open('csvGPS.txt','r')
     trip_id = 1
     line_num = 0
-    paths = {}
+    #paths = {}
     p = Path(trip_id,graph,full_fn,line_num)
     full_fn.close()
-    paths[trip_id] = p
+    #paths[trip_id] = p
     while p.next_line != file_length:
         full_fn = open('csvGPS.txt','r')
         line_num = p.next_line
@@ -467,7 +467,7 @@ def create_all(graph):
         p = Path(trip_id,graph,full_fn,line_num)
         print p.next_line
         full_fn.close()
-        paths[trip_id] = p
+       # paths[trip_id] = p
     return paths
         
 
@@ -493,7 +493,7 @@ def main():
 
     rows = 11 
     cols = 11 
-    g = Graph(min_lat,max_lat,min_lon,max_lon,rows,cols)
+    g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256
 

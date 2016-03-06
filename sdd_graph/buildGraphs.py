@@ -468,7 +468,6 @@ def create_all(graph):
         line_num = p.next_line
         trip_id = dg.normalize(lines[line_num])[0]
         p = Path(trip_id,graph,full_fn,line_num)
-        print p.next_line
         full_fn.close()
        # paths[trip_id] = p
     #return paths

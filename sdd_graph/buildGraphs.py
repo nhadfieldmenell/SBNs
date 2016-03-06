@@ -365,7 +365,7 @@ class Path(object):
                 best_score = matrices[matrix_index][1]
                 best_index = matrix_index
 
-        foor coords in nodes_visited[best_index]:
+        for coords in nodes_visited[best_index]:
             self.graph.node_visit(self.trip_id,coords)
 
         return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index]

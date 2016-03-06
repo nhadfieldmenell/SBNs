@@ -261,8 +261,8 @@ class Path(object):
         self.next_line = 0
         self.line_num = self.find_path()
         self.path,self.edges,self.good = self.create_path()
-        #print self.trip_id
-        #print self.path
+        print self.trip_id
+        print self.path
         #self.edges_alt = self.path_to_edges()
         """this changes the edge list to be 1-indexed for draw_grids"""
         self.draw_edges = self.edges[:]
@@ -517,11 +517,6 @@ def main():
     try_lat = 37.721396 
     try_lon = -122.400256
 
-    node_num = g.coords_to_node(2,3)
-    print node_num
-    print g.node_to_coords(node_num)
-
-    return
 
     """
     full_fn = open('csvGPS.txt','r')
@@ -546,13 +541,13 @@ def main():
     create_all(g)
     print g.best_node_score
     print g.best_node
+    print g.node_to_coords(g.best_node)
     
 
     #print g.trip_id2line_num
     print g.trip_id2line_num[20]
     for i in range(100,125):
         trip_id =  g.node2trip_ids[g.best_node][i]
-        print trip_id
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
 

@@ -261,8 +261,8 @@ class Path(object):
         self.next_line = 0
         self.line_num = self.find_path()
         self.path,self.edges,self.good = self.create_path()
-        print self.trip_id
-        print self.path
+        #print self.trip_id
+        #print self.path
         #self.edges_alt = self.path_to_edges()
         """this changes the edge list to be 1-indexed for draw_grids"""
         self.draw_edges = self.edges[:]
@@ -511,8 +511,8 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
 
-    rows = 4 
-    cols = 4 
+    rows = 10 
+    cols = 10
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256
@@ -550,6 +550,8 @@ def main():
         trip_id =  g.node2trip_ids[g.best_node][i]
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
+        print p.trip_id
+        print p.path
 
     return
 

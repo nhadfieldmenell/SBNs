@@ -22,6 +22,8 @@ class Graph(object):
     def __init__(self,fn,min_lat,max_lat,min_lon,max_lon,rows,cols):
         self.lines = fn.readlines()
         self.gps_length = len(self.lines)
+        self.trip_id2line_num = {}
+
         self.rows = rows
         self.cols = cols
         self.min_lat = min_lat
@@ -461,6 +463,7 @@ def create_all(graph):
     full_fn.close()
     #paths[trip_id] = p
     while p.next_line != file_length:
+        graph.trip_id2line_num[trip_id] = line_num
         full_fn = open('csvGPS.txt','r')
         line_num = p.next_line
         trip_id = dg.normalize(lines[line_num])[0]
@@ -522,6 +525,10 @@ def main():
     print g.best_node
     
 
+    for i in range(100,125):
+        trip_id =  g.node2trip_ids[i]
+        line_num = g.trip_id2line_num[trip_id]
+        p = Path(trip_id,g,line_num)
 
     return
 

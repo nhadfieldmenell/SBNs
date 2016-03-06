@@ -459,7 +459,7 @@ def create_all(graph):
     while p.next_line != file_length:
         full_fn = open('csvGPS.txt','r')
         line_num = p.next_line
-        trip_id = dg.normalize(line_num)[0]
+        trip_id = dg.normalize(lines[line_num])[0]
         p = Path(trip_id,graph,full_fn,line_num)
         full_fn.close()
         paths[trip_id] = p

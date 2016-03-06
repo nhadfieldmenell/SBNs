@@ -199,7 +199,7 @@ class Graph(object):
         Returns:
             node number: (1 indexed)
         """
-        return row*self.rows + col + 1
+        return row*self.cols + col + 1
 
     def gps_to_coords(self,lat,lon):
         """Determines the coodinates on the graph corresponding to a given gps point.

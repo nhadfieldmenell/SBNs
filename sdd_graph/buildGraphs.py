@@ -353,7 +353,7 @@ class Path(object):
                 nodes_visited.append([])
                 matrices_index += 1
             
-            elif not matrices[matrices_index][0][coords[0]][coords[1]]:
+            elif coords[0] < self.graph.rows and coords[1] < self.graph.cols and not matrices[matrices_index][0][coords[0]][coords[1]]:
                 matrices[matrices_index][1] += 1
                 matrices[matrices_index][0][coords[0]][coords[1]] = 1
                 nodes_visited[matrices_index].append(coords)

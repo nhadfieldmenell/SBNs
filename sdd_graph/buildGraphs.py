@@ -96,7 +96,7 @@ class Graph(object):
                 #edges[edge_number] = 1
             elif row_n == row + 1:
                 #print "(%d,%d) (%d,%d)" % (row, col, row + 1, col)
-                edge_number = self.graph.diags[row + col] + 2 * col_dist
+                edge_number = self.diags[row + col] + 2 * col_dist
                 #edges[edge_number] = 1
 
         return edge_number

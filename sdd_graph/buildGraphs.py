@@ -333,6 +333,7 @@ class Path(object):
             cur_line += 1
             normalized = dg.normalize(self.lines[cur_line])
 
+        print "Cur_line @ the end: %d" % cur_line
         best_index = 0
         best_score = 0
         for matrix_index in range(len(matrices)):
@@ -424,6 +425,12 @@ def main():
     g = Graph(min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256
+
+    
+    full_fn = open('csvGPS.txt','r')
+    p = Path(1,g,full_fn,1)
+
+    return
 
     trips = dg.createTrips(orig_fn)
 

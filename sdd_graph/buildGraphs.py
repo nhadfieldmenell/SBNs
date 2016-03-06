@@ -348,6 +348,7 @@ class Path(object):
                 matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
                 edge_sets.append([0 for i in range(self.graph.num_edges)])
                 good_graphs.append(True)
+                nodes_visited.append([])
                 matrices_index += 1
             
             elif not matrices[matrices_index][0][coords[0]][coords[1]]:

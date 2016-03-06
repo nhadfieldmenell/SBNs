@@ -468,7 +468,7 @@ def create_all(graph):
         print p.next_line
         full_fn.close()
        # paths[trip_id] = p
-    return paths
+    #return paths
         
 
 

@@ -511,13 +511,13 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
 
-    rows = 11 
-    cols = 9 
+    rows = 4 
+    cols = 5
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256
 
-    node_num = g.coords_to_node(2,4)
+    node_num = g.coords_to_node(2,3)
     print node_num
     print g.node_to_coords(node_num)
 

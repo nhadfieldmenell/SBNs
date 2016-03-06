@@ -524,7 +524,10 @@ def main():
     print g.best_node
     
 
-    print g.trip_id2line_num
+    #print g.trip_id2line_num
+    print "1"
+    print g.trip_id2line_num[20]
+    print "2"
     for i in range(100,125):
         trip_id =  g.node2trip_ids[i]
         line_num = g.trip_id2line_num[trip_id]

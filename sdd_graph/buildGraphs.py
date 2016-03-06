@@ -530,6 +530,7 @@ def main():
     print "2"
     for i in range(100,125):
         trip_id =  g.node2trip_ids[i]
+        print trip_id
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
 

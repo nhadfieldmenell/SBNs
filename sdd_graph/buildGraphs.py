@@ -32,6 +32,75 @@ class Graph(object):
         self.diags = self.create_diags()
         self.num_edges = self.diags[self.rows+self.cols-2]
         #print self.num_edges
+    
+    def edge_num(self,row1,col1,row2,col2):
+        """Determines the edge number between two points.
+
+        The method determines which point comes first.
+
+        This representation
+            X 0 X 2 X
+            1   3   6
+            X 4 X 7 X
+            5   8  10
+            X 9 X 11X
+
+        Sdd representation
+            X 1 X 3 X
+            2   4   7
+            X 5 X 8 X
+            6   9  11
+            X 10X 12X
+
+        Attributes:
+            row1: row number for first point.
+            col1: column number for first point.
+            row2: row number for second point.
+            col2: column number for second point.
+
+        Returns:
+            An integer corresponding to the edge number between two points.
+            -1 if the points are not valid neighbors.
+        """
+
+        row = row1
+        col = col1
+        row_n = row2
+        col_n = col2
+        
+        if row2 < row1 or col2 < col1:
+            row = row2
+            col = col2
+            row_n = row1
+            col_n = col1
+        
+        if not (row == row_n and col == col_n - 1 or row == row_n-1 and col == col_n):
+            return - 1
+        
+        edge_number = 0
+
+        if row + col < self.cols - 1:
+            if col_n == col + 1 
+                #print "(%d,%d) (%d,%d)" % (row, col, row, col + 1)
+                edge_number = self.diags[row + col] + 2 * row
+                #edges[edge_number] = 1
+            elif row_n == row + 1
+                #print "(%d,%d) (%d,%d)" % (row, col, row + 1, col)
+                edge_number = self.diags[row + col] + 1 + 2 * row
+                #edges[edge_number] = 1
+        else:
+            col_dist = self.cols - col - 1
+            if col_n == col + 1 
+                #print "(%d,%d) (%d,%d)" % (row, col, row, col + 1)
+                edge_number = self.diags[row + col] + 2 * col_dist  - 1
+                #edges[edge_number] = 1
+            elif row_n == row + 1:
+                #print "(%d,%d) (%d,%d)" % (row, col, row + 1, col)
+                edge_number = self.graph.diags[row + col] + 2 * col_dist
+                #edges[edge_number] = 1
+
+        return edge_number
+
 
     def create_diags(self):
         """Creates a diagonals array for the graph
@@ -147,13 +216,16 @@ class Path(object):
         self.trip_id = trip_id
         self.line_num = line_num
         self.bad_graph = False
-        self.path = self.find_path()
+        self.line_num = self.find_path()
+        self.path,self.edges,self.good = self.find_path()
         print self.trip_id
         print self.path
-        self.edges = self.path_to_edges()
+        self.edges_alt = self.path_to_edges()
         """this changes the edge list to be 1-indexed for draw_grids"""
         self.draw_edges = self.edges[:]
         self.draw_edges.insert(0,0)
+        self.draw_edges_alt = self.edges_alt[:]
+        self.draw_edges_alt.insert(0,0)
         #print self.edges
         #for i in range(len(self.edges)):
         #    if self.edges[i]:
@@ -163,21 +235,23 @@ class Path(object):
         """Prints the path edges according to test_graph's draw grids method."""
 
         grid = tg.Graph.grid_graph(self.graph.rows,self.graph.cols)
+        tg.draw_grid(self.draw_edges_alt,self.graph.rows,self.graph.cols,grid)
         tg.draw_grid(self.draw_edges,self.graph.rows,self.graph.cols,grid)
+        
 
 
     def find_path(self):
-        """Finds the line number for the path and returns a path grid for that path
+        """Finds the line number for the path.
 
         Finds the first line of data for that path in the gps file.
-        Sets the line_num if it is already set.
+        Sets the line_num if it is not already set.
 
         Returns:
-            A grid wid dimensions equal to those of the input graph.
+            The line num of the first line for that path entry in the gps file.
         """
         
         if self.line_num != -1:
-            return self.create_path()
+            return self.line_num
 
         max_line = self.gps_length - 1
         min_line = 0
@@ -198,7 +272,7 @@ class Path(object):
 
         pivot += 1
         self.line_num = pivot
-        return self.create_path()
+        return pivot
 
 
     def create_path(self):
@@ -217,17 +291,33 @@ class Path(object):
         Returns:
             A numpy array with dimensions equal to those of the input graph.
             Grid spots are 1 if the path traverses them, 0 otherwise.
+
+            The set of edges corresponding to that path.
+
+            A boolean that is true if all adjacent points have valid edges, false otherwise.
         """
 
         matrices = []
         matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
+        edge_sets = []
+        edge_sets.append(np.zeros(self.graph.num_edges))
         cur_line = self.line_num
+        good_graphs = []
+        good_graphs.append(True)
         normalized = dg.normalize(self.lines[cur_line])
         matrices_index = 0
+        prev_coords = (-1,-1)
         while normalized[0] == self.trip_id:
             lat = normalized[1]
             lon = normalized[2]
             coords = self.graph.gps_to_coords(lat,lon)
+
+            if prev_coords != (-1,-1) and coords[0] != -1 and cords != prev_coords:
+                edge_num = self.graph.edge_num(prev_coords[0],prev_coords[1],coords[0],coords[1])
+                if edge_num == -1:
+                    good_graphs[matrices_index] = False
+                edge_sets[matrices_index][edge_num] = 1
+
             if coords[0] == -1:
                 matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
                 matrices_index += 1
@@ -235,6 +325,8 @@ class Path(object):
             elif not matrices[matrices_index][0][coords[0]][coords[1]]:
                 matrices[matrices_index][1] += 1
                 matrices[matrices_index][0][coords[0]][coords[1]] = 1
+
+            prev_coords = coords
 
             cur_line += 1
             normalized = dg.normalize(self.lines[cur_line])
@@ -246,12 +338,14 @@ class Path(object):
                 best_score = matrices[matrix_index][1]
                 best_index = matrix_index
 
-        return matrices[best_index][0]
+        return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index]
 
 
 
     def path_to_edges(self):
         """Maps the node path to edges used.
+
+        DON'T USE THIS: IT DOESN'T TAKE INTO ACCOUNT PATH ORDERING
 
         Determines which edges are used in the node path.
         Returned array is 0-indexed, but the sdd interpretation has this 1-indexed.

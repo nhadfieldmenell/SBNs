@@ -300,7 +300,7 @@ class Path(object):
         matrices = []
         matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
         edge_sets = []
-        edge_sets.append(np.zeros(self.graph.num_edges))
+        edge_sets.append([0 for i in range(self.graph.num_edges)])
         cur_line = self.line_num
         good_graphs = []
         good_graphs.append(True)

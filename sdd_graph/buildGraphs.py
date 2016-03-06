@@ -230,6 +230,7 @@ class Path(object):
         edges: an array that holds a 1 if the edge corresponding to the index 
             is used, 0 otherwise.
     """
+    @profile
     def __init__(self,trip_id,graph,fn,line_num=-1):
         self.graph = graph
         self.lines = fn.readlines()
@@ -297,6 +298,7 @@ class Path(object):
         return pivot
 
 
+    @profile
     def create_path(self):
         """Creates the path grid for the path's trip_id.
 
@@ -435,6 +437,7 @@ class Path(object):
 
         return edges
 
+@profile
 def create_all(graph):
     """Creates a dict containing every path in the file.
 

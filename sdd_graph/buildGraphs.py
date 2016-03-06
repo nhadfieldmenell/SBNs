@@ -466,7 +466,7 @@ def main():
 
     for i in (20,21,22,23,24,25,26,27,28):
         full_fn = open('csvGPS.txt','r')
-        p = Path(i,g,ful_fn)
+        p = Path(i,g,full_fn)
         full_fn.close()
     
     print g.node2visited

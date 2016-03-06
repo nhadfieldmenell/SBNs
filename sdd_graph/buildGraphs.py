@@ -73,6 +73,22 @@ class Graph(object):
         return diag_full
 
 
+    def coords_to_node(self,row,col):
+        """determines the node index of a coordinate in the path graph
+
+        1 2 3
+        4 5 6
+        7 8 9
+
+        Attributes:
+            row: row number (0 indexed)
+            col: col number (0 indexed)
+
+        Returns:
+            node number: (1 indexed)
+        """
+        return row*self.rows + col + 1
+
     def gps_to_coords(self,lat,lon):
         """Determines the coodinates on the graph corresponding to a given gps point.
 
@@ -322,7 +338,10 @@ def main():
                                                             g.min_lon)
     print best_coords
     print len(trips_with_point)
-    print g.gps_to_coords(best_coords[0],best_coords[1])
+    coords =  g.gps_to_coords(best_coords[0],best_coords[1])
+    node_num = g.coords_to_node(coords[0],coords[1])
+    print coords
+    print node_num
 
     full_fn.close()
     full_fn = open('csvGPS.txt','r')

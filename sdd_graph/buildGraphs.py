@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys
+from collections import defaultdict
 import numpy as np
 import decodeGps as dg
 import test_graph as tg
@@ -31,7 +32,27 @@ class Graph(object):
 
         self.diags = self.create_diags()
         self.num_edges = self.diags[self.rows+self.cols-2]
+        self.node2visited = defaultdict(int) 
+        self.node2trip_ids = defaultdict(list)
+        self.best_node = 1
+        self.best_node_score = 0
         #print self.num_edges
+
+    def node_visit(self,trip_id,coords):
+        """Set nodes_visited and node2visited to reflect that the node coords is visited by trip number trip_id.
+
+        Attributes:
+            trip_id: integer id for the trip.
+            coords: (row,column) that is visited
+        """
+        node_num = self.coords_to_node(coords[0],coords[1])
+        self.node2visited[node_num] += 1
+        if self.node2visited[node_num] > self.best_node_score:
+            self.best_node_score = self.node2visited[node_num]
+            self.best_node = node_num
+        self.node2trip_ids[node_num].append(trip_id)
+
+
     
     def edge_num(self,row1,col1,row2,col2):
         """Determines the edge number between two points.
@@ -304,6 +325,8 @@ class Path(object):
         cur_line = self.line_num
         good_graphs = []
         good_graphs.append(True)
+        nodes_visited = []
+        nodes_visited.append([])
         normalized = dg.normalize(self.lines[cur_line])
         matrices_index = 0
         prev_coords = (-1,-1)
@@ -327,6 +350,7 @@ class Path(object):
             elif not matrices[matrices_index][0][coords[0]][coords[1]]:
                 matrices[matrices_index][1] += 1
                 matrices[matrices_index][0][coords[0]][coords[1]] = 1
+                nodes_visited[matrices_index].append(coords)
 
             prev_coords = coords
 
@@ -340,6 +364,9 @@ class Path(object):
             if matrices[matrix_index][1] > best_score:
                 best_score = matrices[matrix_index][1]
                 best_index = matrix_index
+
+        foor coords in nodes_visited[best_index]:
+            self.graph.node_visit(self.trip_id,coords)
 
         return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index]
 
@@ -426,7 +453,7 @@ def main():
     try_lat = 37.721396 
     try_lon = -122.400256
 
-    
+    """
     full_fn = open('csvGPS.txt','r')
     p = Path(1,g,full_fn,0)
     full_fn.close()
@@ -435,6 +462,18 @@ def main():
     print lines[0]
     print lines[27]
     full_fn.close()
+    """
+
+    for i in (20,21,22,23,24,25,26,27,28):
+        full_fn = open('csvGPS.txt','r')
+        p = Path(i,g,ful_fn)
+        full_fn.close()
+    
+    print g.node2visited
+    print g.node2trip_ids
+    print g.best_node_score
+    print g.best_node
+
 
     return
 

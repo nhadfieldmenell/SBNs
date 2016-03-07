@@ -104,7 +104,7 @@ if __name__ == '__main__':
             models.append(model)
             counts.append(count)
 
-    training = to_dict(models,counts)
+    training = DataSet.to_dict(models,counts)
 
     print "bad count: %d" % badCount
 

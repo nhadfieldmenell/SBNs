@@ -102,7 +102,7 @@ if __name__ == '__main__':
         probability = copy.probability(evidence)
         print probability
         if probability == 0:
-            badCount += 1
+            badCount += count
         else:
             models.append(model)
             counts.append(count)

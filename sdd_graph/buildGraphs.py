@@ -518,8 +518,8 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
 
-    rows = 2
-    cols = 3
+    rows = 5
+    cols = 5
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256
@@ -552,7 +552,7 @@ def main():
    
     
     trip_list = g.node2trip_ids[g.best_node]
-    for i in (54,2717):#range(220,230):
+    for i in (98,109,1191,142):#range(220,230):
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)

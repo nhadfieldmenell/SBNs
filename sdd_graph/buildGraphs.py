@@ -49,12 +49,13 @@ class Graph(object):
             trip_id: integer id for the trip.
             coords: (row,column) that is visited
         """
-        node_num = self.coords_to_node(coords[0],coords[1])
-        self.node2visited[node_num] += 1
-        if self.node2visited[node_num] > self.best_node_score:
-            self.best_node_score = self.node2visited[node_num]
-            self.best_node = node_num
-        self.node2trip_ids[node_num].append(trip_id)
+        if trip_id not in self.trip_id2line_num:
+            node_num = self.coords_to_node(coords[0],coords[1])
+            self.node2visited[node_num] += 1
+            if self.node2visited[node_num] > self.best_node_score:
+                self.best_node_score = self.node2visited[node_num]
+                self.best_node = node_num
+            self.node2trip_ids[node_num].append(trip_id)
 
 
     

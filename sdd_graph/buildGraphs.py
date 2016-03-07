@@ -502,6 +502,9 @@ def create_all(graph):
 
 
 def main():
+
+    rows = sys.argv[1]
+    cols = sys.argv[2]
     full_fn = open('csvGPS.txt','r')
     orig_fn = open('firstLast.txt','r')
 
@@ -518,8 +521,8 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
 
-    rows = 5 
-    cols = 5
+    #rows = 5 
+    #cols = 5
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256

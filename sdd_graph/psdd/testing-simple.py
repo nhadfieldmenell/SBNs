@@ -203,5 +203,5 @@ if __name__ == '__main__':
         print "   log likelihood: %.8f" % (ll/testing.N)
         print "    log posterior: %.8f" % ((ll+lprior)/testing.N)
 
-    avgLL = totalLL/10
+    avgLL = totalLL/float(10)
     print "average log likelihood: %d" % avgLL

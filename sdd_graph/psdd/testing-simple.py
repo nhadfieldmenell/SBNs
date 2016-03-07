@@ -21,7 +21,7 @@ def filter_bad(dataset,copy):
         evidence = DataSet.evidence(model)
         probability = copy.probability(evidence)
         if probability == 0:
-            print "%d: %s" % (count,model
+            print "%d: %s" % (count,model)
             badCount += count
         else:
             goodCount += count

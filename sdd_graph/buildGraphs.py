@@ -592,7 +592,7 @@ def main():
     print g.best_node
     print g.node_to_coords(g.best_node)
   
-    print_some(g,427,457,459,481,203,208,273)
+    print_some(g,427,457,459,481,203,208,273,501,146,182,378,456,404,12)
     #create_epochs(g,rows,cols)
     """
     trip_list = g.node2trip_ids[g.best_node]

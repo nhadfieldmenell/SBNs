@@ -112,6 +112,7 @@ if __name__ == '__main__':
     training = DataSet.to_dict(models,counts)
 
     print "bad count: %d" % badCount
+    print "good count: %d" % goodCount
 
     print "4"
 

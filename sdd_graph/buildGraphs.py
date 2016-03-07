@@ -555,7 +555,7 @@ def main():
    
     #"""
     trip_list = g.node2trip_ids[g.best_node]
-    for i in (201,327,476,493):#range(220,230):
+    for i in range(220,240):#(201,327,476,493)
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)

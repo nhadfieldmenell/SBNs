@@ -105,7 +105,7 @@ class Graph(object):
         
         edge_number = 0
 
-        print "(%d,%d) (%d,%d)" % (row,col,row_n,col_n)
+        #print "(%d,%d) (%d,%d)" % (row,col,row_n,col_n)
         if row + col < self.cols - 1:
             if col_n == col + 1: 
                 #print "(%d,%d) (%d,%d)" % (row, col, row, col + 1)
@@ -564,7 +564,7 @@ def main():
      Create Epochs of Data """
     trip_list = g.node2trip_ids[g.best_node]
     for i in range(10):
-        filename = "uber-data_%d_%d_%d.txt" % (rows,cols,i)
+        filename = "datasets/uber-data_%d_%d_%d.txt" % (rows,cols,i)
         fn = open(filename,"w")
         fn.close()
 
@@ -575,7 +575,7 @@ def main():
         p = Path(trip_id,g,line_num)
         epoch = int(float(i) / len(trip_list) * 10)
         print epoch
-        filename = "uber-data_%d_%d_%d.txt" % (rows,cols,epoch)
+        filename = "datasets/uber-data_%d_%d_%d.txt" % (rows,cols,epoch)
         fn = open(filename,"a")
         fn.write(str(p.edges)[1:-1])
         fn.write("\n")

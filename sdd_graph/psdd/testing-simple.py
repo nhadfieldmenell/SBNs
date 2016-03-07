@@ -21,7 +21,7 @@ def filter_bad(dataset,copy):
         evidence = DataSet.evidence(model)
         probability = copy.probability(evidence)
         if probability == 0:
-            print "%d: %s" % (count,model)
+            print "%d: %s" % (count,model
             badCount += count
         else:
             goodCount += count
@@ -51,8 +51,8 @@ if __name__ == '__main__':
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
 
-    vtree_filename = '../asdf-%d-%d.vtree' % (rows,cols)
-    sdd_filename = '../asdf-%d-%d.sdd' % (rows,cols)
+    vtree_filename = '../graphs/asdf-%d-%d.vtree' % (rows,cols)
+    sdd_filename = '../graphs/asdf-%d-%d.sdd' % (rows,cols)
 
     psi,scale = 2.0,None # learning hyper-parameters
     N,M = 2**10,2**10 # size of training/testing dataset
@@ -132,7 +132,7 @@ if __name__ == '__main__':
     epochs = []
     num_epochs = 10
     for i in range(num_epochs):
-        epoch_name = "../uber-data_%d_%d_%d.txt" % (rows,cols,i)
+        epoch_name = "../datasets/uber-data_%d_%d_%d.txt" % (rows,cols,i)
         epoch = filter_bad(DataSet.read(epoch_name),copy)
         epochs.append(epoch)
 

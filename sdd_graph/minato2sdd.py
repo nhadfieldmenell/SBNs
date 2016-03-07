@@ -128,7 +128,7 @@ if __name__ == '__main__':
         exit(1)
 
     m,n = int(sys.argv[1]),int(sys.argv[2])
-    filename = fnPrefix = ("asdf-%d-%d" % (m,n))
+    filename = fnPrefix = ("graphs/asdf-%d-%d" % (m,n))
 
     start = time.time()
     manager,alpha = parse_bdd(filename+".zdd")

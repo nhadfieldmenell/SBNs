@@ -100,11 +100,12 @@ class Graph(object):
             row_n = row1
             col_n = col1
         
-        if not (row == row_n and col == col_n - 1 or row == row_n-1 and col == col_n):
+        if not ((row == row_n and col == col_n - 1) or (row == row_n-1 and col == col_n)):
             return - 1
         
         edge_number = 0
 
+        print "(%d,%d) (%d,%d)" % (row,col,row_n,col_n)
         if row + col < self.cols - 1:
             if col_n == col + 1: 
                 #print "(%d,%d) (%d,%d)" % (row, col, row, col + 1)

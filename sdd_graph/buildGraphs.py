@@ -527,7 +527,7 @@ def create_epochs(g,rows,cols):
         #print p.path
         #p.print_path()
     
-def print_some(g)
+def print_some(g):
     trip_list = g.node2trip_ids[g.best_node]
     for i in range(220,240):#(201,327,476,493)
         trip_id = trip_list[i]

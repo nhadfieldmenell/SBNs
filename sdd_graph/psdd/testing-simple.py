@@ -24,10 +24,8 @@ def model_str(model,n):
     return "".join(st)
 
 if __name__ == '__main__':
-    basename = '32-3'
-    #basename = 'fire_alarm'
-    vtree_filename = 'data/base/%s.vtree' % basename
-    sdd_filename = 'data/base/%s.sdd' % basename
+    vtree_filename = '../asdf-9-9.vtree'
+    sdd_filename = '../asdf-9-9.sdd'
 
     psi,scale = 2.0,None # learning hyper-parameters
     N,M = 2**10,2**10 # size of training/testing dataset
@@ -48,23 +46,26 @@ if __name__ == '__main__':
     copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
     pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
 
+    """
     print "         sdd size: %d" % sdd.size()
     print "           sdd nc: %d" % sdd.node_count()
     print "        psdd size: %d" % copy.size()
     print "          psdd nc: %d" % copy.node_count()
     print "  psdd parameters: %d" % copy.theta_count()
     print "       psdd trues: %d" % copy.true_count()
+    """
 
     for alpha in [sdd,copy]:
         start = time.time()
         model_count = alpha.model_count()
-        print "      model count: %s (%.3fs)" % \
-            (locale.format("%d",model_count,grouping=True),time.time()-start)
+        #print "      model count: %s (%.3fs)" % \
+        #    (locale.format("%d",model_count,grouping=True),time.time()-start)
 
     ########################################
     # SIMULATE
     ########################################
 
+    """
     start = time.time()
     copy.random_weights(psi=1.0) # set random weights on PSDD
     complete = DataSet.simulate(copy,N,seed=seed)
@@ -74,18 +75,26 @@ if __name__ == '__main__':
     print "simulate datasets: %.3fs" % (time.time()-start)
     print "         training: %d unique, %d instances" % (len(training),training.N)
     print "          testing: %d unique, %d instances" % (len(testing),testing.N)
+    """
+    
+    training_name = "../uber_training.txt"
+    testing_name = "../uber_testing.txt"
+    training = DataSet.read(training_name)
+    testing = DataSet.read(testing_name)
     if type(seed) is int or type(seed) is long: seed = seed+1 # update seed
+
+
 
     ########################################
     # LEARN
     ########################################
 
-    """
+    
     # for complete data, for testing purposes
     start = time.time()
-    copy.learn(complete,psi=psi,scale=scale,show_progress=True)
+    copy.learn(training,psi=psi,scale=scale,show_progress=True)
     print "    training time: %.3fs" % (time.time()-start)
-    ll = copy.log_likelihood_alt(complete)
+    ll = copy.log_likelihood_alt(training)
     lprior = copy.log_prior(psi=psi,scale=scale)
     print "   log likelihood: %.8f" % (ll/complete.N)
     print "    log posterior: %.8f" % ((ll+lprior)/complete.N)
@@ -96,8 +105,10 @@ if __name__ == '__main__':
     ll = copy.log_likelihood_alt(testing)
     print "   log likelihood: %.8f" % (ll/testing.N)
     print "    log posterior: %.8f" % ((ll+lprior)/testing.N)
-    """
+    
 
+    """
+    #for incomplete data
     start = time.time()
     copy.random_weights(psi=1.0) # initial seed for EM
     stats = copy.soft_em(training,psi=psi,scale=scale,
@@ -110,6 +121,7 @@ if __name__ == '__main__':
     print "   log likelihood: %.8f" % (ll/training.N)
     print "    log posterior: %.8f" % ((ll+lprior)/training.N)
     print "  zero parameters: %d (should be zero)" % copy.zero_count()
+    """
 
     ########################################
     # TEST

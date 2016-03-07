@@ -548,7 +548,7 @@ def main():
     training_name = "uber_training_%d_%d.txt" % (rows,cols)
     testing_name = "uber_testing_%d_%d.txt" % (rows,cols)
     trip_list = g.node2trip_ids[g.best_node]
-    for i in range(10)
+    for i in range(10):
         filename = "uber-data_%d_%d_%d.txt" % (rows,cols,i)
         fn = open(filename,"w")
         fn.close()

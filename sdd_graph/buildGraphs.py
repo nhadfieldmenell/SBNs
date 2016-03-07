@@ -502,7 +502,41 @@ def create_all(graph):
     #return paths
         
 
+def create_epochs(g,rows,cols):
+    """ Create Epochs of Data """
+    trip_list = g.node2trip_ids[g.best_node]
+    for i in range(10):
+        filename = "datasets/uber-data_%d_%d_%d.txt" % (rows,cols,i)
+        fn = open(filename,"w")
+        fn.close()
 
+    for i in range(len(trip_list)):
+        trip_id = trip_list[i]
+        #print trip_id
+        line_num = g.trip_id2line_num[trip_id]
+        p = Path(trip_id,g,line_num)
+        epoch = int(float(i) / len(trip_list) * 10)
+        #print epoch
+        filename = "datasets/uber-data_%d_%d_%d.txt" % (rows,cols,epoch)
+        fn = open(filename,"a")
+        fn.write(str(p.edges)[1:-1])
+        fn.write("\n")
+        fn.close()
+        
+        #print p.trip_id
+        #print p.path
+        #p.print_path()
+    
+def print_some(g)
+    trip_list = g.node2trip_ids[g.best_node]
+    for i in range(220,240):#(201,327,476,493)
+        trip_id = trip_list[i]
+        line_num = g.trip_id2line_num[trip_id]
+        p = Path(trip_id,g,line_num)
+        print trip_id
+        print p.edges
+        print p.path
+        p.print_path()
 
 
 def main():
@@ -556,8 +590,9 @@ def main():
     print g.best_node_score
     print g.best_node
     print g.node_to_coords(g.best_node)
-   
-    #"""
+  
+    create_epochs(g,rows,cols)
+    """
     trip_list = g.node2trip_ids[g.best_node]
     for i in range(220,240):#(201,327,476,493)
         trip_id = trip_list[i]
@@ -567,7 +602,7 @@ def main():
         print p.edges
         print p.path
         p.print_path()
-     #  """ 
+       """ 
 
     """ Create Epochs of Data """
     """

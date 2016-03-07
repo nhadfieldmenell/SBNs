@@ -215,12 +215,12 @@ class Graph(object):
             (-1,-1) if the coordinates are out of scope
         """
 
-        print "lat: %f lon: %f" % (lat,lon)
         if (lat < self.min_lat or lat > self.max_lat or lon < self.min_lon or lon > self.max_lon):
             return (-1,-1)
 
         lat_spot = int((self.max_lat-lat)/self.lat_step)
         lon_spot = int((lon-self.min_lon)/self.lon_step)
+        print "lat: %f lon: %f lat_spot: %f lon_spot: %f" % (lat,lon,lat_spot,lon_spot)
         return (lat_spot,lon_spot)
 
 def dist_points(x,y):

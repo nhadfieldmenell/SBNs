@@ -215,6 +215,7 @@ class Graph(object):
             (-1,-1) if the coordinates are out of scope
         """
 
+        print "lat: %f lon: %f" % (lat,lon)
         if (lat < self.min_lat or lat > self.max_lat or lon < self.min_lon or lon > self.max_lon):
             return (-1,-1)
 

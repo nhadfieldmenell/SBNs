@@ -503,8 +503,8 @@ def create_all(graph):
 
 def main():
 
-    rows = sys.argv[1]
-    cols = sys.argv[2]
+    rows = int(sys.argv[1])
+    cols = int(sys.argv[2])
     full_fn = open('csvGPS.txt','r')
     orig_fn = open('firstLast.txt','r')
 

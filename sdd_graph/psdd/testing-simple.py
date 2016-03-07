@@ -137,10 +137,6 @@ if __name__ == '__main__':
     print "  zero parameters: %d (should be zero)" % copy.zero_count()
     copy.marginals()
 
-    print "== TESTING =="
-    ll = copy.log_likelihood_alt(testing)
-    print "   log likelihood: %.8f" % (ll/testing.N)
-    print "    log posterior: %.8f" % ((ll+lprior)/testing.N)
     
 
     """

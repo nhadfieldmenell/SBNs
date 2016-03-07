@@ -40,10 +40,15 @@ if __name__ == '__main__':
     print "== reading vtree/sdd"
 
     vtree = Vtree.read(vtree_filename)
+    print "1"
     manager = SddManager(vtree)
+    print "2"
     sdd = SddNode.read(sdd_filename,manager)
+    print "3"
     pmanager = PSddManager(vtree)
+    print "4"
     copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
+    print "5"
     pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
     print "1"
 

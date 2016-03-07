@@ -527,9 +527,10 @@ def create_epochs(g,rows,cols):
         #print p.path
         #p.print_path()
     
-def print_some(g):
+def print_some(g,*args):
     trip_list = g.node2trip_ids[g.best_node]
-    for i in range(220,240):#(201,327,476,493)
+    #for i in range(220,240):#(201,327,476,493)
+    for i in args:
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
@@ -591,7 +592,8 @@ def main():
     print g.best_node
     print g.node_to_coords(g.best_node)
   
-    create_epochs(g,rows,cols)
+    print_some(g,42,442,399)
+    #create_epochs(g,rows,cols)
     """
     trip_list = g.node2trip_ids[g.best_node]
     for i in range(220,240):#(201,327,476,493)

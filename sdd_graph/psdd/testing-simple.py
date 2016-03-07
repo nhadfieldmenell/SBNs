@@ -97,6 +97,7 @@ if __name__ == '__main__':
     counts = []
     copy.uniform_weights()
     for model, count in training:
+        print model
         probability = copy.probability(model)
         print probability
         if probability == 0:

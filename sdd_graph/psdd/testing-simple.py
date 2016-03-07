@@ -18,10 +18,8 @@ def filter_bad(dataset,copy):
     counts = []
     copy.uniform_weights()
     for model, count in dataset:
-        print model
         evidence = DataSet.evidence(model)
         probability = copy.probability(evidence)
-        print probability
         if probability == 0:
             badCount += count
         else:

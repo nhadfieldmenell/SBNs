@@ -550,18 +550,20 @@ def main():
     print g.best_node
     print g.node_to_coords(g.best_node)
    
-    """
+    
     trip_list = g.node2trip_ids[g.best_node]
-    for i in (201,274,98,263,102,397):#range(220,230):
+    for i in (54,23):#range(220,230):
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
         print trip_id
         print p.edges
+        print p.path
         p.print_path()
         
 
-     Create Epochs of Data """
+    """ Create Epochs of Data """
+    """
     trip_list = g.node2trip_ids[g.best_node]
     for i in range(10):
         filename = "datasets/uber-data_%d_%d_%d.txt" % (rows,cols,i)
@@ -585,7 +587,7 @@ def main():
         #print p.path
         #p.print_path()
     
-
+    """
     return
 
     trips = dg.createTrips(orig_fn)

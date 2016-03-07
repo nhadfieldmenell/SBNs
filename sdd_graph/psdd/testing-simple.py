@@ -97,18 +97,16 @@ if __name__ == '__main__':
     counts = []
     copy.uniform_weights()
     for model, count in training:
-        dataInstance = training[i]
-        #print dataInstance
-        probability = copy.probability(dataInstance[0])
+        probability = copy.probability(model)
         if probability == 0:
             badCount += 1
         else:
-            models.append(models)
+            models.append(model)
             counts.append(count)
 
     training = to_dict(models,counts)
 
-    print badCount
+    print "bad count: %d" % badCount
 
     print "4"
 

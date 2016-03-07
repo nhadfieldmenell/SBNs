@@ -552,6 +552,7 @@ def main():
         p = Path(trip_id,g,line_num)
         print p.trip_id
         print p.path
+        p.print_path()
 
     return
 

@@ -21,6 +21,7 @@ def filter_bad(dataset,copy):
         evidence = DataSet.evidence(model)
         probability = copy.probability(evidence)
         if probability == 0:
+            print "%d: %s" % (count,model)
             badCount += count
         else:
             goodCount += count
@@ -105,7 +106,7 @@ if __name__ == '__main__':
     print "         training: %d unique, %d instances" % (len(training),training.N)
     print "          testing: %d unique, %d instances" % (len(testing),testing.N)
     """
-    
+    """ 
     epoch0_name = "../uber-data_%d_%d_0.txt" % (rows,cols)
     epoch1_name = "../uber-data_%d_%d_1.txt" % (rows,cols)
     epoch2_name = "../uber-data_%d_%d_2.txt" % (rows,cols)
@@ -126,8 +127,19 @@ if __name__ == '__main__':
     epoch7 = filter_bad(DataSet.read(epoch7_name),copy)
     epoch8 = filter_bad(DataSet.read(epoch8_name),copy)
     epoch9 = filter_bad(DataSet.read(epoch9_name),copy)
+    """
+    
+    epochs = []
+    num_epochs = 10
+    for i in range(num_epochs):
+        epoch_name = "../uber-data_%d_%d_%d.txt" % (rows,cols,i)
+        epoch = filter_bad(DataSet.read(epoch_name),copy)
+        epochs.append(epoch)
 
+ 
+    """
     epochs = [epoch0,epoch1,epoch2,epoch3,epoch4,epoch5,epoch6,epoch7,epoch8,epoch9]
+    """
 
     totalLL = 0
 

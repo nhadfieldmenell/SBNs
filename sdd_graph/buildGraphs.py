@@ -550,6 +550,7 @@ def main():
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
         print trip_id
+        print p.edges
         p.print_path()
         
 

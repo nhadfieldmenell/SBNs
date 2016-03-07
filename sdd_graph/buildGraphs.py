@@ -554,7 +554,7 @@ def main():
         print trip_id
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
-        if i < len(g.node2trip_ids[g.best_node]):
+        if i < len(g.node2trip_ids[g.best_node])/10:
             testing.write(str(p.edges)[1:-1])
             testing.write("\n")
         else: 

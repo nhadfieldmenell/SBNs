@@ -141,7 +141,7 @@ def print_grids(alpha,m,n,g,manager):
     print "COUNT:", global_model_count(alpha,manager)
     for model in models.models(alpha,sdd.sdd_manager_vtree(manager)):
         print models.str_model(model,var_count=var_count)
-        #draw_grid(model,m,n,g)
+        draw_grid(model,m,n,g)
 
 def _encode_grid_aux(source,sink,nodes,graph,manager,
                      base=None,cache=None,verbose=False):

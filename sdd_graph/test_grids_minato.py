@@ -83,8 +83,8 @@ if __name__ == '__main__':
     #tl.draw(pathsThruMidpoint.choice())
     print "number of paths through midpoint: " + str(pathsThruMidpoint.len())
     #print paths.universe()
-    #for p in pathsThruMidpoint:
-    #    print p
+    for p in pathsThruMidpoint:
+        print p
 
     #dim = (dimension[0]+1,dimension[1]+1)
     #""" AC: SAVE ZDD TO FILE

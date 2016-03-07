@@ -512,8 +512,8 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
 
-    rows = 9 
-    cols = 9
+    rows = 5 
+    cols = 5
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256
@@ -547,8 +547,10 @@ def main():
 
     #print g.trip_id2line_num
     print g.node2trip_ids[g.best_node][20:40]
-    training = open("uber_training.txt","w")
-    testing = open("uber_testing.txt", "w")
+    training_name = "uber_training_%d_%d" % (rows,cols)
+    testing_name = "uber_testing_%d_%d" % (rows,cols)
+    training = open(training_name,"w")
+    testing = open(testing_name, "w")
     for i in range(len(g.node2trip_ids[g.best_node])):
         trip_id = g.node2trip_ids[g.best_node][i]
         print trip_id

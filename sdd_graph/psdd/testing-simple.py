@@ -45,6 +45,7 @@ if __name__ == '__main__':
     pmanager = PSddManager(vtree)
     copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
     pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
+    print "1"
 
     """
     print "         sdd size: %d" % sdd.size()
@@ -65,6 +66,8 @@ if __name__ == '__main__':
     # SIMULATE
     ########################################
 
+    print "2"
+
     """
     start = time.time()
     copy.random_weights(psi=1.0) # set random weights on PSDD
@@ -83,7 +86,7 @@ if __name__ == '__main__':
     testing = DataSet.read(testing_name)
     if type(seed) is int or type(seed) is long: seed = seed+1 # update seed
 
-
+    print "3"
 
     ########################################
     # LEARN

@@ -151,7 +151,7 @@ if __name__ == '__main__':
     # LEARN
     ########################################
 
-   for i in range(10):
+    for i in range(10):
         testing  = epochs[i]
         
         models = []

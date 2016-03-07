@@ -574,7 +574,7 @@ def main():
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
         epoch = int(float(i) / len(trip_list) * 10)
-        print epoch
+        #print epoch
         filename = "datasets/uber-data_%d_%d_%d.txt" % (rows,cols,epoch)
         fn = open(filename,"a")
         fn.write(str(p.edges)[1:-1])

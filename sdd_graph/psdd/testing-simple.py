@@ -93,6 +93,7 @@ if __name__ == '__main__':
     print "3"
 
     badCount = 0
+    goodCount = 0
     models = []
     counts = []
     copy.uniform_weights()
@@ -104,6 +105,7 @@ if __name__ == '__main__':
         if probability == 0:
             badCount += count
         else:
+            goodCount += count
             models.append(model)
             counts.append(count)
 

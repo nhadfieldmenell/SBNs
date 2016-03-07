@@ -544,9 +544,15 @@ def main():
     print g.best_node
     print g.node_to_coords(g.best_node)
     
+    trip_list = g.node2trip_ids[g.best_node]
+    for i in range(220,230):
+        trip_id = trip_list[i]
+        p = Path(trip_id,g,line_num)
+        print trip_id
+        p.print_path()
+        
 
-    training_name = "uber_training_%d_%d.txt" % (rows,cols)
-    testing_name = "uber_testing_%d_%d.txt" % (rows,cols)
+    """ Create Epochs of Data 
     trip_list = g.node2trip_ids[g.best_node]
     for i in range(10):
         filename = "uber-data_%d_%d_%d.txt" % (rows,cols,i)
@@ -569,6 +575,7 @@ def main():
         #print p.trip_id
         #print p.path
         #p.print_path()
+    """
 
     return
 

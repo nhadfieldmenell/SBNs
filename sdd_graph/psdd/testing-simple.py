@@ -106,17 +106,43 @@ if __name__ == '__main__':
     print "          testing: %d unique, %d instances" % (len(testing),testing.N)
     """
     
-    training_name = "../uber_training_%d_%d.txt" % (rows,cols)
+    epoch0_name = "../uber-data_%d_%d_0.txt" % (rows,cols)
+    epoch1_name = "../uber-data_%d_%d_1.txt" % (rows,cols)
+    epoch2_name = "../uber-data_%d_%d_2.txt" % (rows,cols)
+    epoch3_name = "../uber-data_%d_%d_3.txt" % (rows,cols)
+    epoch4_name = "../uber-data_%d_%d_4.txt" % (rows,cols)
+    epoch5_name = "../uber-data_%d_%d_5.txt" % (rows,cols)
+    epoch6_name = "../uber-data_%d_%d_6.txt" % (rows,cols)
+    epoch7_name = "../uber-data_%d_%d_7.txt" % (rows,cols)
+    epoch8_name = "../uber-data_%d_%d_8.txt" % (rows,cols)
+    epoch9_name = "../uber-data_%d_%d_9.txt" % (rows,cols)
+    epoch0 = filter_bad(DataSet.read(epoch0_name),copy)
+    epoch1 = filter_bad(DataSet.read(epoch1_name),copy)
+    epoch2 = filter_bad(DataSet.read(epoch2_name),copy)
+    epoch3 = filter_bad(DataSet.read(epoch3_name),copy)
+    epoch4 = filter_bad(DataSet.read(epoch4_name),copy)
+    epoch5 = filter_bad(DataSet.read(epoch5_name),copy)
+    epoch6 = filter_bad(DataSet.read(epoch6_name),copy)
+    epoch7 = filter_bad(DataSet.read(epoch7_name),copy)
+    epoch8 = filter_bad(DataSet.read(epoch8_name),copy)
+    epoch9 = filter_bad(DataSet.read(epoch9_name),copy)
+
+    epochs = [epoch0,epoch1,epoch2,epoch3,epoch4,epoch5,epoch6,epoch7,epoch8,epoch9]
+
+    totalLL = 0
+
+    """
     testing_name = "../uber_testing_%d_%d.txt" % (rows,cols)
     training = DataSet.read(training_name)
     testing = DataSet.read(testing_name)
+    training = filter_bad(training,copy)
+    testing = filter_bad(testing,copy)
+    """
     if type(seed) is int or type(seed) is long: seed = seed+1 # update seed
 
     print "3"
 
 
-    training = filter_bad(training,copy)
-    testing = filter_bad(testing,copy)
 
 
     print "4"
@@ -125,42 +151,56 @@ if __name__ == '__main__':
     # LEARN
     ########################################
 
-    
-    # for complete data, for testing purposes
-    start = time.time()
-    copy.learn(training,psi=psi,scale=scale,show_progress=True)
-    print "    training time: %.3fs" % (time.time()-start)
-    ll = copy.log_likelihood_alt(training)
-    lprior = copy.log_prior(psi=psi,scale=scale)
-    print "   log likelihood: %.8f" % (ll/training.N)
-    print "    log posterior: %.8f" % ((ll+lprior)/training.N)
-    print "  zero parameters: %d (should be zero)" % copy.zero_count()
-    copy.marginals()
+   for i in range(10):
+        testing  = epochs[i]
+        
+        models = []
+        counts = []
+        for j in range(10):
+            if j != i:
+                for model,count in epochs[j]:
+                    models.append(model)
+                    counts.append(count)
 
-    
+        training = DataSet.to_dict(models,counts)
 
-    """
-    #for incomplete data
-    start = time.time()
-    copy.random_weights(psi=1.0) # initial seed for EM
-    stats = copy.soft_em(training,psi=psi,scale=scale,
-                         threshold=em_threshold,max_iterations=em_max_iters)
-    #ll = stats.ll
-    #ll = copy.log_likelihood_alt(training)
-    ll = copy.log_likelihood(training)
-    lprior = copy.log_prior(psi=psi,scale=scale)
-    print "    training time: %.3fs (iters: %d)" % (time.time()-start,stats.iterations)
-    print "   log likelihood: %.8f" % (ll/training.N)
-    print "    log posterior: %.8f" % ((ll+lprior)/training.N)
-    print "  zero parameters: %d (should be zero)" % copy.zero_count()
-    """
+        # for complete data, for testing purposes
+        start = time.time()
+        copy.learn(training,psi=psi,scale=scale,show_progress=True)
+        print "    training time: %.3fs" % (time.time()-start)
+        ll = copy.log_likelihood_alt(training)
+        lprior = copy.log_prior(psi=psi,scale=scale)
+        print "   log likelihood: %.8f" % (ll/training.N)
+        print "    log posterior: %.8f" % ((ll+lprior)/training.N)
+        print "  zero parameters: %d (should be zero)" % copy.zero_count()
+        copy.marginals()
 
-    ########################################
-    # TEST
-    ########################################
+        
 
-    print "== TESTING =="
-    ll = copy.log_likelihood_alt(testing)
-    print "   log likelihood: %.8f" % (ll/testing.N)
-    print "    log posterior: %.8f" % ((ll+lprior)/testing.N)
+        """
+        #for incomplete data
+        start = time.time()
+        copy.random_weights(psi=1.0) # initial seed for EM
+        stats = copy.soft_em(training,psi=psi,scale=scale,
+                             threshold=em_threshold,max_iterations=em_max_iters)
+        #ll = stats.ll
+        #ll = copy.log_likelihood_alt(training)
+        ll = copy.log_likelihood(training)
+        lprior = copy.log_prior(psi=psi,scale=scale)
+        print "    training time: %.3fs (iters: %d)" % (time.time()-start,stats.iterations)
+        print "   log likelihood: %.8f" % (ll/training.N)
+        print "    log posterior: %.8f" % ((ll+lprior)/training.N)
+        print "  zero parameters: %d (should be zero)" % copy.zero_count()
+        """
 
+        ########################################
+        # TEST
+        ########################################
+
+        print "== TESTING =="
+        ll = copy.log_likelihood_alt(testing)
+        totalLL += ll/testing.N
+        print "   log likelihood: %.8f" % (ll/testing.N)
+        print "    log posterior: %.8f" % ((ll+lprior)/testing.N)
+
+    avgLL = totalLL/10

@@ -545,23 +545,25 @@ def main():
     print g.node_to_coords(g.best_node)
     
 
-    #print g.trip_id2line_num
-    print g.node2trip_ids[g.best_node][20:40]
     training_name = "uber_training_%d_%d.txt" % (rows,cols)
     testing_name = "uber_testing_%d_%d.txt" % (rows,cols)
-    training = open(training_name,"w")
-    testing = open(testing_name, "w")
-    for i in range(len(g.node2trip_ids[g.best_node])):
-        trip_id = g.node2trip_ids[g.best_node][i]
+    trip_list = g.node2trip_ids[g.best_node]
+    for i in range(10)
+        filename = "uber-data_%d_%d_%d.txt" % (rows,cols,i)
+        fn = open(filename,"w")
+        fn.close()
+
+    for i in range(len(trip_list)):
+        trip_id = trip_list[i]
         print trip_id
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
-        if i < len(g.node2trip_ids[g.best_node])/10:
-            testing.write(str(p.edges)[1:-1])
-            testing.write("\n")
-        else: 
-            training.write(str(p.edges)[1:-1])
-            training.write("\n")
+        epoch = int(float(i / len(trip_list)) * 10)
+        filename = "uber-data_%d_%d_%d.txt" % (rows,cols,epoch)
+        fn = open(filename,"a")
+        fn.write(str(p.edges)[1:-1])
+        fn.write("\n")
+        
         #print p.trip_id
         #print p.path
         #p.print_path()

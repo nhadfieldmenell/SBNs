@@ -547,8 +547,8 @@ def main():
 
     #print g.trip_id2line_num
     print g.node2trip_ids[g.best_node][20:40]
-    training_name = "uber_training_%d_%d" % (rows,cols)
-    testing_name = "uber_testing_%d_%d" % (rows,cols)
+    training_name = "uber_training_%d_%d.txt" % (rows,cols)
+    testing_name = "uber_testing_%d_%d.txt" % (rows,cols)
     training = open(training_name,"w")
     testing = open(testing_name, "w")
     for i in range(len(g.node2trip_ids[g.best_node])):

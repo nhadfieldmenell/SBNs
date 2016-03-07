@@ -24,8 +24,11 @@ def model_str(model,n):
     return "".join(st)
 
 if __name__ == '__main__':
-    vtree_filename = '../asdf-9-9.vtree'
-    sdd_filename = '../asdf-9-9.sdd'
+    rows = int(sys.argv[1])
+    cols = int(sys.argv[2])
+
+    vtree_filename = '../asdf-%d-%d.vtree' % (rows,cols)
+    sdd_filename = '../asdf-%d-%d.sdd' % (rows,cols)
 
     psi,scale = 2.0,None # learning hyper-parameters
     N,M = 2**10,2**10 # size of training/testing dataset
@@ -80,27 +83,31 @@ if __name__ == '__main__':
     print "          testing: %d unique, %d instances" % (len(testing),testing.N)
     """
     
-    training_name = "../uber_training.txt"
-    testing_name = "../uber_testing.txt"
+    training_name = "../uber_training_%d_%d.txt" % (rows,cols)
+    testing_name = "../uber_testing_%d_%d.txt" % (rows,cols)
     training = DataSet.read(training_name)
     testing = DataSet.read(testing_name)
     if type(seed) is int or type(seed) is long: seed = seed+1 # update seed
 
     print "3"
 
-    badOnes = []
+    badCount = 0
+    models = []
+    counts = []
     copy.uniform_weights()
-    for i in range(len(training)):
+    for model, count in training:
         dataInstance = training[i]
         #print dataInstance
         probability = copy.probability(dataInstance[0])
         if probability == 0:
-            badOnes.append(i)
+            badCount += 1
+        else:
+            models.append(models)
+            counts.append(count)
 
-    print badOnes
-    print len(training)
-    for i in badOnes:
-        training.remove(i)
+    training = to_dict(models,counts)
+
+    print badCount
 
     print "4"
 

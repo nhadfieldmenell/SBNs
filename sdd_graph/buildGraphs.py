@@ -548,11 +548,18 @@ def main():
     #print g.trip_id2line_num
     print g.node2trip_ids[g.best_node][20:40]
     training = open("uber_training.txt","w")
-    for trip_id in g.node2trip_ids[g.best_node]:
+    testing = open("uber_testing.txt", "w")
+    for i in range(len(g.node2trip_ids[g.best_node])):
+        trip_id = g.node2trip_ids[g.best_node][i]
         print trip_id
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
-        training.write(str(p.edges))
+        if i < len(g.node2trip_ids[g.best_node):
+            testing.write(str(p.edges)[1:-1])
+            testing.write("\n")
+        else: 
+            training.write(str(p.edges)[1:-1])
+            training.write("\n")
         #print p.trip_id
         #print p.path
         #p.print_path()

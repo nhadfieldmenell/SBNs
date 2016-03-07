@@ -98,7 +98,8 @@ if __name__ == '__main__':
     copy.uniform_weights()
     for model, count in training:
         print model
-        probability = copy.probability(model)
+        evidence = DataSet.evidence(model)
+        probability = copy.probability(evidence)
         print probability
         if probability == 0:
             badCount += 1

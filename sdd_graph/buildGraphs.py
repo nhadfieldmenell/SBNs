@@ -512,8 +512,8 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
 
-    rows = 5 
-    cols = 5
+    rows = 2 
+    cols = 3
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
     try_lat = 37.721396 
     try_lon = -122.400256
@@ -543,7 +543,8 @@ def main():
     print g.best_node_score
     print g.best_node
     print g.node_to_coords(g.best_node)
-    
+   
+    """
     trip_list = g.node2trip_ids[g.best_node]
     for i in (201,274,98,263,102,397):#range(220,230):
         trip_id = trip_list[i]
@@ -554,7 +555,7 @@ def main():
         p.print_path()
         
 
-    """ Create Epochs of Data 
+     Create Epochs of Data """
     trip_list = g.node2trip_ids[g.best_node]
     for i in range(10):
         filename = "uber-data_%d_%d_%d.txt" % (rows,cols,i)
@@ -577,7 +578,7 @@ def main():
         #print p.trip_id
         #print p.path
         #p.print_path()
-    """
+    
 
     return
 

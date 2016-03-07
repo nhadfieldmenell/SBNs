@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
     print "3"
 
-    copy.uniformWeights()
+    copy.uniform_weights()
     for dataInstance in training:
         print dataInstance
         print copy.log_likelihood(dataInstance[0])

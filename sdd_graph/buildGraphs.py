@@ -367,7 +367,7 @@ class Path(object):
                 edge_num = self.graph.edge_num(prev_coords[0],prev_coords[1],coords[0],coords[1])
                 if edge_num == -1:
                     good_graphs[matrices_index] = False
-                if trip_id == 1683:
+                if self.trip_id == 1683:
                     print "coords %s" % str(coords)
                     print "prev %s" % str(prev_coords)
                     print "lat: %f lon: %f min lat: %f min lon: %f max lat: %f max lon: %f)" % (lat,lon,self.graph.min_lat,self.graph.min_lon,self.graph.max_lat,self.graph.max_lon)

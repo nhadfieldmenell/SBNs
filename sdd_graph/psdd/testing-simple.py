@@ -99,7 +99,10 @@ if __name__ == '__main__':
 
     print badOnes
     print len(training)
-    return
+    for i in badOnes:
+        training.remove(i)
+
+    print "4"
 
     ########################################
     # LEARN

@@ -555,14 +555,16 @@ def main():
 
     for i in range(len(trip_list)):
         trip_id = trip_list[i]
-        print trip_id
+        #print trip_id
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
         epoch = int(float(i / len(trip_list)) * 10)
+        print epoch
         filename = "uber-data_%d_%d_%d.txt" % (rows,cols,epoch)
         fn = open(filename,"a")
         fn.write(str(p.edges)[1:-1])
         fn.write("\n")
+        fn.close()
         
         #print p.trip_id
         #print p.path

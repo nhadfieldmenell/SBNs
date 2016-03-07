@@ -204,4 +204,4 @@ if __name__ == '__main__':
         print "    log posterior: %.8f" % ((ll+lprior)/testing.N)
 
     avgLL = totalLL/10
-    print "average log likelihood: %d" avgLL
+    print "average log likelihood: %d" % avgLL

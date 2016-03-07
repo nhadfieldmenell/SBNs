@@ -127,8 +127,8 @@ if __name__ == '__main__':
     print "    training time: %.3fs" % (time.time()-start)
     ll = copy.log_likelihood_alt(training)
     lprior = copy.log_prior(psi=psi,scale=scale)
-    print "   log likelihood: %.8f" % (ll/complete.N)
-    print "    log posterior: %.8f" % ((ll+lprior)/complete.N)
+    print "   log likelihood: %.8f" % (ll/training.N)
+    print "    log posterior: %.8f" % ((ll+lprior)/training.N)
     print "  zero parameters: %d (should be zero)" % copy.zero_count()
     copy.marginals()
 

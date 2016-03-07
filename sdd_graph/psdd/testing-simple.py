@@ -88,10 +88,18 @@ if __name__ == '__main__':
 
     print "3"
 
-    copy.uniform_weights(psi=1.0)
-    for dataInstance in training:
-        print dataInstance
-        print copy.log_likelihood(dataInstance[0])
+    badOnes = []
+    copy.uniform_weights()
+    for i in range(len(training)):
+        dataInstance = training[i]
+        #print dataInstance
+        probability = copy.probability(dataInstance[0])
+        if probability == 0:
+            badOnes.append(i)
+
+    print badOnes
+    print len(training)
+    return
 
     ########################################
     # LEARN

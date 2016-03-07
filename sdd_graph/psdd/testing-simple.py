@@ -98,6 +98,7 @@ if __name__ == '__main__':
     copy.uniform_weights()
     for model, count in training:
         probability = copy.probability(model)
+        print probability
         if probability == 0:
             badCount += 1
         else:

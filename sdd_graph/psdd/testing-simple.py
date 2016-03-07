@@ -11,6 +11,30 @@ from pypsdd import *
 import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
+def filter_bad(dataset,copy):
+    badCount = 0
+    goodCount = 0
+    models = []
+    counts = []
+    copy.uniform_weights()
+    for model, count in dataset:
+        print model
+        evidence = DataSet.evidence(model)
+        probability = copy.probability(evidence)
+        print probability
+        if probability == 0:
+            badCount += count
+        else:
+            goodCount += count
+            models.append(model)
+            counts.append(count)
+
+    print "bad count: %d" % badCount
+    print "good count: %d" % goodCount
+
+    return DataSet.to_dict(models,counts)
+
+
 def model_str(model,n):
     """pretty print model"""
 
@@ -92,27 +116,10 @@ if __name__ == '__main__':
 
     print "3"
 
-    badCount = 0
-    goodCount = 0
-    models = []
-    counts = []
-    copy.uniform_weights()
-    for model, count in training:
-        print model
-        evidence = DataSet.evidence(model)
-        probability = copy.probability(evidence)
-        print probability
-        if probability == 0:
-            badCount += count
-        else:
-            goodCount += count
-            models.append(model)
-            counts.append(count)
 
-    training = DataSet.to_dict(models,counts)
+    training = filter_bad(training,copy)
+    testing = filter_bad(testing,copy)
 
-    print "bad count: %d" % badCount
-    print "good count: %d" % goodCount
 
     print "4"
 

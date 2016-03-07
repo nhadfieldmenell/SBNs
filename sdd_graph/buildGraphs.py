@@ -361,12 +361,12 @@ class Path(object):
             lat = normalized[1]
             lon = normalized[2]
             coords = self.graph.gps_to_coords(lat,lon)
-            print "lat: %d lon: %d min lat: %d min lon: %d max lat: %d max lon: %d)" % (lat,lon,self.graph.min_lat,self.graph.min_lon,self.graph.max_lat,self.graph.max_lon)
 
             if prev_coords != (-1,-1) and coords[0] != -1 and coords != prev_coords:
                 edge_num = self.graph.edge_num(prev_coords[0],prev_coords[1],coords[0],coords[1])
                 if edge_num == -1:
                     good_graphs[matrices_index] = False
+                print "lat: %f lon: %f min lat: %f min lon: %f max lat: %f max lon: %f)" % (lat,lon,self.graph.min_lat,self.graph.min_lon,self.graph.max_lat,self.graph.max_lon)
                 print "index: %d length: %d edge_num: %d" % (matrices_index, len(edge_sets), edge_num)
                 edge_sets[matrices_index][edge_num] = 1
 

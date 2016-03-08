@@ -515,6 +515,7 @@ def create_epochs(g,rows,cols):
         #print trip_id
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
+        print "huh"
         if p.edges[-1] == 1:
             print trip_id
             print p.edges

@@ -497,6 +497,11 @@ def create_all(graph):
         line_num = p.next_line
         trip_id = dg.normalize(lines[line_num])[0]
         p = Path(trip_id,graph,full_fn,line_num)
+        print "huh"
+        if p.edges[-1] == 1:
+            print trip_id
+            print p.edges
+            print p.path
         full_fn.close()
        # paths[trip_id] = p
     #return paths
@@ -515,11 +520,6 @@ def create_epochs(g,rows,cols):
         #print trip_id
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
-        print "huh"
-        if p.edges[-1] == 1:
-            print trip_id
-            print p.edges
-            print p.path
         epoch = int(float(i) / len(trip_list) * 10)
         #print epoch
         filename = "datasets/uber-data_%d_%d_%d.txt" % (rows,cols,epoch)

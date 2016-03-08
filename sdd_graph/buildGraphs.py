@@ -517,8 +517,8 @@ def create_epochs(g,rows,cols):
         p = Path(trip_id,g,line_num)
         epoch = int(float(i) / len(trip_list) * 10)
         #print epoch
-        print "huh"
-        if p.edges[-1] == 1:
+        out_string = str(p.edges)[1:-1]
+        if out_string[-1] == "1":
             print trip_id
             print p.edges
             print p.path

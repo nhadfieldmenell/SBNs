@@ -497,11 +497,6 @@ def create_all(graph):
         line_num = p.next_line
         trip_id = dg.normalize(lines[line_num])[0]
         p = Path(trip_id,graph,full_fn,line_num)
-        print "huh"
-        if p.edges[-1] == 1:
-            print trip_id
-            print p.edges
-            print p.path
         full_fn.close()
        # paths[trip_id] = p
     #return paths
@@ -522,6 +517,11 @@ def create_epochs(g,rows,cols):
         p = Path(trip_id,g,line_num)
         epoch = int(float(i) / len(trip_list) * 10)
         #print epoch
+        print "huh"
+        if p.edges[-1] == 1:
+            print trip_id
+            print p.edges
+            print p.path
         filename = "datasets/uber-data_%d_%d_%d.txt" % (rows,cols,epoch)
         fn = open(filename,"a")
         fn.write(str(p.edges)[1:-1])
@@ -599,9 +599,9 @@ def main():
     fiveByFiveBad = (427,457,459,481,203,208,273,501,146,182,378,456,404,12)
     tenByTenBad = (10,107,278,237,133,71)
 
-    print_some(g,tenByTenBad)
+    #print_some(g,tenByTenBad)
 
-    #create_epochs(g,rows,cols)
+    create_epochs(g,rows,cols)
     """
     trip_list = g.node2trip_ids[g.best_node]
     for i in range(220,240):#(201,327,476,493)

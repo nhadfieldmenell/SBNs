@@ -497,7 +497,7 @@ def create_all(graph):
         line_num = p.next_line
         trip_id = dg.normalize(lines[line_num])[0]
         p = Path(trip_id,graph,full_fn,line_num)
-        if p.edges[len(p.edges)-1] == 1:
+        if p.edges[-1] == 1:
             print trip_id
             print p.edges
             print p.path

@@ -527,10 +527,10 @@ def create_epochs(g,rows,cols):
         #print p.path
         #p.print_path()
     
-def print_some(g,*args):
+def print_some(g,trip_nums):
     trip_list = g.node2trip_ids[g.best_node]
     #for i in range(220,240):#(201,327,476,493)
-    for i in args:
+    for i in trip_nums:
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
@@ -592,7 +592,11 @@ def main():
     print g.best_node
     print g.node_to_coords(g.best_node)
   
-    print_some(g,427,457,459,481,203,208,273,501,146,182,378,456,404,12)
+    fiveByFiveBad = (427,457,459,481,203,208,273,501,146,182,378,456,404,12)
+    tenByTenBad = (10,107,278,237,133,71)
+
+    print_some(g,tenByTenBad)
+
     #create_epochs(g,rows,cols)
     """
     trip_list = g.node2trip_ids[g.best_node]

@@ -497,6 +497,10 @@ def create_all(graph):
         line_num = p.next_line
         trip_id = dg.normalize(lines[line_num])[0]
         p = Path(trip_id,graph,full_fn,line_num)
+        if p.edges[len(p.edges)-1] == 1:
+            print trip_id
+            print p.edges
+            print p.path
         full_fn.close()
        # paths[trip_id] = p
     #return paths
@@ -529,7 +533,6 @@ def create_epochs(g,rows,cols):
     
 def print_some(g,trip_nums):
     trip_list = g.node2trip_ids[g.best_node]
-    #for i in range(220,240):#(201,327,476,493)
     for i in trip_nums:
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]

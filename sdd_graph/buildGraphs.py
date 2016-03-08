@@ -597,7 +597,7 @@ def main():
     print g.node_to_coords(g.best_node)
   
     fiveByFiveBad = (427,457,459,481,203,208,273,501,146,182,378,456,404,12)
-    tenByTenBad = (10,107,278,237,133,71)
+    tenByTenBad = (133,256,10,278,203,166,221)
 
     #print_some(g,tenByTenBad)
 

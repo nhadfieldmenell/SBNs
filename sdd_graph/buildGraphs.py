@@ -599,7 +599,7 @@ def main():
     fiveByFiveBad = (427,457,459,481,203,208,273,501,146,182,378,456,404,12)
     tenByTenBad = (133,256,10,278,203,166,221,177,191,115,297,281,78,89,180)
 
-    print_some(g,tenByTenBad)
+    print_some(g,fiveByFiveBad)
 
     #create_epochs(g,rows,cols)
     """

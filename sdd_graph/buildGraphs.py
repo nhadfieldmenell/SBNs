@@ -499,6 +499,7 @@ def create_all(graph):
         p = Path(trip_id,graph,full_fn,line_num)
         full_fn.close()
        # paths[trip_id] = p
+    graph.trip_id2line_num[trip_id] = line_num
     #return paths
         
 

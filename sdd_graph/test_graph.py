@@ -119,7 +119,7 @@ class Graph:
         return edges
 
 def draw_grid(model,m,n,g):
-    edge_filename = 'edge-nums-%d-%d.pickle' % (m,n)
+    edge_filename = 'graphs/edge-nums-%d-%d.pickle' % (m,n)
     edge2index = pickle.load(open(edge_filename,'rb'))
     for i in xrange(m):
         for j in xrange(n):

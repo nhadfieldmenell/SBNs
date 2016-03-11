@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import sys
 import random
+import pickle
 from collections import defaultdict
 import numpy as np
 import decodeGps as dg
@@ -32,6 +33,9 @@ class Graph(object):
         self.max_lat = max_lat
         self.max_lon = max_lon
 
+        edge_filename = 'graphs/edge-nums-%d-%d.pickle' % (m,n)
+        self.edge2index = pickle.load(open(edge_filename,'rb'))
+
         self.lat_step = float((max_lat-min_lat)/rows)
         self.lon_step = float((max_lon-min_lon)/cols)
 
@@ -59,11 +63,15 @@ class Graph(object):
             self.node2trip_ids[node_num].append(trip_id)
 
 
-    
     def edge_num(self,row1,col1,row2,col2):
         """Determines the edge number between two points.
 
+        THIS METHOD DOES NOT WORK WITH ACTUAL GRAPH ORDERING BECAUSE GRAPHILLION HAS A BUG AND DOESN'T ORDER EDGES LOGICALLY
+
         The method determines which point comes first.
+
+        These numberings are not correct because of graphillion bug
+        vvvvvvvvvvvvvvvvvvvvvvvv
 
         This representation
             X 0 X 2 X
@@ -104,8 +112,11 @@ class Graph(object):
         if not ((row == row_n and col == col_n - 1) or (row == row_n-1 and col == col_n)):
             return - 1
         
-        edge_number = 0
-
+        node1 = row*self.rows+col+1
+        node2 = row_n*self.rows_n+col_n+1
+        edge_number = self.edge2index[(node1,node2)]
+        """
+        #THIS DOWN HERE WOULD WORK IF GRAPHILLION NUMBERED EDGES CORRECTLY BUT IT DOESNT
         #print "(%d,%d) (%d,%d)" % (row,col,row_n,col_n)
         if row + col < self.cols - 1:
             if col_n == col + 1: 
@@ -126,6 +137,7 @@ class Graph(object):
                 #print "(%d,%d) (%d,%d)" % (row, col, row + 1, col)
                 edge_number = self.diags[row + col] + 2 * col_dist
                 #edges[edge_number] = 1
+        """
 
         return edge_number
 

@@ -2,6 +2,7 @@
 
 from time import time
 import sys
+import pickle
 
 import sdd
 #from structure import cardinality
@@ -118,18 +119,28 @@ class Graph:
         return edges
 
 def draw_grid(model,m,n,g):
+    edge_filename = 'edge-nums-%d-%d.pickle' % (m,n)
+    edge2index = pickle.load(open(edge_filename,'rb'))
     for i in xrange(m):
         for j in xrange(n):
             sys.stdout.write('.')
             if j < n-1:
+                """
                 edge = ((i,j),(i,j+1))
                 index = g.edge_to_index[edge] + 1
+                """
+                edge = (i*m+j+1,i*m+j+2)
+                index = edge2index[edge]
                 sys.stdout.write('-' if model[index] else ' ')
         sys.stdout.write('\n')
         if i < m-1:
             for j in xrange(n):
+                """
                 edge = ((i,j),(i+1,j))
                 index = g.edge_to_index[edge] + 1
+                """
+                edge = (i*m+j+1,i*m+i+j+1)
+                index = edge2index[edge]
                 sys.stdout.write('|' if model[index] else ' ')
                 sys.stdout.write(' ')
         sys.stdout.write('\n')

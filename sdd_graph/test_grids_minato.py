@@ -82,7 +82,7 @@ if __name__ == '__main__':
     pathsThruMidpoint = paths.including(midpoint)
     #tl.draw(pathsThruMidpoint.choice())
     print "number of paths through midpoint: " + str(pathsThruMidpoint.len())
-    for i in range(len(paths.universe)):
+    for i in range(len(paths.universe())):
         print "%d: %s" % (i+1,paths.universe()[i])
     #print paths.universe()
     #for p in pathsThruMidpoint:

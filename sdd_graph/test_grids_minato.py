@@ -56,7 +56,7 @@ def print_edge_numbering(universe,rows,cols):
             if edge_num < 10:
                 sys.stdout.write(" ")
         sys.stdout.write("O\n\n")
-        if row == len(rows-1):
+        if row == len(rows)-1:
             break
         for col in range(cols):
             node = row*cols+col+1

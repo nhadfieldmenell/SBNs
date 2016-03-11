@@ -149,7 +149,7 @@ if __name__ == '__main__':
     tuple2edge = {}
     for i in range(len(universe)):
         tuple2edge[universe[i]] = i+1
-    edge_filename = "graphs/edge-nums-%d-%d" % dim
+    edge_filename = "graphs/edge-nums-%d-%d.pickle" % dim
     with open(edge_filename,'wb') as output:
         pickle.dump(tuple2edge,output)
 

@@ -139,7 +139,7 @@ def draw_grid(model,m,n,g):
                 edge = ((i,j),(i+1,j))
                 index = g.edge_to_index[edge] + 1
                 """
-                edge = (i*m+j+1,i*m+i+j+1)
+                edge = (i*m+j+1,i*m+m+j+1)
                 index = edge2index[edge]
                 sys.stdout.write('|' if model[index] else ' ')
                 sys.stdout.write(' ')

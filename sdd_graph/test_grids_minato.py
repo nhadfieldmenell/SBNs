@@ -52,7 +52,7 @@ def print_edge_numbering(universe,rows,cols):
             sys.stdout.write("O ")
             if edge_num < 100:
                 sys.stdout.write(" ")
-            sys.stdout.write("%d  ")
+            sys.stdout.write("%d  " % edge_num)
             if edge_num < 10:
                 sys.stdout.write(" ")
         sys.stdout.write("\n\n")
@@ -61,7 +61,7 @@ def print_edge_numbering(universe,rows,cols):
             next_node = node+cols
             edge = (node,next_node)
             edge_num = tuple2edge[edge]
-            sys.stdout.write("%d   " )
+            sys.stdout.write("%d   " % edge_num)
             if edge_num < 100:
                 sys.stdout.write(" ")
                 if edge_num < 10:

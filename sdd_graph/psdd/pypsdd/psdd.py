@@ -52,6 +52,53 @@ class PSddNode(SddNode):
                     self.theta[element] = count
                     self.theta_sum += count
 
+    def mpe(self,evidence={},clear_data=True):
+        self.linearize()
+        for node in self.array:
+            if node.is_false() or node.is_false_sdd:
+                mpe_val = 0
+                mpe_ind = None
+            elif node.vtree.is_leaf():
+                if node.vtree.var in evidence:
+                    val = evidence[node.vtree.var]
+                    mpe_val = node.theta[val]
+                    mpe_ind = val
+                else:
+                    mpe_val = max(node.theta)
+                    mpe_ind = node.theta.index(mpe_val)
+            else: # node.is_decomposition()
+                if node.theta_sum == 0.0: continue
+                mpe_val = 0.0
+                mpe_ind = None
+                for element in node.elements:
+                    prime,sub = element
+                    if sub.is_false_sdd: continue
+                    theta = node.theta[element]
+                    pval = prime.data[0]/prime.theta_sum
+                    sval = sub.data[0]/sub.theta_sum
+                    val = pval*sval*theta
+                    if val > mpe_val:
+                        mpe_val = val
+                        mpe_ind = element
+            node.data = (mpe_val,mpe_ind)
+
+        mpe_inst = dict(evidence)
+        queue = deque()
+        queue.append( node )
+        while queue:
+            node = queue.popleft()
+            if node.vtree.is_leaf():
+                var,val = node.vtree.var,node.data[1]
+                mpe_inst[var] = val
+            else:
+                prime,sub = node.data[1]
+                queue.append( prime )
+                queue.append( sub )
+
+        if clear_data:
+            for node in self.array: node.data = None
+        return mpe_val,mpe_inst
+
     def uniform_weights(self,scale=1.0):
         """uniform prior over SDD models"""
         self.linearize()

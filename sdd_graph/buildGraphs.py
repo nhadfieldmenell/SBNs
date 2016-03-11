@@ -519,10 +519,18 @@ def create_epochs(g,rows,cols):
         epoch = int(float(i) / len(trip_list) * 10)
         #print epoch
         out_string = str(p.edges)[1:-1]
+        """
         if out_string[-1] == "1":
             print trip_id
             print p.edges
             print p.path
+        """
+        rand_num = random.randrange()*10
+        if random_num >= 9:
+            print "random: %d" trip_id
+            print p.edges
+            print p.path
+
         filename = "datasets/uber-data_%d_%d_%d.txt" % (rows,cols,epoch)
         fn = open(filename,"a")
         fn.write(str(p.edges)[1:-1])

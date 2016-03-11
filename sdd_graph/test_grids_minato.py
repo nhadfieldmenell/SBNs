@@ -38,6 +38,39 @@ def save_grid_graph(filename,graph):
     with open(filename,'wb') as output:
         pickle.dump(graph,output)
 
+def print_edge_numbering(universe,rows,cols):
+    tuple2edge = {}
+    for i in range(len(universe)):
+        tuple2edge[universe[i]] = i+1
+
+    for row in range(rows):
+        for col in range(cols-1):
+            node = row*cols+col+1
+            next_node = node+1
+            edge = (node,next_node)
+            edge_num = tuple2edge[edge]
+            sys.stdout.write("O ")
+            if edge_num < 100:
+                sys.stdout.write(" ")
+            sys.stdout.write("%d  ")
+            if edge_num < 10:
+                sys.stdout.write(" ")
+        sys.stdout.write("\n\n")
+        for col in range(cols):
+            node = row*cols+col+1
+            next_node = node+cols
+            edge = (node,next_node)
+            edge_num = tuple2edge[edge]
+            sys.stdout.write("%d   " )
+            if edge_num < 100:
+                sys.stdout.write(" ")
+                if edge_num < 10:
+                    sys.stdout.write(" ")
+        sys.stdout.write("\n\n")
+
+
+
+
 ########################################
 # MAIN
 ########################################
@@ -82,8 +115,7 @@ if __name__ == '__main__':
     pathsThruMidpoint = paths.including(midpoint)
     #tl.draw(pathsThruMidpoint.choice())
     print "number of paths through midpoint: " + str(pathsThruMidpoint.len())
-    for i in range(len(paths.universe())):
-        sys.stdout.write("%d: %s" % (i+1,paths.universe()[i]))
+    print_edge_numbering(paths.universe(),dim[0],dim[1])
     #print paths.universe()
     #for p in pathsThruMidpoint:
     #    print p

@@ -527,10 +527,12 @@ def create_epochs(g,rows,cols):
             print p.path
         """
         rand_num = random.random()*10
+        """
         if rand_num >= 9:
             print "random: %d" % trip_id
             print p.edges
             print p.path
+        """
 
         filename = "datasets/uber-data_%d_%d_%d.txt" % (rows,cols,epoch)
         fn = open(filename,"a")

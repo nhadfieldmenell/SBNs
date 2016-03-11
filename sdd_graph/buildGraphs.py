@@ -622,12 +622,12 @@ def main():
     print g.node_to_coords(g.best_node)
   
     fourBad = (109,553,416,194,558,629,179,216)
-    fiveByFiveBad = (427,457,459,481,203,208,273,501,146,182,378,456,404,12)
+    fiveByFiveBad = (104,158,45,404,399,140,203,397,146)
     tenByTenBad = (133,256,10,278,203,166,221,177,191,115,297,281,78,89,180)
 
-    #print_some(g,fourBad)
+    print_some(g,fourBad)
 
-    create_epochs(g,rows,cols)
+    #create_epochs(g,rows,cols)
     """
     trip_list = g.node2trip_ids[g.best_node]
     for i in range(220,240):#(201,327,476,493)

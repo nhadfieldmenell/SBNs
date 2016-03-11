@@ -115,7 +115,7 @@ class Graph(object):
         node1 = row*self.rows+col+1
         node2 = row_n*self.rows+col_n+1
         edge_number = self.edge2index[(node1,node2)] - 1
-        print "%s %s: %d" % (str(node1),str(node2),edge_number)
+        #print "%s %s: %d" % (str(node1),str(node2),edge_number)
         """
         #THIS DOWN HERE WOULD WORK IF GRAPHILLION NUMBERED EDGES CORRECTLY BUT IT DOESNT
         #print "(%d,%d) (%d,%d)" % (row,col,row_n,col_n)

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys
+import random
 from collections import defaultdict
 import numpy as np
 import decodeGps as dg

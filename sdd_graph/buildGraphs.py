@@ -113,7 +113,7 @@ class Graph(object):
             return - 1
         
         node1 = row*self.rows+col+1
-        node2 = row_n*self.rows_n+col_n+1
+        node2 = row_n*self.rows+col_n+1
         edge_number = self.edge2index[(node1,node2)]
         """
         #THIS DOWN HERE WOULD WORK IF GRAPHILLION NUMBERED EDGES CORRECTLY BUT IT DOESNT

@@ -115,6 +115,7 @@ if __name__ == '__main__':
             paths = GraphSet.union(paths,GraphSet.paths(i,j))
 
     pathsThruMidpoint = paths.including(midpoint)
+
     #tl.draw(pathsThruMidpoint.choice())
     print "number of paths through midpoint: " + str(pathsThruMidpoint.len())
     print_edge_numbering(paths.universe(),dim[0],dim[1])
@@ -144,6 +145,13 @@ if __name__ == '__main__':
     import pickle
     with open(graph_filename,'wb') as output:
         pickle.dump(graph,output)
+
+    tuple2edge = {}
+    for i in range(len(universe)):
+        tuple2edge[universe[i]] = i+1
+    edge_filename = "graphs/edge-nums-%d-%d" % dim
+    with open(edge_filename,'wb') as output:
+        pickle.dump(tuple2edge,output)
 
 
     #sdd_filename = "output/paths/paths-%d.sdd" % dimension

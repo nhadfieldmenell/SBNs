@@ -527,7 +527,7 @@ def create_epochs(g,rows,cols):
         """
         rand_num = random.randrange()*10
         if random_num >= 9:
-            print "random: %d" trip_id
+            print "random: %d" % trip_id
             print p.edges
             print p.path
 

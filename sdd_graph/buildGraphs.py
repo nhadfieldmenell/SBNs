@@ -33,7 +33,7 @@ class Graph(object):
         self.max_lat = max_lat
         self.max_lon = max_lon
 
-        edge_filename = 'graphs/edge-nums-%d-%d.pickle' % (m,n)
+        edge_filename = 'graphs/edge-nums-%d-%d.pickle' % (self.rows,self.cols)
         self.edge2index = pickle.load(open(edge_filename,'rb'))
 
         self.lat_step = float((max_lat-min_lat)/rows)

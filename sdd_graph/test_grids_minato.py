@@ -147,6 +147,7 @@ if __name__ == '__main__':
         pickle.dump(graph,output)
 
     tuple2edge = {}
+    universe = paths.universe()
     for i in range(len(universe)):
         tuple2edge[universe[i]] = i+1
     edge_filename = "graphs/edge-nums-%d-%d.pickle" % dim

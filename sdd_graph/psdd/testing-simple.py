@@ -42,7 +42,7 @@ def create_epochs(rows,cols,num_epochs,copy):
     Returns:
         a list of datasets, all the same size.
     """
-    filename = "full_data_%d_%d.txt"%(rows,cols)
+    filename = "../datasets/full_data_%d_%d.txt"%(rows,cols)
     file = open(filename,"r")
     lines = file.readlines()
     random.shuffle(lines)

@@ -5,6 +5,7 @@ import time
 import glob
 import sys
 
+
 from pypsdd import *
 
 # for printing numbers with commas
@@ -113,6 +114,11 @@ if __name__ == '__main__':
         epoch_name = "../datasets/uber-data_%d_%d_%d.txt" % (rows,cols,i)
         epoch = filter_bad(DataSet.read(epoch_name),copy)
         epochs.append(epoch)
+
+    just_one = DataSet.read("../datasets/uber-data_%d_%d_0.txt")
+    print just_one
+
+    return
 
  
     """

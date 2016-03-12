@@ -527,7 +527,7 @@ def single_epoch(g,rows,cols):
     """
 
     trip_list = g.node2trip_ids[g.best_node]
-    out_file = open("full_data_%d_%d.txt" % (rows,cols),'w')
+    out_file = open("datasets/full_data_%d_%d.txt" % (rows,cols),'w')
     for i in range(len(trip_list)):
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]

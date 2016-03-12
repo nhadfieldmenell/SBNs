@@ -115,11 +115,6 @@ if __name__ == '__main__':
         epoch = filter_bad(DataSet.read(epoch_name),copy)
         epochs.append(epoch)
 
-    just_one = DataSet.read("../datasets/uber-data_%d_%d_0.txt")
-    print just_one
-
-    return
-
  
     """
     epochs = [epoch0,epoch1,epoch2,epoch3,epoch4,epoch5,epoch6,epoch7,epoch8,epoch9]

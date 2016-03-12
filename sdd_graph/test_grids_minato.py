@@ -71,6 +71,14 @@ def print_edge_numbering(universe,rows,cols):
         sys.stdout.write("\n\n")
 
 
+def create_edge_to_index(paths,dim):
+    tuple2edge = {}
+    universe = paths.universe()
+    for i in range(len(universe)):
+        tuple2edge[universe[i]] = i
+    edge_filename = "graphs/edge-nums-%d-%d.pickle" % dim
+    with open(edge_filename,'wb') as output:
+        pickle.dump(tuple2edge,output)
 
 
 ########################################
@@ -146,6 +154,7 @@ if __name__ == '__main__':
     with open(graph_filename,'wb') as output:
         pickle.dump(graph,output)
 
+    """
     tuple2edge = {}
     universe = paths.universe()
     for i in range(len(universe)):
@@ -153,7 +162,7 @@ if __name__ == '__main__':
     edge_filename = "graphs/edge-nums-%d-%d.pickle" % dim
     with open(edge_filename,'wb') as output:
         pickle.dump(tuple2edge,output)
-
+    """
 
     #sdd_filename = "output/paths/paths-%d.sdd" % dimension
     #sdd_vtree_filename = "output/paths/paths-%d.vtree" % dimension

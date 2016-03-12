@@ -17,6 +17,7 @@ def main():
     GraphSet.set_universe(universe)
     paths = GraphSet()
     grid.print_edge_numbering(paths.universe(),dim[0],dim[1])
+    grid.create_edge_to_index(paths,dim)
 
 if __name__ == '__main__':
     main()

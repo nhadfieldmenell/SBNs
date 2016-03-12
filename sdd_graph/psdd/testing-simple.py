@@ -143,7 +143,7 @@ if __name__ == '__main__':
     print "         training: %d unique, %d instances" % (len(training),training.N)
     print "          testing: %d unique, %d instances" % (len(testing),testing.N)
     """
-   """ 
+    """ 
     epochs = []
     num_epochs = 10
     for i in range(num_epochs):
@@ -151,7 +151,7 @@ if __name__ == '__main__':
         epoch = filter_bad(DataSet.read(epoch_name),copy)
         epochs.append(epoch)
 
- """
+    """
     """
     epochs = [epoch0,epoch1,epoch2,epoch3,epoch4,epoch5,epoch6,epoch7,epoch8,epoch9]
     """

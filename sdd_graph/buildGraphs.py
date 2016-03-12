@@ -40,7 +40,8 @@ class Graph(object):
         self.lon_step = float((max_lon-min_lon)/cols)
 
         self.diags = self.create_diags()
-        self.num_edges = self.diags[self.rows+self.cols-2]
+        self.num_edges = self.rows*(self.cols-1) + self.cols*(self.rows-1)  #self.diags[self.rows+self.cols-2]
+        print "num edges: %d" % self.num_edges
         self.node2visited = defaultdict(int) 
         self.node2trip_ids = defaultdict(list)
         self.best_node = 1
@@ -178,8 +179,8 @@ class Graph(object):
         for i in range(1,num_diags+1):
             diag_full[i] = diag_full[i-1] + diag_counts[i-1]
 
-        print diag_counts
-        print diag_full
+        #print diag_counts
+        #print diag_full
         return diag_full
 
 

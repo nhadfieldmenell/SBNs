@@ -517,6 +517,26 @@ def create_all(graph):
     #return paths
         
 
+def single_epoch(g,rows,cols):
+    """Create a single epoch of data.
+
+    Outputs a text file with all of the edge instatniations for all trips that pass through the best point.
+
+    Returns:
+        Nothing
+    """
+
+    trip_list = g.node2trip_ids[g.best_node]
+    out_file = open("full_data_%d_%d.txt" % (rows,cols),'w')
+    for i in range(len(trip_list)):
+        trip_id = trip_list[i]
+        line_num = g.trip_id2line_num[trip_id]
+        p = Path(trip_id,g,line_num)
+        out_string = str(p.edges)[1:-1]
+        out_file.write("%s\n",out_string)
+
+    out_file.close()
+
 def create_epochs(g,rows,cols):
     """ Create Epochs of Data """
     trip_list = g.node2trip_ids[g.best_node]
@@ -626,47 +646,10 @@ def main():
     sixBad = (353,105,476,455,166+482,5+482,84+482)
     tenBad = (133,256,10,278,203,166,221,177,191,115,297,281,78,89,180)
 
-    print_some(g,sixBad)
+    #print_some(g,sixBad)
 
-    create_epochs(g,rows,cols)
-    """
-    trip_list = g.node2trip_ids[g.best_node]
-    for i in range(220,240):#(201,327,476,493)
-        trip_id = trip_list[i]
-        line_num = g.trip_id2line_num[trip_id]
-        p = Path(trip_id,g,line_num)
-        print trip_id
-        print p.edges
-        print p.path
-        p.print_path()
-       """ 
+    create_full(g,rows,cols)
 
-    """ Create Epochs of Data """
-    """
-    trip_list = g.node2trip_ids[g.best_node]
-    for i in range(10):
-        filename = "datasets/uber-data_%d_%d_%d.txt" % (rows,cols,i)
-        fn = open(filename,"w")
-        fn.close()
-
-    for i in range(len(trip_list)):
-        trip_id = trip_list[i]
-        #print trip_id
-        line_num = g.trip_id2line_num[trip_id]
-        p = Path(trip_id,g,line_num)
-        epoch = int(float(i) / len(trip_list) * 10)
-        #print epoch
-        filename = "datasets/uber-data_%d_%d_%d.txt" % (rows,cols,epoch)
-        fn = open(filename,"a")
-        fn.write(str(p.edges)[1:-1])
-        fn.write("\n")
-        fn.close()
-        
-        #print p.trip_id
-        #print p.path
-        #p.print_path()
-    
-    """
     return
 
     trips = dg.createTrips(orig_fn)
@@ -687,14 +670,6 @@ def main():
     full_fn = open('csvGPS.txt','r')
     #print g.gps_to_coords(try_lat,try_lon)
 
-    for i in range(10,25):
-        full_fn.close()
-        full_fn = open('csvGPS.txt','r')
-        p = Path(trips_with_point[i],g,full_fn)
-        p.print_path()
-
-    #trip_id = int(sys.argv[1])
-    #p = Path(trip_id,g,full_fn)
     
 if __name__ == '__main__':
     main()

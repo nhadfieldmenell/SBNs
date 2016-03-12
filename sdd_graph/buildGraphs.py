@@ -637,7 +637,7 @@ def main():
     tenBad = (133,256,10,278,203,166,221,177,191,115,297,281,78,89,180)
 
 
-    print_some(g,fiveBad)
+    #print_some(g,fiveBad)
 
     single_epoch(g,rows,cols)
 

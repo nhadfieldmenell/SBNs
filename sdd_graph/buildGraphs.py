@@ -648,7 +648,7 @@ def main():
 
     #print_some(g,sixBad)
 
-    create_full(g,rows,cols)
+    single_epoch(g,rows,cols)
 
     return
 

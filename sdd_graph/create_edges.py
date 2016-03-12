@@ -14,8 +14,9 @@ def main():
     from graphillion import GraphSet
     import graphillion.tutorial as tl
     universe = tl.grid(*dimension)
-    print universe
-    grid.print_edge_numbering(universe,dim[0],dim[1])
+    GraphSet.set_universe(universe)
+    paths.GraphSet()
+    grid.print_edge_numbering(paths.universe(),dim[0],dim[1])
 
 if __name__ == '__main__':
     main()

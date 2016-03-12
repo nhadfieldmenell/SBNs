@@ -121,7 +121,12 @@ if __name__ == '__main__':
     for i in range(num_epochs):
         epoch_name = "../datasets/uber-data_%d_%d_%d.txt" % (rows,cols,i)
         epoch = filter_bad(DataSet.read(epoch_name),copy)
-        print epoch
+        lala = DataSet.read(epoch_name)
+        print lala
+        random.shuffle(lala)
+        print "shuffled"
+        print lala
+        
         epochs.append(epoch)
 
     

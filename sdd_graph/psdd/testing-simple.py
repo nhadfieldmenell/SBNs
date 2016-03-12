@@ -34,14 +34,42 @@ def filter_bad(dataset,copy):
 
     return DataSet.to_dict(models,counts)
 
-def create_epochs(dataset,num_epochs):
-    models = []
-    for i in range(num_epochs):
-        models.append([])
+def create_epochs(rows,cols,num_epochs,copy):
+    """Creates a list of datasets, each of the same size and with randomized data.
+
+    Randomize the data and create num_epochs datasets, each of the same size.
+
+    Returns:
+        a list of datasets, all the same size.
+    """
+    filename = "full_data_%d_%d.txt"%(rows,cols)
+    file = open(filename,"r")
+    lines = file.readlines()
+    random.shuffle(lines)
+    file.close()
+    file = open(filename,"w")
+    for i in lines:
+        file.write(str(i))
+    file.close()
+    dataset = DataSet.read(filename)
+    goods = filter_bad(dataset,copy)
     counter = 0
-    print dataset
-    for model,count in dataset:
-        continue
+    models = [[] for i in range(num_epochs)]
+    counts = [[] for i in range(num_epochs)]
+    for model, count in goods:
+        for i in range(count):
+            index = counter % num_epochs
+            models[index].append(model)
+            counts[index].append(1)
+            counter += 1
+
+    sets = []
+    for i in range(num_epochs):
+        sets.append(DataSet.to_dict(models[i],counts[i]))
+
+    return sets
+
+
 
 def model_str(model,n):
     """pretty print model"""
@@ -115,25 +143,20 @@ if __name__ == '__main__':
     print "         training: %d unique, %d instances" % (len(training),training.N)
     print "          testing: %d unique, %d instances" % (len(testing),testing.N)
     """
-    
+   """ 
     epochs = []
     num_epochs = 10
     for i in range(num_epochs):
         epoch_name = "../datasets/uber-data_%d_%d_%d.txt" % (rows,cols,i)
         epoch = filter_bad(DataSet.read(epoch_name),copy)
-        lala = DataSet.read(epoch_name)
-        print lala
-        random.shuffle(lala)
-        print "shuffled"
-        print lala
-        
         epochs.append(epoch)
 
-    
-
+ """
     """
     epochs = [epoch0,epoch1,epoch2,epoch3,epoch4,epoch5,epoch6,epoch7,epoch8,epoch9]
     """
+    
+    epochs = create_epochs(rows,cols,10,copy)
 
     totalLL = 0
 

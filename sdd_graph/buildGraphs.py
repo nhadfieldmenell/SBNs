@@ -648,6 +648,7 @@ def main():
 
     #print_some(g,sixBad)
 
+    create_epochs(g,rows,cols)
     single_epoch(g,rows,cols)
 
     return

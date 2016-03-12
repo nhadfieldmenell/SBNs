@@ -39,7 +39,7 @@ class Graph(object):
         self.lat_step = float((max_lat-min_lat)/rows)
         self.lon_step = float((max_lon-min_lon)/cols)
 
-        self.diags = self.create_diags()
+        #self.diags = self.create_diags()
         self.num_edges = self.rows*(self.cols-1) + self.cols*(self.rows-1)  #self.diags[self.rows+self.cols-2]
         print "num edges: %d" % self.num_edges
         self.node2visited = defaultdict(int) 
@@ -650,6 +650,8 @@ def main():
 
 
     print_some(g,sevenBad)
+    print "these should be good"
+    print_some(g,sixBad)
 
     create_epochs(g,rows,cols)
     single_epoch(g,rows,cols)

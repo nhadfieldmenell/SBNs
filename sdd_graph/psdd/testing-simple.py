@@ -4,7 +4,7 @@ import math
 import time
 import glob
 import sys
-
+import random
 
 from pypsdd import *
 
@@ -34,6 +34,14 @@ def filter_bad(dataset,copy):
 
     return DataSet.to_dict(models,counts)
 
+def create_epochs(dataset,num_epochs):
+    models = []
+    for i in range(num_epochs):
+        models.append([])
+    counter = 0
+    print dataset
+    for model,count in dataset:
+        continue
 
 def model_str(model,n):
     """pretty print model"""
@@ -113,9 +121,11 @@ if __name__ == '__main__':
     for i in range(num_epochs):
         epoch_name = "../datasets/uber-data_%d_%d_%d.txt" % (rows,cols,i)
         epoch = filter_bad(DataSet.read(epoch_name),copy)
+        print epoch
         epochs.append(epoch)
 
- 
+    
+
     """
     epochs = [epoch0,epoch1,epoch2,epoch3,epoch4,epoch5,epoch6,epoch7,epoch8,epoch9]
     """

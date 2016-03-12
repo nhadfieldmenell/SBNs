@@ -43,15 +43,16 @@ def create_epochs(rows,cols,num_epochs,copy):
         a list of datasets, all the same size.
     """
     filename = "../datasets/full_data_%d_%d.txt"%(rows,cols)
+    shuffled = "../datasets/shuffled_data_%d_%d.txt"%(rows,cols)
     file = open(filename,"r")
     lines = file.readlines()
     random.shuffle(lines)
     file.close()
-    file = open(filename,"w")
+    file = open(shuffled,"w")
     for i in lines:
         file.write(str(i))
     file.close()
-    dataset = DataSet.read(filename)
+    dataset = DataSet.read(shuffled)
     goods = filter_bad(dataset,copy)
     counter = 0
     models = [[] for i in range(num_epochs)]

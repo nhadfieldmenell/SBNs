@@ -297,7 +297,7 @@ class Path(object):
 
         grid = tg.Graph.grid_graph(self.graph.rows,self.graph.cols)
         #tg.draw_grid(self.draw_edges_alt,self.graph.rows,self.graph.cols,grid)
-        tg.draw_grid(self.draw_edges,self.graph.rows,self.graph.cols,grid)
+        tg.draw_grid(self.edges,self.graph.rows,self.graph.cols,grid)
         
 
 

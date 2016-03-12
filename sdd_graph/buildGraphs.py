@@ -533,7 +533,7 @@ def single_epoch(g,rows,cols):
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
         out_string = str(p.edges)[1:-1]
-        out_file.write("%s\n",out_string)
+        out_file.write("%s\n" % out_string)
 
     out_file.close()
 

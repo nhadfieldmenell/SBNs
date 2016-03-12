@@ -16,3 +16,6 @@ def main():
     universe = tl.grid(*dimension)
     print universe
     GraphSet.set_universe(universe)
+
+if __name__ == '__main__':
+    main()

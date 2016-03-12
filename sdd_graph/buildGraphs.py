@@ -645,9 +645,11 @@ def main():
     fourBad = (109,553,416,194,558,629,179,216)
     fiveBad = (104,158,45,404,399,140,203,397,146)
     sixBad = (353,105,476,455,166+482,5+482,84+482)
+    sevenBad = (291,229,243,363,345)
     tenBad = (133,256,10,278,203,166,221,177,191,115,297,281,78,89,180)
 
-    #print_some(g,sixBad)
+
+    print_some(g,sevenBad)
 
     create_epochs(g,rows,cols)
     single_epoch(g,rows,cols)

@@ -92,7 +92,7 @@ if __name__ == '__main__':
     vtree_filename = '../graphs/asdf-%d-%d.vtree' % (rows,cols)
     sdd_filename = '../graphs/asdf-%d-%d.sdd' % (rows,cols)
 
-    psi,scale = 2.0,None # learning hyper-parameters
+    psi,scale = None,16.0 # learning hyper-parameters
     N,M = 2**10,2**10 # size of training/testing dataset
     em_max_iters = 10 # maximum # of iterations for EM
     em_threshold = 1e-4 # convergence threshold
@@ -237,7 +237,6 @@ if __name__ == '__main__':
 
         print "== TESTING =="
         ll = copy.log_likelihood_alt(testing)
-        lprior = copy.log_prior(psi=psi,scale=scale)
         totalLL += ll/testing.N
         print "   testing: %d unique, %d instances" % (len(testing),testing.N)
         print "   log likelihood: %.8f" % (ll/testing.N)

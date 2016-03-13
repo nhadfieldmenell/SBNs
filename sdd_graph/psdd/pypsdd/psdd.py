@@ -52,7 +52,7 @@ class PSddNode(SddNode):
                     self.theta[element] = count
                     self.theta_sum += count
 
-   @staticmethod
+    @staticmethod
     def kl(pr1,pr2):
         kl = 0.0
         for p1,p2 in zip(pr1,pr2):

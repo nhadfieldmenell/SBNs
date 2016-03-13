@@ -52,6 +52,36 @@ class PSddNode(SddNode):
                     self.theta[element] = count
                     self.theta_sum += count
 
+	@staticmethod
+    def kl(pr1,pr2):
+        kl = 0.0
+        for p1,p2 in zip(pr1,pr2):
+            if p1 == 0.0: continue
+            kl += p1 * math.log(p1/p2)
+        if kl < 0.0: kl = 0.0
+        return kl
+
+    """kl divergence between current and backup parameters
+    assumes backup_theta and marginals has been called"""
+    def kl_psdd(self):
+        self.linearize()
+        kl = 0.0
+        for node in self.array:
+            if node.pr_node == 0.0: continue
+            if node.is_false():
+                pass
+            elif node.vtree.is_leaf():
+                pr1 = [ p/node.theta_sum for p in node.theta ]
+                pr2 = [ p/node.backup_theta_sum for p in node.backup_theta ]
+                kl += node.pr_node * PSddNode.kl(pr1,pr2)
+            else: # decomposition
+                pr1 = [ node.theta[element]/node.theta_sum for
+                        element in node.elements ]
+                pr2 = [ node.backup_theta[element]/node.backup_theta_sum for
+                        element in node.elements ]
+                kl += node.pr_node * PSddNode.kl(pr1,pr2)
+        return kl
+
     def mpe(self,evidence={},clear_data=True):
         self.linearize()
         for node in self.array:

@@ -112,12 +112,6 @@ if __name__ == '__main__':
     pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
     print "1"
 
-    print "         sdd size: %d" % sdd.size()
-    print "           sdd nc: %d" % sdd.node_count()
-    print "        psdd size: %d" % copy.size()
-    print "          psdd nc: %d" % copy.node_count()
-    print "  psdd parameters: %d" % copy.theta_count()
-    print "       psdd trues: %d" % copy.true_count()
 
     psdd_parameters = copy.theta_count()
 
@@ -174,9 +168,14 @@ if __name__ == '__main__':
     print "3"
 
 
+    print "         sdd size: %d" % sdd.size()
+    print "           sdd nc: %d" % sdd.node_count()
+    print "        psdd size: %d" % copy.size()
+    print "          psdd nc: %d" % copy.node_count()
+    print "  psdd parameters: %d" % copy.theta_count()
+    print "       psdd trues: %d" % copy.true_count()
 
 
-    print "4"
 
     ########################################
     # LEARN

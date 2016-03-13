@@ -112,14 +112,14 @@ if __name__ == '__main__':
     pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
     print "1"
 
-    """
     print "         sdd size: %d" % sdd.size()
     print "           sdd nc: %d" % sdd.node_count()
     print "        psdd size: %d" % copy.size()
     print "          psdd nc: %d" % copy.node_count()
     print "  psdd parameters: %d" % copy.theta_count()
     print "       psdd trues: %d" % copy.true_count()
-    """
+
+    psdd_parameters = copy.theta_count()
 
     for alpha in [sdd,copy]:
         start = time.time()
@@ -157,7 +157,8 @@ if __name__ == '__main__':
     epochs = [epoch0,epoch1,epoch2,epoch3,epoch4,epoch5,epoch6,epoch7,epoch8,epoch9]
     """
     
-    epochs = create_epochs(rows,cols,10,copy)
+    num_epochs = 10
+    epochs = create_epochs(rows,cols,num_epochs,copy)
 
     totalLL = 0
 
@@ -181,12 +182,12 @@ if __name__ == '__main__':
     # LEARN
     ########################################
 
-    for i in range(10):
+    for i in range(num_epochs):
         testing  = epochs[i]
         
         models = []
         counts = []
-        for j in range(10):
+        for j in range(num_epochs):
             if j != i:
                 for model,count in epochs[j]:
                     models.append(model)
@@ -197,16 +198,18 @@ if __name__ == '__main__':
         # for complete data, for testing purposes
         start = time.time()
         copy.learn(training,psi=psi,scale=scale,show_progress=True)
+        print "== TRAINING =="
         print "    training time: %.3fs" % (time.time()-start)
         ll = copy.log_likelihood_alt(training)
         lprior = copy.log_prior(psi=psi,scale=scale)
-        print "       training.N: %d" % training.N
+        print "   training: %d unique, %d instances" % (len(training),training.N)
         print "   log likelihood: %.8f" % (ll/training.N)
         print "   log prior: %.8f" % (lprior/training.N)
-        print "    log posterior: %.8f" % ((ll+lprior)/training.N)
+        print "   log posterior: %.8f" % ((ll+lprior)/training.N)
         print "   log likelihood unnormalized: %.8f" % ll
         print "   log prior unnormalized: %.8f" % lprior
-        print "    log posterior unnormalized: %.8f" % (ll+lprior)
+        print "   log posterior unnormalized: %.8f" % (ll+lprior)
+        print "   log prior over parameters: %.8f" % (lprior/psdd_parameters)
 
         print "  zero parameters: %d (should be zero)" % copy.zero_count()
         copy.marginals()
@@ -235,14 +238,16 @@ if __name__ == '__main__':
 
         print "== TESTING =="
         ll = copy.log_likelihood_alt(testing)
+        lprior = copy.log_prior(psi=psi,scale=scale)
         totalLL += ll/testing.N
-        print "        testing.N: %d" % testing.N
+        print "   testing: %d unique, %d instances" % (len(testing),testing.N)
         print "   log likelihood: %.8f" % (ll/testing.N)
         print "   log prior: %.8f" % (lprior/testing.N)
-        print "    log posterior: %.8f" % ((ll+lprior)/testing.N)
+        print "   log posterior: %.8f" % ((ll+lprior)/testing.N)
         print "   log likelihood unnormalized: %.8f" % ll
         print "   log prior unnormalized: %.8f" % lprior
-        print "    log posterior unnormalized: %.8f" % (ll+lprior)
+        print "   log posterior unnormalized: %.8f" % (ll+lprior)
+        print "   log prior over parameters: %.8f" % (lprior/psdd_parameters)
 
-    avgLL = totalLL/float(10)
+    avgLL = totalLL/float(num_epochs)
     print "average log likelihood: %f" % avgLL

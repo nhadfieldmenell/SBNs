@@ -2,8 +2,8 @@
 
 import sys
 
-rows = sys.argv[1]
-cols = sys.argv[2]
+rows = int(sys.argv[1])
+cols = int(sys.argv[2])
 partials = open("partials_%d_%d.txt" % (rows,cols),'r')
 lines = partials.readlines()
 for i in range(len(lines)):

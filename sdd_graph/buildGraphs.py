@@ -348,6 +348,12 @@ class Path(object):
                 Each edge is 0 if it is not included and 1 if it is included.
 
             A boolean that is true if all adjacent points have valid edges, false otherwise.
+
+            A dict that contains the partial path from the start of the path to the midpoint.
+                Edges from the start to the midpoint are set to 1.
+                Edges around the start point and not used in the path are set to 0.
+                    This is the entirity of the information we know about the final path from the partial.
+                    We know that the path is not any longer in the direction away from the midpoint.
         """
 
         partials = []
@@ -547,6 +553,7 @@ def single_epoch(g,rows,cols):
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
         #"""
+        print i
         print trip_id
         p.print_path()
         for i in range(p.graph.num_edges):

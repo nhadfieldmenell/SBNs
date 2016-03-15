@@ -570,7 +570,7 @@ def single_epoch(g,rows,cols):
                 partial_file.write("%d" % p.partials[i])
             else:
                 partial_file.write("-1")
-            if i < p.graph.num_edges:
+            if i < p.graph.num_edges-1:
                 partial_file.write(",")
         partial_file.write("\n")
 

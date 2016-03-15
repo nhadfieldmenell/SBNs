@@ -38,7 +38,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
     print full_and_part[0]
     
     for i in range(20):
-        for j in range(len(full_and_part[i])):
+        for j in range(len(full_and_part[i][0])):
             if full_and_part[i][1][j] == 1:
                 print "1 %d" % full_and_part[i][0]
             elif full_and_part[i][1][j] == 0:

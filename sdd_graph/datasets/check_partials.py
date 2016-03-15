@@ -13,4 +13,5 @@ for i in range(len(lines)):
             print "0: %d" % (j+1)
         if spots[j] == 1:
             print "1: %d" % (j+1)
+    print "\n"
 

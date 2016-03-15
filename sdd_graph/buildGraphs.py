@@ -111,7 +111,10 @@ class Graph(object):
             col_n = col1
         
         if not ((row == row_n and col == col_n - 1) or (row == row_n-1 and col == col_n)):
-            return - 1
+            return -1
+
+        if row < 0 or row_n >= self.rows or col < 0 or col_n >= self.cols:
+            return -1
         
         node1 = row*self.rows+col+1
         node2 = row_n*self.rows+col_n+1
@@ -278,7 +281,7 @@ class Path(object):
         self.bad_graph = False
         self.next_line = 0
         self.line_num = self.find_path()
-        self.path,self.edges,self.good = self.create_path()
+        self.path,self.edges,self.good,self.partials = self.create_path()
 
     def print_path(self):
         """Prints the path edges according to test_graph's draw grids method."""
@@ -336,18 +339,25 @@ class Path(object):
         Updates graph node visit information by calling graph.node_visit().
         Sets self.next_line value.
         
-        TODO: implement this
-        Mark a path as bad if it is not a legal path (if two nodes are visited
-        sequentially, but are not adjacent).
 
         Returns:
             A numpy array with dimensions equal to those of the input graph.
             Grid spots are 1 if the path traverses them, 0 otherwise.
 
             The set of edges corresponding to that path.
+                Each edge is 0 if it is not included and 1 if it is included.
 
             A boolean that is true if all adjacent points have valid edges, false otherwise.
         """
+
+        partials = []
+        partials.append({})
+
+        midpoint = self.graph.node_to_coords(self.graph.best_node)
+        #this variable is true if we have not yet recorded the first edge of a path
+        first_edge = True
+        #this variable is false until we hit the midpoint
+        hit_midpoint = False
 
         matrices = []
         matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
@@ -370,15 +380,24 @@ class Path(object):
                 edge_num = self.graph.edge_num(prev_coords[0],prev_coords[1],coords[0],coords[1])
                 if edge_num == -1:
                     good_graphs[matrices_index] = False
-                    """
-                if self.trip_id == 1683:
-                    print "coords %s" % str(coords)
-                    print "prev %s" % str(prev_coords)
-                    print "lat: %f lon: %f min lat: %f min lon: %f max lat: %f max lon: %f)" % (lat,lon,self.graph.min_lat,self.graph.min_lon,self.graph.max_lat,self.graph.max_lon)
-                    print "index: %d length: %d edge_num: %d" % (matrices_index, len(edge_sets), edge_num)
-                """
                 else:
                     edge_sets[matrices_index][edge_num] = 1
+                    if not hit_midpoint:
+                        if first_edge:
+                            above = (prev_coords[0]-1,prev_coords[1])
+                            below = (prev_coords[0]+1,prev_coords[1])
+                            left = (prev_coords[0],prev_coords[1]-1)
+                            right = (prev_coords[0],prev_coords[1]+1)
+                            for next_coords in (above,below,left,right):
+                                other_edge = self.graph.edge_num(prev_coords[0],prev_coords[1],next_coords[0],next_coords[1])
+                                if other_edge != -1:
+                                    partials[matrices_index][other_edge] = 0
+                            first_edge = False
+                        partials[matrices_index][edge_num] = 1
+                        if self.graph.coords_to_node(coords[0],coords[1]) == self.graph.best_node:
+                            hit_midpoint = True
+
+
 
             if coords[0] == -1:
                 matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
@@ -386,6 +405,9 @@ class Path(object):
                 good_graphs.append(True)
                 nodes_visited.append([])
                 matrices_index += 1
+                partials.append({})
+                hit_midpoint = False
+                first_edge = True
             
             elif coords[0] < self.graph.rows and coords[1] < self.graph.cols and not matrices[matrices_index][0][coords[0]][coords[1]]:
                 matrices[matrices_index][1] += 1
@@ -410,7 +432,7 @@ class Path(object):
         for coords in nodes_visited[best_index]:
             self.graph.node_visit(self.trip_id,coords)
 
-        return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index]
+        return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index],patrials[best_index]
 
 
 
@@ -521,6 +543,8 @@ def single_epoch(g,rows,cols):
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
+        print p.path
+        print p.partials
         out_string = str(p.edges)[1:-1]
         out_file.write("%s\n" % out_string)
 

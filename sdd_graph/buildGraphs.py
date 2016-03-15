@@ -388,7 +388,7 @@ class Path(object):
                     good_graphs[matrices_index] = False
                 else:
                     edge_sets[matrices_index][edge_num] = 1
-                    if partials[matrices_index][edge_num] == 0:
+                    if edge_num in partials[matrices_index] and partials[matrices_index][edge_num] == 0:
                         del partials[matrices_index][edge_num]
                     if not hit_midpoint:
                         if first_edge:

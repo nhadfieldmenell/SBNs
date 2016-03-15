@@ -432,7 +432,7 @@ class Path(object):
         for coords in nodes_visited[best_index]:
             self.graph.node_visit(self.trip_id,coords)
 
-        return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index],patrials[best_index]
+        return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index],partials[best_index]
 
 
 

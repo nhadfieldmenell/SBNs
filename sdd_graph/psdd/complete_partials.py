@@ -28,7 +28,10 @@ def epochs_partial(rows,cols,num_epochs,copy):
     full_file = open("../datasets/full_data_%d_%d.txt" % (rows,cols), "r")
     partials_file = open("../datasets/partials_%d_%d.txt" % (rows,cols), "r")
 
-    full_and_part = zip(full_file.readlines(),partials_file.readlines())
+    full_lines = full_file.readlines()
+    partials_lines = partials_file.readlines()
+
+    full_and_part = zip(full_lines,partials_lines)
 
     for i in range(20):
         for j in range(len(full_and_part[i])):

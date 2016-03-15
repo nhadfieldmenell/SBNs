@@ -34,6 +34,8 @@ def epochs_partial(rows,cols,num_epochs,copy):
     part_ints = map(lambda x: map(int,x[:-1].split(',')),partials_lines)
 
     full_and_part = zip(full_ints,part_ints)
+
+    print full_and_part[0]
     
     for i in range(20):
         for j in range(len(full_and_part[i])):

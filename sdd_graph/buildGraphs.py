@@ -393,6 +393,8 @@ class Path(object):
                                 if other_edge != -1:
                                     partials[matrices_index][other_edge] = 0
                             first_edge = False
+                            if self.graph.coords_to_node(prev_coords[0],prev_coords[1]) == self.graph.best_node:
+                                hit_midpoint = True
                         partials[matrices_index][edge_num] = 1
                         if self.graph.coords_to_node(coords[0],coords[1]) == self.graph.best_node:
                             hit_midpoint = True

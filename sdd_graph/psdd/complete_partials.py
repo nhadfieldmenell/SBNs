@@ -12,7 +12,7 @@ from pypsdd import *
 import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
-def epochs_partials(rows,cols,num_epochs,copy):
+def epochs_partial(rows,cols,num_epochs,copy):
     """Randomize the data instances and separate the data instances and partials into equal collections
 
     Keep relationship between full and partial data.

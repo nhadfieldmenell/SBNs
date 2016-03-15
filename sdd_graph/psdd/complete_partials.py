@@ -40,9 +40,9 @@ def epochs_partial(rows,cols,num_epochs,copy):
     for i in range(20):
         for j in range(len(full_and_part[i][0])):
             if full_and_part[i][1][j] == 1:
-                print "1 %d" % full_and_part[i][0]
+                print "1 %d" % full_and_part[i][0][j]
             elif full_and_part[i][1][j] == 0:
-                print "0 %d" % full_and_part[1][0]
+                print "0 %d" % full_and_part[1][0][j]
 
     random.shuffle(full_and_part)
 

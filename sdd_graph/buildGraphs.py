@@ -547,9 +547,17 @@ def single_epoch(g,rows,cols):
         p.print_path()
         for i in range(p.graph.num_edges):
             if p.edges[i]:
-                sys.stdout.write("%d, " % i)
+                sys.stdout.write("%d, " % i + 1)
         sys.stdout.write("\n")
-        print p.partials
+        sys.stdout.write("1s: ")
+        for key in p.partials.keys():
+            if p.partials[key]:
+                sys.stdout.write("%d, " % key + 1)
+        sys.stdout.write("\n0s: ")
+        for key in p.partials.keys():
+            if not p.partials[key]:
+                sys.stdout.write("%d, " % key + 1)
+        sys.stdout.write("\n")
         out_string = str(p.edges)[1:-1]
         out_file.write("%s\n" % out_string)
 

@@ -543,7 +543,7 @@ def single_epoch(g,rows,cols):
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
-        print p.path
+        print trip_id
         p.print_path()
         for i in range(p.graph.num_edges):
             if p.edges[i]:

@@ -33,7 +33,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     print partials_lines[4]
 
-    full_and_part = zip(full_lines,partials_lines)
+    full_and_part = zip(map(int,full_lines),map(int,partials_lines))
     
     for i in range(20):
         for j in range(len(full_and_part[i])):

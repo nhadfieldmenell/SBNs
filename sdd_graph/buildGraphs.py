@@ -545,6 +545,10 @@ def single_epoch(g,rows,cols):
         p = Path(trip_id,g,line_num)
         print p.path
         p.print_path()
+        for i in range(p.graph.num_edges):
+            if p.edges[i]:
+                sys.out.write("%d, " % i)
+        sys.out.write("\n")
         print p.partials
         out_string = str(p.edges)[1:-1]
         out_file.write("%s\n" % out_string)

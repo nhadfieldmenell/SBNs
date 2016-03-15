@@ -32,6 +32,9 @@ def epochs_partial(rows,cols,num_epochs,copy):
     partials_lines = partials_file.readlines()
     full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
     print full_ints[0]
+    print len(full_ints[0])
+
+    return
 
 
     print partials_lines[4]

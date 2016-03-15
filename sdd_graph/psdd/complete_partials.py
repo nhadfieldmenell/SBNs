@@ -33,6 +33,8 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     full_and_part = zip(full_lines,partials_lines)
 
+    print "here"
+    
     for i in range(20):
         for j in range(len(full_and_part[i])):
             if full_and_part[i][1] == 1:

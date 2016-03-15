@@ -31,9 +31,9 @@ def epochs_partial(rows,cols,num_epochs,copy):
     full_lines = full_file.readlines()
     partials_lines = partials_file.readlines()
 
-    full_and_part = zip(full_lines,partials_lines)
+    print partials_lines[4]
 
-    print "here"
+    full_and_part = zip(full_lines,partials_lines)
     
     for i in range(20):
         for j in range(len(full_and_part[i])):

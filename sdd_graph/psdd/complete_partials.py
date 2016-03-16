@@ -74,7 +74,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
         intermediate.close()
         model_ds = DataSet.read(intermediate_name)
         """
-        model_ds = DataSet.to_dict(model)
+        model_ds = DataSet.to_dict(str(model))
         partial_model = full_and_part[i][1]
         if str(model) in bad_models:
             total_bad += 1

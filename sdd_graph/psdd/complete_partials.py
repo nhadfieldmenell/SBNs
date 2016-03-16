@@ -30,6 +30,8 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     full_lines = full_file.readlines()
     partials_lines = partials_file.readlines()
+    full_file.close()
+    partials_file.close()
     """
     full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
     part_ints = map(lambda x: map(int,x[:-1].split(',')),partials_lines)
@@ -65,11 +67,14 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     for i in range(len(full_and_part)):
         model = full_and_part[i][0]
+        """
         intermediate_name = "intermediate.txt"
         intermediate = open(intermediate_name,"w")
         intermediate.write(model)
         intermediate.close()
         model_ds = DataSet.read(intermediate_name)
+        """
+        model_ds = DataSet.to_dict(model)
         partial_model = full_and_part[i][1]
         if model in bad_models:
             total_bad += 1

@@ -74,19 +74,20 @@ def epochs_partial(rows,cols,num_epochs,copy):
         if model in bad_models:
             total_bad += 1
             continue
-        evidence = DataSet.evidence(model_ds)
-        probability = copy.probability(evidence)
-        if probability == 0:
-            print "bad: %s" % str(model)
-            bad_models[model] = True
-            unique_bad += 1
-            total_bad += 1
-            continue
+        for the_model,count in model_ds:
+            evidence = DataSet.evidence(model_ds)
+            probability = copy.probability(evidence)
+            if probability == 0:
+                print "bad: %s" % str(model)
+                bad_models[model] = True
+                unique_bad += 1
+                total_bad += 1
+                continue
 
-        else:
-            full_epochs[epoch_num].append(model)
-            partial_epochs[epoch_num].append(partial_model)
-            epoch_num = (epoch_num+1) % num_epochs
+            else:
+                full_epochs[epoch_num].append(model)
+                partial_epochs[epoch_num].append(partial_model)
+                epoch_num = (epoch_num+1) % num_epochs
 
     for i in range(num_epochs):
         counts = [1 for j in range(len(full_epochs[i]))]

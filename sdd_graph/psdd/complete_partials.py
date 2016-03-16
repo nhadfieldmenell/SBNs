@@ -48,19 +48,46 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     random.shuffle(full_and_part)
 
+    epoch_num = 0
+    full_epochs = [[] for i in range(num_epochs)]
+    partial_epochs = [[] for i in range(num_epochs)]
 
+    copy.uniform_weights()
+    bad_models = {}
+    unique_bad = 0
+    total_bad = 0
 
+    for i in range(len(full_and_part)):
+        model = full_and_part[i][0]
+        partial_model = full_and_part[i][1]
+        if str(model) in bad_models:
+            total_bad += 1
+            continue
+        evidence = DataSet.evidence(model)
+        probability = copy.probability(evidence)
+        if probability == 0:
+            print "bad: %s" % str(model)
+            bad_models[str(model)] = True
+            unique_bad += 1
+            total_bad += 1
+            continue
 
-    return
+        else:
+            full_epochs[epoch_num].append(model)
+            partial_epochs[epoch_num].append(partial_model)
+            epoch_num = (epoch_num+1) % num_epochs
+
+    for i in range(num_epochs):
+        full_epochs[i] = DataSet.read(full_epochs[i])
+
+    return full_epochs,partial_epochs
 
 def main():
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
     num_epochs = 10
     
-    epochs_partial(rows,cols,num_epochs,0)
 
-    return
 
     vtree_filename = '../graphs/asdf-%d-%d.vtree' % (rows,cols)
     sdd_filename = '../graphs/asdf-%d-%d.sdd' % (rows,cols)
@@ -93,6 +120,16 @@ def main():
         model_count = alpha.model_count()
         #print "      model count: %s (%.3fs)" % \
         #    (locale.format("%d",model_count,grouping=True),time.time()-start)
+
+    full_datasets, partial_lists = epochs_partial(rows,cols,num_epochs,copy)
+
+    for i in range(num_epochs):
+        print len(partial_lists)
+        total_counts = 0
+        for model,count in full_datasets[i]:
+            total_counts += count
+        print total_counts
+        print ""
 
     ########################################
     # SIMULATE

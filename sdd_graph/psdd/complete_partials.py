@@ -30,10 +30,14 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     full_lines = full_file.readlines()
     partials_lines = partials_file.readlines()
+    """
     full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
     part_ints = map(lambda x: map(int,x[:-1].split(',')),partials_lines)
 
     full_and_part = zip(full_ints,part_ints)
+    """
+
+    full_and_part = zip(full_lines,partials_lines)
 
     print full_and_part[0]
     

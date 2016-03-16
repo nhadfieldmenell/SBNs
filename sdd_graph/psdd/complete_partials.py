@@ -75,7 +75,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
             total_bad += 1
             continue
         for the_model,count in model_ds:
-            evidence = DataSet.evidence(model_ds)
+            evidence = DataSet.evidence(the_model)
             probability = copy.probability(evidence)
             if probability == 0:
                 print "bad: %s" % str(model)

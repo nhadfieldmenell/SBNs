@@ -65,11 +65,16 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     for i in range(len(full_and_part)):
         model = full_and_part[i][0]
+        intermediate_name = "intermediate.txt"
+        intermediate = open(intermediate_name,"w")
+        intermediate.write(model)
+        intermediate.close()
+        model_ds = DataSet.read(intermediate_name)
         partial_model = full_and_part[i][1]
         if model in bad_models:
             total_bad += 1
             continue
-        evidence = DataSet.evidence(model)
+        evidence = DataSet.evidence(model_ds)
         probability = copy.probability(evidence)
         if probability == 0:
             print "bad: %s" % str(model)

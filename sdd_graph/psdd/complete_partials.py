@@ -37,6 +37,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     print full_and_part[0]
     
+    """
     for i in range(len(full_and_part)):
         print i
         for j in range(len(full_and_part[i][0])):
@@ -45,7 +46,8 @@ def epochs_partial(rows,cols,num_epochs,copy):
             elif full_and_part[i][1][j] == 0:
                 print "%d: 0 %d" % (j+1, full_and_part[i][0][j])
         print ""
-
+    """
+    
     random.shuffle(full_and_part)
 
     epoch_num = 0
@@ -60,14 +62,14 @@ def epochs_partial(rows,cols,num_epochs,copy):
     for i in range(len(full_and_part)):
         model = full_and_part[i][0]
         partial_model = full_and_part[i][1]
-        if str(model) in bad_models:
+        if model in bad_models:
             total_bad += 1
             continue
         evidence = DataSet.evidence(model)
         probability = copy.probability(evidence)
         if probability == 0:
             print "bad: %s" % str(model)
-            bad_models[str(model)] = True
+            bad_models[model] = True
             unique_bad += 1
             total_bad += 1
             continue
@@ -78,7 +80,8 @@ def epochs_partial(rows,cols,num_epochs,copy):
             epoch_num = (epoch_num+1) % num_epochs
 
     for i in range(num_epochs):
-        full_epochs[i] = DataSet.read(full_epochs[i])
+        counts = [1 for j in range(len(full_epochs[i]))]
+        full_epochs[i] = DataSet.to_dict(full_epochs[i],counts)
 
     return full_epochs,partial_epochs
 

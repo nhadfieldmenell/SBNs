@@ -5,7 +5,7 @@ import time
 import glob
 import sys
 import random
-from .. import test_graph as tg
+from sdd_graph import test_graph as tg
 
 from pypsdd import *
 

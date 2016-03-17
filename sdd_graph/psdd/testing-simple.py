@@ -15,6 +15,7 @@ locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 def filter_bad(dataset,copy):
     badCount = 0
     goodCount = 0
+    uniqueBad = 0
     models = []
     counts = []
     copy.uniform_weights()
@@ -24,13 +25,16 @@ def filter_bad(dataset,copy):
         if probability == 0:
             print "%d: %s" % (count,model)
             badCount += count
+            uniqueBad += 1
         else:
             goodCount += count
             models.append(model)
             counts.append(count)
 
     print "bad count: %d" % badCount
+    print "unique bad: %d" % uniqueBad
     print "good count: %d" % goodCount
+    
 
     return DataSet.to_dict(models,counts)
 

@@ -5,6 +5,7 @@ import time
 import glob
 import sys
 import random
+from .. import test_graph as tg
 
 from pypsdd import *
 
@@ -95,6 +96,9 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     return full_datasets,full_epochs,partial_epochs
 
+def compare_edges(full_inst, partial_inst, mpe_inst):
+    return
+
 def main():
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
@@ -179,7 +183,7 @@ def main():
         print "  zero parameters: %d (should be zero)" % copy.zero_count()
         copy.marginals()
 
-        for j in range(len(partial_instances)):
+        for j in range(len(partial_instances[i])):
             evidence = DataSet.evidence(partial_instances[i][j])
             mpe_val, mpe_inst = copy.mpe(evidence)
             print mpe_val

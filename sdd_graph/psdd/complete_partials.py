@@ -13,7 +13,7 @@ from pypsdd import *
 import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
-def evaluate_prediction(prediction,full):
+def evaluate_prediction(prediction,full,partial):
     correctly_guessed = 0
     incorrectly_guessed = 0
     not_guessed = 0
@@ -21,10 +21,11 @@ def evaluate_prediction(prediction,full):
     for i in range(len(prediction)):
         if prediction[i] == 1:
             if full[i] == 1:
-                correctly_guessed += 1
+                if not partial[i]:
+                    correctly_guessed += 1
             else:
                 incorrectly_guessed += 1
-    actual_num_edges = full.count(1)
+    actual_num_edges = full.count(1)-partial.count(1)
     not_guessed = actual_num_edges - correctly_guessed
     print "Correctly guessed edges: %d" % correctly_guessed
     print "Incorrectly guessed edges: %d" % incorrectly_guessed
@@ -41,7 +42,6 @@ def print_3(partial,mpe,full,rows,cols,edge2index):
     draw_grid(mpe,rows,cols,edge2index)
     print "Actual"
     draw_grid(full,rows,cols,edge2index)
-    print ""
 
 def draw_grid(model,m,n,edge2index):
     for i in xrange(m):
@@ -259,16 +259,16 @@ def main():
             evidence = DataSet.evidence(partial_instances[i][j])
             mpe_val, mpe_inst = copy.mpe(evidence)
             print mpe_val
-            print mpe_inst
+            #print mpe_inst
             mpe_array = []
             for k in range(len(full_instances[i][j])):
                 if mpe_inst[k+1] == 1:
                     mpe_array.append(1)
                 else:
                     mpe_array.append(0)
-            print full_instances[i][j]
+            #print full_instances[i][j]
             print_3(partials_completed[i][j],mpe_array,full_instances[i][j],rows,cols,edge2index)
-            correct,incorrect,not_guessed = evaluate_prediction(mpe_array,full_instances[i][j])
+            correct,incorrect,not_guessed = evaluate_prediction(mpe_array,full_instances[i][j],partial_instances[i][j])
             total_correct += correct
             total_incorrect += incorrect
             total_not_guessed += not_guessed

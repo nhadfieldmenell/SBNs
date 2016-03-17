@@ -5,7 +5,8 @@ import time
 import glob
 import sys
 import random
-from sdd_graph import test_graph as tg
+sys.path.insert(0,"../")
+import test_graph as tg
 
 from pypsdd import *
 

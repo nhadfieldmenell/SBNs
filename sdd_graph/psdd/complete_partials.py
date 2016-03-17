@@ -36,7 +36,10 @@ def epochs_partial(rows,cols,num_epochs,copy):
     full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
     part_ints = map(lambda x: map(int,x[:-1].split(',')),partials_lines)
 
-    full_and_part = zip(full_ints,part_ints)
+    full_tuple = map(tuple,full_ints)
+    part_tuple = map(tuple,partials_ints)
+
+    full_and_part = zip(full_tuple,part_tuple)
     """
 
     full_and_part = zip(full_lines,partials_lines)
@@ -77,25 +80,23 @@ def epochs_partial(rows,cols,num_epochs,copy):
         print model
         tuple_model = tuple(model)
         print tuple_model
-        model_ds = DataSet.to_dict(tuple(model))
         partial_model = full_and_part[i][1]
         if str(model) in bad_models:
             total_bad += 1
             continue
-        for the_model,count in model_ds:
-            evidence = DataSet.evidence(tuple_model)
-            probability = copy.probability(evidence)
-            if probability == 0:
-                print "bad: %s" % str(model)
-                bad_models[str(model)] = True
-                unique_bad += 1
-                total_bad += 1
-                continue
+        evidence = DataSet.evidence(model)
+        probability = copy.probability(evidence)
+        if probability == 0:
+            print "bad: %s" % str(model)
+            bad_models[str(model)] = True
+            unique_bad += 1
+            total_bad += 1
+            continue
 
-            else:
-                full_epochs[epoch_num].append(model)
-                partial_epochs[epoch_num].append(partial_model)
-                epoch_num = (epoch_num+1) % num_epochs
+        else:
+            full_epochs[epoch_num].append(model)
+            partial_epochs[epoch_num].append(partial_model)
+            epoch_num = (epoch_num+1) % num_epochs
 
     for i in range(num_epochs):
         counts = [1 for j in range(len(full_epochs[i]))]

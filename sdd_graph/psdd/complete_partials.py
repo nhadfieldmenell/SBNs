@@ -74,13 +74,16 @@ def epochs_partial(rows,cols,num_epochs,copy):
         intermediate.close()
         model_ds = DataSet.read(intermediate_name)
         """
+        print model
+        tuple_model = tuple(model)
+        print tuple_model
         model_ds = DataSet.to_dict(tuple(model))
         partial_model = full_and_part[i][1]
         if str(model) in bad_models:
             total_bad += 1
             continue
         for the_model,count in model_ds:
-            evidence = DataSet.evidence(the_model)
+            evidence = DataSet.evidence(tuple_model)
             probability = copy.probability(evidence)
             if probability == 0:
                 print "bad: %s" % str(model)

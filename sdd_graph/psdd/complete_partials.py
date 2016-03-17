@@ -20,6 +20,8 @@ def epochs_partial(rows,cols,num_epochs,copy):
     Returns:
         A list of num_epochs full datasets.
 
+        A list of num_epochs arrays of full_data tuples.
+
         A list of num_epochs list of arrays.
             Each array holds multiple incomplete data instances.
             The different epochs have the same data instances as the corresponding epochs in full datasets.
@@ -40,10 +42,6 @@ def epochs_partial(rows,cols,num_epochs,copy):
     part_tuple = map(tuple,part_ints)
 
     full_and_part = zip(full_tuple,part_tuple)
-    """
-
-    full_and_part = zip(full_lines,partials_lines)
-    """
     print full_and_part[0]
     
     """
@@ -70,13 +68,6 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     for i in range(len(full_and_part)):
         model = full_and_part[i][0]
-        """
-        intermediate_name = "intermediate.txt"
-        intermediate = open(intermediate_name,"w")
-        intermediate.write(model)
-        intermediate.close()
-        model_ds = DataSet.read(intermediate_name)
-        """
         partial_model = full_and_part[i][1]
         if str(model) in bad_models:
             total_bad += 1
@@ -99,9 +90,9 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     for i in range(num_epochs):
         counts = [1 for j in range(len(full_epochs[i]))]
-        full_epochs[i] = DataSet.to_dict(full_epochs[i],counts)
+        full_datasets[i] = DataSet.to_dict(full_epochs[i],counts)
 
-    return full_epochs,partial_epochs
+    return full_datasets,full_epochs,partial_epochs
 
 def main():
     rows = int(sys.argv[1])
@@ -142,15 +133,19 @@ def main():
         #print "      model count: %s (%.3fs)" % \
         #    (locale.format("%d",model_count,grouping=True),time.time()-start)
 
-    full_datasets, partial_lists = epochs_partial(rows,cols,num_epochs,copy)
+    full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy)
 
     for i in range(num_epochs):
         print len(partial_lists[i])
+        print len(full_instances[i])
         total_counts = 0
         for model,count in full_datasets[i]:
             total_counts += count
         print total_counts
         print ""
+
+    for i in range(num_epochs):
+
 
     ########################################
     # SIMULATE

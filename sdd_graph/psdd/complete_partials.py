@@ -137,7 +137,7 @@ def main():
     full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy)
 
     for i in range(num_epochs):
-        print len(partial_lists[i])
+        print len(partial_instances[i])
         print len(full_instances[i])
         total_counts = 0
         for model,count in full_datasets[i]:

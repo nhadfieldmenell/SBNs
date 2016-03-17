@@ -87,10 +87,11 @@ def epochs_partial(rows,cols,num_epochs,copy):
             epoch_num = (epoch_num+1) % num_epochs
 
     print "total bad: %d, unique bad: %d" % (total_bad,unique_bad)
+    full_datasets = []
 
     for i in range(num_epochs):
         counts = [1 for j in range(len(full_epochs[i]))]
-        full_datasets[i] = DataSet.to_dict(full_epochs[i],counts)
+        full_datasets.append(DataSet.to_dict(full_epochs[i],counts))
 
     return full_datasets,full_epochs,partial_epochs
 

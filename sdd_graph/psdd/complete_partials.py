@@ -5,6 +5,7 @@ import time
 import glob
 import sys
 import random
+import pickle
 
 from pypsdd import *
 

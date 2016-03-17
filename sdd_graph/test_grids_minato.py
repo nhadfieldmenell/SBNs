@@ -121,7 +121,7 @@ if __name__ == '__main__':
         for j in range(i+1,goal+1):
             #paths = GraphSet.union(paths,GraphSet.paths(i,j))
             """Exclude midpoint"""
-            if i != midpoint: # and j != midpoint:
+            if i != midpoint and j != midpoint:
                 paths = GraphSet.union(paths,GraphSet.paths(i,j))
 
     pathsThruMidpoint = paths.including(midpoint)

@@ -5,14 +5,50 @@ import time
 import glob
 import sys
 import random
-sys.path.insert(0,"../")
-import test_graph as tg
 
 from pypsdd import *
 
 # for printing numbers with commas
 import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
+
+def print_3(partial,mpe,full,rows,cols):
+    """Draw grids for all 3 paths, followed by an extra newline"""
+
+    print "Partial"
+    draw_grid(partial,rows,cols)
+    print "Predicted"
+    draw_grid(mpe,rows,cols)
+    print "Actual"
+    draw_grid(full,rows,cols)
+    print ""
+
+def draw_grid(model,m,n):
+    edge_filename = '../graphs/edge-nums-%d-%d.pickle' % (m,n)
+    edge2index = pickle.load(open(edge_filename,'rb'))
+    for i in xrange(m):
+        for j in xrange(n):
+            sys.stdout.write('.')
+            if j < n-1:
+                """
+                edge = ((i,j),(i,j+1))
+                index = g.edge_to_index[edge] + 1
+                """
+                edge = (i*m+j+1,i*m+j+2)
+                index = edge2index[edge]
+                sys.stdout.write('-' if model[index] else ' ')
+        sys.stdout.write('\n')
+        if i < m-1:
+            for j in xrange(n):
+                """
+                edge = ((i,j),(i+1,j))
+                index = g.edge_to_index[edge] + 1
+                """
+                edge = (i*m+j+1,i*m+m+j+1)
+                index = edge2index[edge]
+                sys.stdout.write('|' if model[index] else ' ')
+                sys.stdout.write(' ')
+        sys.stdout.write('\n')
 
 def epochs_partial(rows,cols,num_epochs,copy):
     """Randomize the data instances and separate the data instances and partials into equal collections
@@ -189,7 +225,14 @@ def main():
             mpe_val, mpe_inst = copy.mpe(evidence)
             print mpe_val
             print mpe_inst
+            mpe_array = []
+            for k in range(len(full_instances[i][j])):
+                if mpe_inst[k+1] == 1:
+                    mpe_array.append(1)
+                else:
+                    mpe_array.append(0)
             print full_instances[i][j]
+            print_3(partial_instances[i][j],mpe_array,full_instances[i][j],rows,cols)
 
     ########################################
     # SIMULATE

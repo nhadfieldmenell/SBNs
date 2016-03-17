@@ -144,7 +144,6 @@ def main():
         print total_counts
         print ""
 
-    for i in range(num_epochs):
 
 
     ########################################

@@ -279,7 +279,7 @@ def main():
             num_evaluated += 1
             if not_guessed == 0  and incorrect == 0:
                 total_fully_guessed += 1
-            if mpe_array.count(1) == partials_completed.count(1) + 1:
+            if mpe_array.count(1) == partials_completed[i][j].count(1) + 1:
                 total_only_guessed_one += 1
                 print "Only guessed one!"
 

@@ -13,6 +13,25 @@ from pypsdd import *
 import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
+def eval_prediction(prediction,full):
+    correctly_guessed = 0
+    incorrectly_guessed = 0
+    not_guessed = 0
+
+    for i in range(len(prediction)):
+        if prediction[i] == 1:
+            if full[i] == 1:
+                correctly_guessed += 1
+            else:
+                incorrectly_guessed += 1
+    actual_num_edges = full.count(1)
+    not_guessed = actual_num_edges - correctly_guessed
+    print "Correctly guessed edges: %d" % correctly_guessed
+    print "Incorrectly guessed edges: %d" % incorrectly_guessed
+    print "Not guessed edges: %d" % not_guessed
+
+    return correctly_guessed,incorrectly_guessed,not_guessed
+
 def print_3(partial,mpe,full,rows,cols,edge2index):
     """Draw grids for all 3 paths, followed by an extra newline"""
 
@@ -167,7 +186,6 @@ def main():
     pmanager = PSddManager(vtree)
     copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
     pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
-    print "1"
 
 
     psdd_parameters = copy.theta_count()
@@ -201,6 +219,10 @@ def main():
         print ""
     """
 
+    num_evaluated = 0.0
+    total_correct = 0
+    total_incorrect = 0
+    total_not_guessed = 0
     for i in range(num_epochs):
         testing  = full_datasets[i]
         
@@ -246,12 +268,24 @@ def main():
                     mpe_array.append(0)
             print full_instances[i][j]
             print_3(partials_completed[i][j],mpe_array,full_instances[i][j],rows,cols,edge2index)
+            correct,incorrect,not_guessed = evaluate_prediction(mpe_array,full_instances[i][j])
+            total_correct += correct
+            total_incorrect += incorrect
+            total_not_guessed += not_guessed
+            num_evaluated += 1
+
+    average_correct = total_correct/num_evaluated
+    average_incorrect = total_incorrect/num_evaluated
+    average_not_guessed = total_not_guessed/num_evaluated
+    print "Total Evaluated: %.8f" % num_evaluated
+    print "average correct: %.8f" % average_correct
+    print "average incorrect: %.8f" % average_incorrect
+    print "average not guessed: %.8f" % average_not_guessed
 
     ########################################
     # SIMULATE
     ########################################
 
-    print "2"
 
 
 if __name__ == '__main__':

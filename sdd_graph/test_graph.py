@@ -131,7 +131,7 @@ def draw_grid(model,m,n,g):
                 """
                 edge = (i*m+j+1,i*m+j+2)
                 index = edge2index[edge]
-                sys.stdout.write('-' if model[index] else ' ')
+                sys.stdout.write('-' if model[index+1] else ' ')
         sys.stdout.write('\n')
         if i < m-1:
             for j in xrange(n):
@@ -141,7 +141,7 @@ def draw_grid(model,m,n,g):
                 """
                 edge = (i*m+j+1,i*m+m+j+1)
                 index = edge2index[edge]
-                sys.stdout.write('|' if model[index] else ' ')
+                sys.stdout.write('|' if model[index+1] else ' ')
                 sys.stdout.write(' ')
         sys.stdout.write('\n')
 

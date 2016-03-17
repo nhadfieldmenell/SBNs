@@ -75,7 +75,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
         evidence = DataSet.evidence(model)
         probability = copy.probability(evidence)
         if probability == 0:
-            print "bad: %s" % str(model)
+            #print "bad: %s" % str(model)
             bad_models[str(model)] = True
             unique_bad += 1
             total_bad += 1
@@ -179,6 +179,12 @@ def main():
         print "  zero parameters: %d (should be zero)" % copy.zero_count()
         copy.marginals()
 
+        for j in range(len(partial_instances)):
+            evidence = DataSet.evidence(partial_instances[i][j])
+            mpe_val, mpe_inst = copy.mpe(evidence)
+            print mpe_val
+            print mpe_inst
+            print full_instances[i][j]
 
     ########################################
     # SIMULATE

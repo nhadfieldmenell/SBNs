@@ -21,7 +21,7 @@ def evaluate_prediction(prediction,full,partial):
     for i in range(len(prediction)):
         if prediction[i] == 1:
             if full[i] == 1:
-                if not partial[i]:
+                if not partial[i] == 1:
                     correctly_guessed += 1
             else:
                 incorrectly_guessed += 1

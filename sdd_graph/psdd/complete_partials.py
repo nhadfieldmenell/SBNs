@@ -139,7 +139,7 @@ def main():
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
     num_epochs = 10
-    edge_filename = '../graphs/edge-nums-%d-%d.pickle' % (m,n)
+    edge_filename = '../graphs/edge-nums-%d-%d.pickle' % (rows,cols)
     edge2index = pickle.load(open(edge_filename,'rb'))
     
 

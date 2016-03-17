@@ -13,7 +13,7 @@ from pypsdd import *
 import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
-def eval_prediction(prediction,full):
+def evaluate_prediction(prediction,full):
     correctly_guessed = 0
     incorrectly_guessed = 0
     not_guessed = 0

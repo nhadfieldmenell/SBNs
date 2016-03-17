@@ -219,10 +219,13 @@ def main():
         print ""
     """
 
+    total_mpe_val = 0.0
     num_evaluated = 0.0
     total_correct = 0
     total_incorrect = 0
     total_not_guessed = 0
+    total_fully_guessed = 0
+    total_only_guessed_one = 0
     for i in range(num_epochs):
         testing  = full_datasets[i]
         
@@ -259,6 +262,7 @@ def main():
             evidence = DataSet.evidence(partial_instances[i][j])
             mpe_val, mpe_inst = copy.mpe(evidence)
             print mpe_val
+            total_mpe_val += mpe_val
             #print mpe_inst
             mpe_array = []
             for k in range(len(full_instances[i][j])):
@@ -273,14 +277,23 @@ def main():
             total_incorrect += incorrect
             total_not_guessed += not_guessed
             num_evaluated += 1
+            if not_guessed == 0  and incorrect == 0:
+                total_fully_guessed += 1
+            if mpe_array.count(1) == partials_completed.count(1) + 1:
+                total_only_guessed_one += 1
+                print "Only guessed one!"
 
     average_correct = total_correct/num_evaluated
     average_incorrect = total_incorrect/num_evaluated
     average_not_guessed = total_not_guessed/num_evaluated
+    average_mpe = total_mpe_val/num_evaluated
     print "Total Evaluated: %.8f" % num_evaluated
     print "average correct: %.8f" % average_correct
     print "average incorrect: %.8f" % average_incorrect
     print "average not guessed: %.8f" % average_not_guessed
+    print "average mpe val: %.8f" % average_mpe
+    print "total fully guessed: %d" % total_fully_guessed
+    print "total only guessed one: %d" % total_only_guessed_one
 
     ########################################
     # SIMULATE

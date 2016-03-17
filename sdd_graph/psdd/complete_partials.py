@@ -136,6 +136,7 @@ def main():
 
     full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy)
 
+    """
     for i in range(num_epochs):
         print len(partial_instances[i])
         print len(full_instances[i])
@@ -144,7 +145,39 @@ def main():
             total_counts += count
         print total_counts
         print ""
+    """
 
+    for i in range(num_epochs):
+        testing  = full_datasets[i]
+        
+        models = []
+        counts = []
+        for j in range(num_epochs):
+            if j != i:
+                for model,count in full_datasets[j]:
+                    models.append(model)
+                    counts.append(count)
+
+        training = DataSet.to_dict(models,counts)
+
+        # for complete data, for testing purposes
+        start = time.time()
+        copy.learn(training,psi=psi,scale=scale,show_progress=True)
+        print "== TRAINING =="
+        print "    training time: %.3fs" % (time.time()-start)
+        ll = copy.log_likelihood_alt(training)
+        lprior = copy.log_prior(psi=psi,scale=scale)
+        print "   training: %d unique, %d instances" % (len(training),training.N)
+        print "   log likelihood: %.8f" % (ll/training.N)
+        print "   log prior: %.8f" % (lprior/training.N)
+        print "   log posterior: %.8f" % ((ll+lprior)/training.N)
+        print "   log likelihood unnormalized: %.8f" % ll
+        print "   log prior unnormalized: %.8f" % lprior
+        print "   log posterior unnormalized: %.8f" % (ll+lprior)
+        print "   log prior over parameters: %.8f" % (lprior/psdd_parameters)
+
+        print "  zero parameters: %d (should be zero)" % copy.zero_count()
+        copy.marginals()
 
 
     ########################################

@@ -182,7 +182,7 @@ def main():
         partials_completed.append([])
         for j in range(len(partial_instances[i])):
             partials_completed[i].append([])
-            for k in range(len(partial_instances[i][j]))
+            for k in range(len(partial_instances[i][j])):
                 if partial_instances[i][j][k] == 1:
                     partials_completed[i][j].append(1)
                 else:

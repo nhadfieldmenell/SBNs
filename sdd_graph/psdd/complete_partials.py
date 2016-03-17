@@ -95,6 +95,8 @@ def epochs_partial(rows,cols,num_epochs,copy):
             partial_epochs[epoch_num].append(partial_model)
             epoch_num = (epoch_num+1) % num_epochs
 
+    print "total bad: %d, unique bad: %d" % (total_bad,unique_bad)
+
     for i in range(num_epochs):
         counts = [1 for j in range(len(full_epochs[i]))]
         full_epochs[i] = DataSet.to_dict(full_epochs[i],counts)

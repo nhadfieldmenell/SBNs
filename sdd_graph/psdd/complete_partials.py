@@ -13,20 +13,18 @@ from pypsdd import *
 import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
-def print_3(partial,mpe,full,rows,cols):
+def print_3(partial,mpe,full,rows,cols,edge2index):
     """Draw grids for all 3 paths, followed by an extra newline"""
 
     print "Partial"
-    draw_grid(partial,rows,cols)
+    draw_grid(partial,rows,cols,edge2index)
     print "Predicted"
-    draw_grid(mpe,rows,cols)
+    draw_grid(mpe,rows,cols,edge2index)
     print "Actual"
-    draw_grid(full,rows,cols)
+    draw_grid(full,rows,cols,edge2index)
     print ""
 
-def draw_grid(model,m,n):
-    edge_filename = '../graphs/edge-nums-%d-%d.pickle' % (m,n)
-    edge2index = pickle.load(open(edge_filename,'rb'))
+def draw_grid(model,m,n,edge2index):
     for i in xrange(m):
         for j in xrange(n):
             sys.stdout.write('.')
@@ -141,6 +139,8 @@ def main():
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
     num_epochs = 10
+    edge_filename = '../graphs/edge-nums-%d-%d.pickle' % (m,n)
+    edge2index = pickle.load(open(edge_filename,'rb'))
     
 
 
@@ -177,6 +177,16 @@ def main():
         #    (locale.format("%d",model_count,grouping=True),time.time()-start)
 
     full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy)
+    partials_completed = []
+    for i in range(num_epochs):
+        partials_completed.append([])
+        for j in range(len(partial_instances[i])):
+            partials_completed[i].append([])
+            for k in range(len(partial_instances[i][j]))
+                if partial_instances[i][j][k] == 1:
+                    partials_completed[i][j].append(1)
+                else:
+                    partials_completed[i][j].append(0)
 
     """
     for i in range(num_epochs):
@@ -233,7 +243,7 @@ def main():
                 else:
                     mpe_array.append(0)
             print full_instances[i][j]
-            print_3(partial_instances[i][j],mpe_array,full_instances[i][j],rows,cols)
+            print_3(partials_completed[i][j],mpe_array,full_instances[i][j],rows,cols,edge2index)
 
     ########################################
     # SIMULATE

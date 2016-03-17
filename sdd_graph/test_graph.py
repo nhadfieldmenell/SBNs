@@ -118,7 +118,7 @@ class Graph:
             edges.append(edge)
         return edges
 
-def draw_grid(model,m,n,g):
+def draw_grid(model,m,n,g,is_sdd=False):
     edge_filename = 'graphs/edge-nums-%d-%d.pickle' % (m,n)
     edge2index = pickle.load(open(edge_filename,'rb'))
     for i in xrange(m):
@@ -131,7 +131,9 @@ def draw_grid(model,m,n,g):
                 """
                 edge = (i*m+j+1,i*m+j+2)
                 index = edge2index[edge]
-                sys.stdout.write('-' if model[index+1] else ' ')
+                if is_sdd:
+                    index += 1
+                sys.stdout.write('-' if model[index] else ' ')
         sys.stdout.write('\n')
         if i < m-1:
             for j in xrange(n):
@@ -141,7 +143,9 @@ def draw_grid(model,m,n,g):
                 """
                 edge = (i*m+j+1,i*m+m+j+1)
                 index = edge2index[edge]
-                sys.stdout.write('|' if model[index+1] else ' ')
+                if is_sdd:
+                    index += 1
+                sys.stdout.write('|' if model[index] else ' ')
                 sys.stdout.write(' ')
         sys.stdout.write('\n')
 
@@ -152,7 +156,7 @@ def print_grids(alpha,m,n,g,manager):
     print "COUNT:", global_model_count(alpha,manager)
     for model in models.models(alpha,sdd.sdd_manager_vtree(manager)):
         print models.str_model(model,var_count=var_count)
-        draw_grid(model,m,n,g)
+        draw_grid(model,m,n,g,True)
 
 def _encode_grid_aux(source,sink,nodes,graph,manager,
                      base=None,cache=None,verbose=False):

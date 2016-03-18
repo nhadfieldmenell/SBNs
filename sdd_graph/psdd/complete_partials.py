@@ -202,7 +202,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
         print "num bad paths: %d" % len(bad_paths)
         return full_datasets,full_epochs,partial_epochs
 
-def most_likely_completions(full_datasets,partial_epochs,num_epochs,rows,cols,edge2index):
+def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_epochs,rows,cols,edge2index):
     for i in range(3):
         models = []
         counts = []
@@ -220,7 +220,8 @@ def most_likely_completions(full_datasets,partial_epochs,num_epochs,rows,cols,ed
             total_count += count
         print "Total count: %d" % total_count
         observed_partials = {}
-        for part_inst in partial_epochs[i]:
+        for q in range len(partial_epochs[i]):
+            part_inst = partial_epochs[i][q]
             if tuple(part_inst) in observed_partials:
                 continue
             observed_partials[tuple(part_inst)] = True
@@ -244,7 +245,7 @@ def most_likely_completions(full_datasets,partial_epochs,num_epochs,rows,cols,ed
             for j in range(len(full_instances)):
                 heapq.heappush(heap,(full_instances[j][1],full_instances[j][0]))
             print "Partial"
-            draw_grid(part_inst,rows,cols,edge2index)
+            draw_grid(partial_completed[i][q],rows,cols,edge2index)
             for j in range(3):
                 if len(heap) == 0:
                     break
@@ -326,7 +327,7 @@ def main():
                 else:
                     partials_completed[i][j].append(0)
 
-    most_likely_completions(full_datasets,partial_instances,num_epochs,rows,cols,edge2index)
+    most_likely_completions(full_datasets,partial_instances,partials_completed,num_epochs,rows,cols,edge2index)
     return
     """
     for i in range(num_epochs):

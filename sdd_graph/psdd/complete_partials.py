@@ -91,6 +91,8 @@ def epochs_partial(rows,cols,num_epochs,copy):
     partials_file.close()
 
     bad_filename = "bad_paths/bad_%d_%d.txt"
+    bad_file = open(bad_filename,'a')
+    bad_file.close()
     bad_file = open(bad_filename,'r')
     bad_lines = bad_file.readlines()
     bad_file.close()
@@ -162,6 +164,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
         bad_file = open(bad_filename,'w')
         for i in bad_indices.keys():
             bad_file.write("%d\n" % i)
+        bad_file.close()
 
         for i in range(num_epochs):
             counts = [1 for j in range(len(full_epochs[i]))]

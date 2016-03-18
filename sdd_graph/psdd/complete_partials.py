@@ -175,6 +175,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
         return full_datasets,full_epochs,partial_epochs
 
     else:
+        print bad_paths
         for i in range(len(full_and_part)):
             model = full_and_part[i][0]
             partial_model = full_and_part[i][1]

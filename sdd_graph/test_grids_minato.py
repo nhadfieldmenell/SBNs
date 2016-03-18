@@ -115,6 +115,7 @@ if __name__ == '__main__':
     start,goal = 1,(dimension[0]+1)*(dimension[1]+1)
     #create an empty GraphSet
     paths = GraphSet()
+    paths_no_mp = GraphSet()
     #paths = GraphSet.paths(start, goal)
     for i in range(start,goal):
         print i
@@ -122,12 +123,15 @@ if __name__ == '__main__':
             #paths = GraphSet.union(paths,GraphSet.paths(i,j))
             """Exclude midpoint"""
             if i != midpoint and j != midpoint:
-                paths = GraphSet.union(paths,GraphSet.paths(i,j))
+                paths_no_mp = GraphSet.union(paths_no_mp,GraphSet.paths(i,j))
+            paths = GraphSet.union(paths,GraphSet.paths(i,j))
 
     pathsThruMidpoint = paths.including(midpoint)
+    pathsNoMidpoint = paths_no_mp.including(midpoint)
 
     #tl.draw(pathsThruMidpoint.choice())
     print "number of paths through midpoint: " + str(pathsThruMidpoint.len())
+    print "number of paths without stopping at midpoint: " + str(pathsNoMidpoint.len())
     print_edge_numbering(paths.universe(),dim[0],dim[1])
     #print paths.universe()
     #for p in pathsThruMidpoint:
@@ -136,6 +140,11 @@ if __name__ == '__main__':
     #dim = (dimension[0]+1,dimension[1]+1)
     #""" AC: SAVE ZDD TO FILE
     f = open("graphs/asdf-%d-%d.zdd" % dim,"w")
+    pathsThruMidpoint.dump(f)
+    f.close()
+    #"""
+    #""" AC: SAVE ZDD TO FILE
+    f = open("graphs/asdf-no-mp-%d-%d.zdd" % dim,"w")
     pathsThruMidpoint.dump(f)
     f.close()
     #"""
@@ -151,10 +160,22 @@ if __name__ == '__main__':
         graph[y].append( (index+1,x) )
     graph_filename = "graphs/asdf-%d-%d.graph.pickle" % dim
 
+    nodesNoMP = [None] + [ (x,y) for x in xrange(dim[0]) for y in xrange(dim[1]) ]
+    graphNoMP = defaultdict(list)
+    for index,edge in enumerate(pathsNoMidpoint.universe()):
+        x,y = edge
+        x,y = nodesNoMP[x],nodesNoMP[y]
+        graphNoMP[x].append( (index+1,y) )
+        graphNoMP[y].append( (index+1,x) )
+    graphNoMP_filename = "graphs/asdf-no-mp-%d-%d.graph.pickle" % dim
+
     # save to file
     import pickle
     with open(graph_filename,'wb') as output:
         pickle.dump(graph,output)
+
+    with open(graphNoMP_filename,'wb') as output:
+        pickle.dump(graphNoMP,output)
 
     tuple2edge = {}
     universe = paths.universe()

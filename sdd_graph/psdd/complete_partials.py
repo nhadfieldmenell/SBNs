@@ -185,6 +185,16 @@ def main():
 
     print "== reading vtree/sdd"
 
+
+    """No Midpoint SDD Stuff"""
+    vtree_no_mp = Vtree.read(vtree_filename_no_mp)
+    manager_no_mp = SddManager(vtree_no_mp)
+    sdd_no_mp = SddNode.read(sdd_filename_no_mp,manager_no_mp)
+    pmanager_no_mp = PSddManager(vtree_no_mp)
+    copy_no_mp = pmanager_no_mp.copy_and_normalize_sdd(sdd_no_mp,vtree_no_mp)
+    pmanager_no_mp.make_unique_true_sdds(copy_no_mp,make_true=False) #AC: set or not set?
+
+
     vtree = Vtree.read(vtree_filename)
     manager = SddManager(vtree)
     sdd = SddNode.read(sdd_filename,manager)
@@ -200,16 +210,6 @@ def main():
         model_count = alpha.model_count()
         #print "      model count: %s (%.3fs)" % \
         #    (locale.format("%d",model_count,grouping=True),time.time()-start)
-
-    """No Midpoint SDD Stuff"""
-    vtree_no_mp = Vtree.read(vtree_filename_no_mp)
-    manager_no_mp = SddManager(vtree_no_mp)
-    sdd_no_mp = SddNode.read(sdd_filename_no_mp,manager_no_mp)
-    pmanager_no_mp = PSddManager(vtree_no_mp)
-    copy_no_mp = pmanager_no_mp.copy_and_normalize_sdd(sdd_no_mp,vtree_no_mp)
-    pmanager_no_mp.make_unique_true_sdds(copy_no_mp,make_true=False) #AC: set or not set?
-
-
 
 
     full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy_no_mp)

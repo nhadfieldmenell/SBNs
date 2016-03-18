@@ -4,6 +4,7 @@ import math
 import time
 import glob
 import sys
+import os.path
 import random
 import pickle
 
@@ -90,15 +91,16 @@ def epochs_partial(rows,cols,num_epochs,copy):
     full_file.close()
     partials_file.close()
 
-    bad_filename = "bad_paths/bad_%d_%d.txt"
-    bad_file = open(bad_filename,'a')
-    bad_file.close()
-    bad_file = open(bad_filename,'r')
-    bad_lines = bad_file.readlines()
-    bad_file.close()
+    bad_lines = None
     bad_paths = {}
-    for i in bad_lines:
-        bad_paths[int(i)] = True
+    bad_filename = "bad_paths/bad_%d_%d.txt"
+    file_exists = os.path.isfile(bad_filename)
+    if file_exists:
+        bad_file = open(bad_filename,'r')
+        bad_lines = bad_file.readlines()
+        bad_file.close()
+        for i in bad_lines:
+            bad_paths[int(i)] = True
 
     full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
     part_ints = map(lambda x: map(int,x[:-1].split(',')),partials_lines)
@@ -134,7 +136,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     bad_indices = {}
 
-    if len(bad_lines) == 0:
+    if file_exists: 
         for i in range(len(full_and_part)):
             model = full_and_part[i][0]
             partial_model = full_and_part[i][1]

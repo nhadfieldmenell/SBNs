@@ -256,6 +256,7 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                 if len(heap) == 0:
                     break
                 count,model = heapq.heappop(heap)
+                count = 0-count
                 if j == 0:
                     if model.count(1) == partial_edge_count + 1:
                         best_one += 1
@@ -265,7 +266,7 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                             best_other += 1
                         else:
                             best_overfit += 1
-                print "Count: %d" % (0-count)
+                print "Count: %d" % (count)
                 draw_grid(model,rows,cols,edge2index)
             print ""
                 

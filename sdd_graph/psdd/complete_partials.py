@@ -222,8 +222,6 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
         observed_partials = {}
         for q in range(len(partial_epochs[i])):
             part_inst = partial_epochs[i][q]
-            print part_inst
-            return
             if tuple(part_inst) in observed_partials:
                 continue
             observed_partials[tuple(part_inst)] = True
@@ -242,6 +240,7 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                     for k in range(len(possibles)):
                         index = possibles[k]
                         if full_instances[index][0][j] != 0:
+                            print "popping"
                             to_pop.insert(0,k)
                     for k in to_pop:
                         possibles.pop(k)

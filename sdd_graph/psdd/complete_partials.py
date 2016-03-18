@@ -203,7 +203,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
         return full_datasets,full_epochs,partial_epochs
 
 def most_likely_completions(full_datasets,partial_epochs,num_epochs,rows,cols,edge2index):
-    for i in range(num_epochs):
+    for i in range(3):
         full_instances = []
         total_count = 0
         for model,count in full_datasets[i]:
@@ -225,6 +225,7 @@ def most_likely_completions(full_datasets,partial_epochs,num_epochs,rows,cols,ed
                     for k in to_pop:
                         full_instances.pop(k)
             heap = []
+            print full_instances
             for j in range(len(full_instances)):
                 heapq.heappush(heap,(full_instances[j][1],full_instances[j][0]))
             print "Partial"

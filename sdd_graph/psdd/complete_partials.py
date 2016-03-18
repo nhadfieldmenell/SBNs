@@ -203,7 +203,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
 def most_likely_completions(full_datasets,partial_epochs,num_epochs):
     counter = 0
-    for model,count in full_datasets:
+    for model,count in full_datasets[0]:
         print count
         print model
         counter += 1

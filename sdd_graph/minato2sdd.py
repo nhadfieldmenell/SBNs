@@ -129,6 +129,7 @@ if __name__ == '__main__':
 
     m,n = int(sys.argv[1]),int(sys.argv[2])
     filename = fnPrefix = ("graphs/asdf-%d-%d" % (m,n))
+    filenameNoMP = fnPrefixNoMP = ("graphs/asdf-no-mp-%d-%d" % (m,n))
 
     start = time.time()
     manager,alpha = parse_bdd(filename+".zdd")
@@ -138,6 +139,8 @@ if __name__ == '__main__':
     print "     sdd model count: %d" % sdd.sdd_model_count(alpha,manager)
     print "  global model count: %d" % global_model_count(alpha,manager)
     print "       read bdd time: %.3fs" % (end-start)
+
+    managerNoMP,alphaNoMP = parse_bdd(filenameNoMP+".zdd")
 
     """
     sdd.sdd_ref(alpha,manager)
@@ -155,6 +158,9 @@ if __name__ == '__main__':
     sdd.sdd_vtree_save(filename + ".vtree",vtree)
     #sdd.sdd_vtree_save_as_dot(filename +".vtree.dot",vtree)
 
+    sdd.sdd_save(filenameNoMP + ".sdd",alphaNoMP)
+    vtreeNoMP = sdd.sdd_manager_vtree(managerNoMP)
+    sdd.sdd_vtree_save(filenameNoMP + ".vtree",vtreeNoMP)
 
     
     
@@ -167,3 +173,12 @@ if __name__ == '__main__':
     sdd.sdd_manager_garbage_collect(manager)
     print "live size:", sdd.sdd_manager_live_count(manager)
     print "dead size:", sdd.sdd_manager_dead_count(manager)
+
+    print "===================="
+    print "before garbage collecting..." 
+    print "live size:", sdd.sdd_manager_live_count(managerNoMP)
+    print "dead size:", sdd.sdd_manager_dead_count(managerNoMP)
+    print "garbage collecting..."
+    sdd.sdd_manager_garbage_collect(managerNoMP)
+    print "live size:", sdd.sdd_manager_live_count(managerNoMP)
+    print "dead size:", sdd.sdd_manager_dead_count(managerNoMP)

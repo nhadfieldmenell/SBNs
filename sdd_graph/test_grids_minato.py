@@ -145,7 +145,7 @@ if __name__ == '__main__':
     #"""
     #""" AC: SAVE ZDD TO FILE
     f = open("graphs/asdf-no-mp-%d-%d.zdd" % dim,"w")
-    pathsThruMidpoint.dump(f)
+    pathsNoMidpoint.dump(f)
     f.close()
     #"""
 

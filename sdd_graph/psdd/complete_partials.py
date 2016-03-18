@@ -179,9 +179,6 @@ def epochs_partial(rows,cols,num_epochs,copy):
         for i in range(len(full_and_part)):
             model = full_and_part[i][0]
             partial_model = full_and_part[i][1]
-            if str(model) in bad_models:
-                total_bad += 1
-                continue
             if i in bad_paths:
                 print i
                 bad_models[str(model)] = True
@@ -195,7 +192,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
                 partial_epochs[epoch_num].append(partial_model)
                 epoch_num = (epoch_num+1) % num_epochs
 
-        print "total bad: %d, unique bad: %d, total good: %d" % (total_bad,unique_bad, total_good)
+        print "total bad: %d, total good: %d" % (len(bad_paths), total_good)
         full_datasets = []
 
         for i in range(num_epochs):

@@ -170,8 +170,8 @@ def main():
     sdd_filename = '../graphs/asdf-%d-%d.sdd' % (rows,cols)
 
 
-    vtree_no_mp_filename = '../graphs/asdf-no-mp-%d-%d.vtree' % (rows,cols)
-    sdd_no_mp_filename = '../graphs/asdf-no-mp-%d-%d.sdd' % (rows,cols)
+    vtree_filename_no_mp = '../graphs/asdf-no-mp-%d-%d.vtree' % (rows,cols)
+    sdd_filename_no_mp = '../graphs/asdf-no-mp-%d-%d.sdd' % (rows,cols)
 
     psi,scale = 2.0,None # learning hyper-parameters
     N,M = 2**10,2**10 # size of training/testing dataset

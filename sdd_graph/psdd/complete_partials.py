@@ -206,6 +206,8 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
     best_one = 0
     best_other = 0
     best_overfit = 0
+    num_unmatched = 0
+    num_matched = 0
     for i in range(len(partial_epochs)):
         models = []
         counts = []
@@ -252,6 +254,10 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
             print "Partial"
             draw_grid(partial_completed[i][q],rows,cols,edge2index)
             partial_edge_count = part_inst.count(1)
+            if len(heap) == 0:
+                num_unmatched += 1
+            else:
+                num_matched += 1
             for j in range(3):
                 if len(heap) == 0:
                     break
@@ -261,7 +267,7 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                     if model.count(1) == partial_edge_count + 1:
                         best_one += 1
                     else:
-                        if count != 1:
+                        if count <= 3:
                             print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                             best_other += 1
                         else:
@@ -273,6 +279,8 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
     print "best one: %d" % best_one
     print "best other: %d" % best_other
     print "best overfit: %d" % best_overfit
+    print "num unmatched: %d" % num_unmatched
+    print "num matched: %d" % num_matched
 
             
 

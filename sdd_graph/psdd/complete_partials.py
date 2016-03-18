@@ -240,7 +240,6 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                     for k in range(len(possibles)):
                         index = possibles[k]
                         if full_instances[index][0][j] != 0:
-                            print "popping"
                             to_pop.insert(0,k)
                     for k in to_pop:
                         possibles.pop(k)
@@ -255,6 +254,7 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                 count,model = heapq.heappop(heap)
                 print "Count: %d" % (0-count)
                 draw_grid(model,rows,cols,edge2index)
+            print ""
                 
             
 

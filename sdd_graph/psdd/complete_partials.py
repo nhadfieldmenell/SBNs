@@ -122,7 +122,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
         print ""
     """
     
-    random.shuffle(full_and_part)
+    #random.shuffle(full_and_part)
 
     epoch_num = 0
     full_epochs = [[] for i in range(num_epochs)]

@@ -233,6 +233,13 @@ def most_likely_completions(full_datasets,partial_epochs,num_epochs,rows,cols,ed
                             to_pop.insert(0,k)
                     for k in to_pop:
                         full_instances.pop(k)
+                elif part_inst[j] == 0:
+                    to_pop = []
+                    for k in range(len(full_instances)):
+                        if full_instances[k][0][j] != 1:
+                            to_pop.insert(0,k)
+                    for k in to_pop:
+                        full_instances.pop(k)
             heap = []
             print full_instances
             for j in range(len(full_instances)):
@@ -320,7 +327,7 @@ def main():
                 else:
                     partials_completed[i][j].append(0)
 
-    most_likely_completions(full_datasets,partials_completed,num_epochs,rows,cols,edge2index)
+    most_likely_completions(full_datasets,partial_instances,num_epochs,rows,cols,edge2index)
     return
     """
     for i in range(num_epochs):

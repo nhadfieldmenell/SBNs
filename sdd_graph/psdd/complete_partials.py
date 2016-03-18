@@ -7,6 +7,7 @@ import sys
 import os.path
 import random
 import pickle
+import heapq
 
 from collections import defaultdict
 from pypsdd import *
@@ -201,20 +202,36 @@ def epochs_partial(rows,cols,num_epochs,copy):
         print "num bad paths: %d" % len(bad_paths)
         return full_datasets,full_epochs,partial_epochs
 
-def most_likely_completions(full_datasets,partial_epochs,num_epochs):
+def most_likely_completions(full_datasets,partial_epochs,num_epochs,rows,cols,edge2index):
     for i in range(num_epochs):
-        full_instances = [[],[]]
+        full_instances = []
         for model,count in full_datasets[i]:
-            full_instances[0].append(model)
-            full_instances[1].append(count)
-        print full_instances[0][0]
-        print full_instances[1]
-        return
+            full_instances.append(model,count)
         observed_partials = {}
         for part_inst in partial_epochs[i]:
+            if tuple(part_inst) in observed_partials:
+                continue
+            observed_partials[tuple(part_inst)] = True
             possibles = [k for k in range(len(full_datasets[i]))]
             for j in range(len(part_inst)):
-                return
+                if part_inst[j] == 1:
+                    to_pop = []
+                    for k in range(len(full_instances)):
+                        if full_instances[k][0][j] != 1:
+                            to_pop.insert(0,k)
+                    for k in to_pop:
+                        full_instances.pop(k)
+            heap = []
+            for j in range(len(full_instances)):
+                heapq.heappush(heap,(full_instances[j][1],full_instances[j][0]))
+            print "Partial"
+            draw_grid(part_inst,rows,cols,edge2index)
+            for j in range(3):
+                count,model = heapq.heappop(heap)
+                print count
+                draw_grid(model,rows,cols,edge2index)
+                
+            
 
 
 
@@ -276,7 +293,7 @@ def main():
 
     full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy_no_mp)
     
-    most_likely_completions(full_datasets,partial_instances,num_epochs)
+    most_likely_completions(full_datasets,partial_instances,num_epochs,rows,cols,edge2index)
     return
     
     partials_completed = []

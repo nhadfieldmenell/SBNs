@@ -264,7 +264,7 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                             print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                             best_other += 1
                         else:
-                            best_rare += 1
+                            best_overfit += 1
                 print "Count: %d" % (0-count)
                 draw_grid(model,rows,cols,edge2index)
             print ""

@@ -8,6 +8,7 @@ import os.path
 import random
 import pickle
 
+from collections import defaultdict
 from pypsdd import *
 
 # for printing numbers with commas
@@ -175,12 +176,10 @@ def epochs_partial(rows,cols,num_epochs,copy):
         return full_datasets,full_epochs,partial_epochs
 
     else:
-        print bad_paths
         for i in range(len(full_and_part)):
             model = full_and_part[i][0]
             partial_model = full_and_part[i][1]
             if i in bad_paths:
-                print i
                 bad_models[str(model)] = True
                 unique_bad += 1
                 total_bad += 1
@@ -202,9 +201,21 @@ def epochs_partial(rows,cols,num_epochs,copy):
         print "num bad paths: %d" % len(bad_paths)
         return full_datasets,full_epochs,partial_epochs
 
+def most_likely_completions(full_datasets,partial_epochs,num_epochs):
+    counter = 0
+    for model,count in full_datasets:
+        print count
+        print model
+        counter += 1
+        if counter == 3:
+            return
+    for i in range(num_epochs):
+        for part_inst in partial_epochs[i]:
+            containing = defaultdict(int)
+            for j in range(len(part_inst)):
+                return
 
-def compare_edges(full_inst, partial_inst, mpe_inst):
-    return
+
 
 def main():
     rows = int(sys.argv[1])
@@ -263,6 +274,10 @@ def main():
 
 
     full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy_no_mp)
+    
+    most_likely_completions(full_datasets,partial_instances,num_epochs)
+    return
+    
     partials_completed = []
     for i in range(num_epochs):
         partials_completed.append([])

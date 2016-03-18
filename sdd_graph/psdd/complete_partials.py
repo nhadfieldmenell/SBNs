@@ -267,6 +267,7 @@ def main():
             val = val/copy.theta_sum
             check_val = copy.probability(evidence=model)
             print "%.6e (%.6e): %s" % (val,check_val,str(model))
+            draw_grid(model,rows,cols,edges2index)
             if count == 10: break
 
         continue
@@ -296,6 +297,7 @@ def main():
                 total_only_guessed_one += 1
                 print "Only guessed one!"
 
+    return
     average_correct = total_correct/num_evaluated
     average_incorrect = total_incorrect/num_evaluated
     average_not_guessed = total_not_guessed/num_evaluated

@@ -201,6 +201,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
             counts = [1 for j in range(len(full_epochs[i]))]
             full_datasets.append(DataSet.to_dict(full_epochs[i],counts))
 
+        print "num bad paths: %d" % len(bad_paths)
         return full_datasets,full_epochs,partial_epochs
 
 

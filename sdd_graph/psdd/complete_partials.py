@@ -169,6 +169,10 @@ def main():
     vtree_filename = '../graphs/asdf-%d-%d.vtree' % (rows,cols)
     sdd_filename = '../graphs/asdf-%d-%d.sdd' % (rows,cols)
 
+
+    vtree_no_mp_filename = '../graphs/asdf-no-mp-%d-%d.vtree' % (rows,cols)
+    sdd_no_mp_filename = '../graphs/asdf-no-mp-%d-%d.sdd' % (rows,cols)
+
     psi,scale = 2.0,None # learning hyper-parameters
     N,M = 2**10,2**10 # size of training/testing dataset
     em_max_iters = 10 # maximum # of iterations for EM
@@ -197,7 +201,18 @@ def main():
         #print "      model count: %s (%.3fs)" % \
         #    (locale.format("%d",model_count,grouping=True),time.time()-start)
 
-    full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy)
+    """No Midpoint SDD Stuff"""
+    vtree_no_mp = Vtree.read(vtree_filename_no_mp)
+    manager_no_mp = SddManager(vtree_no_mp)
+    sdd_no_mp = SddNode.read(sdd_filename_no_mp,manager_no_mp)
+    pmanager_no_mp = PSddManager(vtree_no_mp)
+    copy_no_mp = pmanager_no_mp.copy_and_normalize_sdd(sdd_no_mp,vtree_no_mp)
+    pmanager_no_mp.make_unique_true_sdds(copy_no_mp,make_true=False) #AC: set or not set?
+
+
+
+
+    full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy_no_mp)
     partials_completed = []
     for i in range(num_epochs):
         partials_completed.append([])
@@ -274,7 +289,7 @@ def main():
             draw_grid(model_array,rows,cols,edge2index)
             if count == 10: break
 
-        continue
+        #continue
 
         for j in range(len(partial_instances[i])):
             evidence = DataSet.evidence(partial_instances[i][j])
@@ -301,7 +316,7 @@ def main():
                 total_only_guessed_one += 1
                 print "Only guessed one!"
 
-    return
+    #return
     average_correct = total_correct/num_evaluated
     average_incorrect = total_incorrect/num_evaluated
     average_not_guessed = total_not_guessed/num_evaluated

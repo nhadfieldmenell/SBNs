@@ -205,7 +205,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
 def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_epochs,rows,cols,edge2index):
     best_one = 0
     best_other = 0
-    for i in range(3):
+    for i in range(num_edges):
         models = []
         counts = []
         for j in range(num_epochs):

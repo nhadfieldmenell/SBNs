@@ -250,7 +250,7 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                 heapq.heappush(heap,(0-full_instances[j][1],full_instances[j][0]))
             print "Partial"
             draw_grid(partial_completed[i][q],rows,cols,edge2index)
-            partial_edge_count = partial_inst.count(1)
+            partial_edge_count = part_inst.count(1)
             for j in range(3):
                 if len(heap) == 0:
                     break

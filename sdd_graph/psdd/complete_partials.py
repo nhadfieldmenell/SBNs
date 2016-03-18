@@ -204,9 +204,18 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
 def most_likely_completions(full_datasets,partial_epochs,num_epochs,rows,cols,edge2index):
     for i in range(3):
+        models = []
+        counts = []
+        for j in range(num_epochs):
+            if j != i:
+                for model,count in full_datasets[j]:
+                    models.append(model)
+                    counts.append(count)
+
+        training = DataSet.to_dict(models,counts)
         full_instances = []
         total_count = 0
-        for model,count in full_datasets[i]:
+        for model,count in training:
             full_instances.append([model,count])
             total_count += count
         print "Total count: %d" % total_count
@@ -215,7 +224,7 @@ def most_likely_completions(full_datasets,partial_epochs,num_epochs,rows,cols,ed
             if tuple(part_inst) in observed_partials:
                 continue
             observed_partials[tuple(part_inst)] = True
-            possibles = [k for k in range(len(full_datasets[i]))]
+            possibles = [k for k in range(len(full_instances))]
             for j in range(len(part_inst)):
                 if part_inst[j] == 1:
                     to_pop = []

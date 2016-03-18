@@ -241,7 +241,6 @@ def most_likely_completions(full_datasets,partial_epochs,num_epochs,rows,cols,ed
                     for k in to_pop:
                         full_instances.pop(k)
             heap = []
-            print full_instances
             for j in range(len(full_instances)):
                 heapq.heappush(heap,(full_instances[j][1],full_instances[j][0]))
             print "Partial"

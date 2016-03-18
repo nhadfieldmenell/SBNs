@@ -205,6 +205,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
 def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_epochs,rows,cols,edge2index):
     best_one = 0
     best_other = 0
+    best_overfit = 0
     for i in range(len(partial_epochs)):
         models = []
         counts = []
@@ -259,14 +260,19 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                     if model.count(1) == partial_edge_count + 1:
                         best_one += 1
                     else:
-                        print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                        best_other += 1
+                        if count != 1:
+                            print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                            best_other += 1
+                        else:
+                            best_rare += 1
                 print "Count: %d" % (0-count)
                 draw_grid(model,rows,cols,edge2index)
             print ""
                 
     print "best one: %d" % best_one
     print "best other: %d" % best_other
+    print "best overfit: %d" % best_overfit
+
             
 
 

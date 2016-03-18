@@ -95,7 +95,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
     bad_paths = {}
     bad_filename = "bad_paths/bad_%d_%d.txt"
     file_exists = os.path.isfile(bad_filename)
-    if file_exists:
+    if not file_exists:
         bad_file = open(bad_filename,'r')
         bad_lines = bad_file.readlines()
         bad_file.close()
@@ -136,7 +136,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     bad_indices = {}
 
-    if file_exists: 
+    if not file_exists: 
         for i in range(len(full_and_part)):
             model = full_and_part[i][0]
             partial_model = full_and_part[i][1]

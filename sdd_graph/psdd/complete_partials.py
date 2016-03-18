@@ -304,7 +304,7 @@ def main():
                 else:
                     mpe_array.append(0)
             #print full_instances[i][j]
-            #print_3(partials_completed[i][j],mpe_array,full_instances[i][j],rows,cols,edge2index)
+            print_3(partials_completed[i][j],mpe_array,full_instances[i][j],rows,cols,edge2index)
             correct,incorrect,not_guessed = evaluate_prediction(mpe_array,full_instances[i][j],partial_instances[i][j])
             total_correct += correct
             total_incorrect += incorrect

@@ -229,15 +229,17 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
             for j in range(len(part_inst)):
                 if part_inst[j] == 1:
                     to_pop = []
-                    for k in possibles:
-                        if full_instances[k][0][j] != 1:
+                    for k in range(len(possibles)):
+                        index = possibles[k]
+                        if full_instances[index][0][j] != 1:
                             to_pop.insert(0,k)
                     for k in to_pop:
                         possibles.pop(k)
                 elif part_inst[j] == 0:
                     to_pop = []
-                    for k in possibles:
-                        if full_instances[k][0][j] != 1:
+                    for k in range(len(possibles)):
+                        index = possibles[k]
+                        if full_instances[index][0][j] != 0:
                             to_pop.insert(0,k)
                     for k in to_pop:
                         possibles.pop(k)

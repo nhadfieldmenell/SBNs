@@ -229,20 +229,20 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
             for j in range(len(part_inst)):
                 if part_inst[j] == 1:
                     to_pop = []
-                    for k in range(len(full_instances)):
+                    for k in possibles:
                         if full_instances[k][0][j] != 1:
                             to_pop.insert(0,k)
                     for k in to_pop:
-                        full_instances.pop(k)
+                        possibles.pop(k)
                 elif part_inst[j] == 0:
                     to_pop = []
-                    for k in range(len(full_instances)):
+                    for k in possibles:
                         if full_instances[k][0][j] != 1:
                             to_pop.insert(0,k)
                     for k in to_pop:
-                        full_instances.pop(k)
+                        possibles.pop(k)
             heap = []
-            for j in range(len(full_instances)):
+            for j in possibles:
                 heapq.heappush(heap,(full_instances[j][1],full_instances[j][0]))
             print "Partial"
             draw_grid(partial_completed[i][q],rows,cols,edge2index)

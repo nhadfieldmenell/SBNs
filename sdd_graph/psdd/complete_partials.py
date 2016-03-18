@@ -220,7 +220,7 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
             total_count += count
         print "Total count: %d" % total_count
         observed_partials = {}
-        for q in range len(partial_epochs[i]):
+        for q in range(len(partial_epochs[i])):
             part_inst = partial_epochs[i][q]
             if tuple(part_inst) in observed_partials:
                 continue

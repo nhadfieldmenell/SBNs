@@ -202,9 +202,13 @@ def epochs_partial(rows,cols,num_epochs,copy):
         return full_datasets,full_epochs,partial_epochs
 
 def most_likely_completions(full_datasets,partial_epochs,num_epochs):
-    print full_datasets[0][0]
-    return
     for i in range(num_epochs):
+        full_instances = [[],[]]
+        for model,count in full_datasets[i]:
+            full_instances[0].append(model)
+            full_instances[1].append(count)
+        print full_instances[0][0]
+        return
         observed_partials = {}
         for part_inst in partial_epochs[i]:
             possibles = [k for k in range(len(full_datasets[i]))]

@@ -93,7 +93,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     bad_lines = None
     bad_paths = {}
-    bad_filename = "bad_paths/bad_%d_%d.txt"
+    bad_filename = "bad_paths/bad_%d_%d.txt" (rows,cols)
     file_exists = os.path.isfile(bad_filename)
     if file_exists:
         bad_file = open(bad_filename,'r')

@@ -162,6 +162,7 @@ def main():
     num_epochs = 10
     edge_filename = '../graphs/edge-nums-%d-%d.pickle' % (rows,cols)
     edge2index = pickle.load(open(edge_filename,'rb'))
+    num_edges = (rows-1)*cols + (cols-1)*rows
     
 
 
@@ -267,7 +268,10 @@ def main():
             val = val/copy.theta_sum
             check_val = copy.probability(evidence=model)
             print "%.6e (%.6e): %s" % (val,check_val,str(model))
-            draw_grid(model,rows,cols,edge2index)
+            model_array = []
+            for k in range(num_edges):
+                model_array.append(model[k+1])
+            draw_grid(model_array,rows,cols,edge2index)
             if count == 10: break
 
         continue

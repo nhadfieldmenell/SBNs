@@ -140,7 +140,14 @@ if __name__ == '__main__':
     print "  global model count: %d" % global_model_count(alpha,manager)
     print "       read bdd time: %.3fs" % (end-start)
 
+    start = time.time()
     managerNoMP,alphaNoMP = parse_bdd(filenameNoMP+".zdd")
+    end = time.time()
+    print "      sdd node count: %d" % sdd.sdd_count(alphaNoMP)
+    print "            sdd size: %d" % sdd.sdd_size(alphaNoMP)
+    print "     sdd model count: %d" % sdd.sdd_model_count(alphaNoMP,managerNoMP)
+    print "  global model count: %d" % global_model_count(alphaNoMP,managerNoMP)
+    print "       read bdd time: %.3fs" % (end-start)
 
     """
     sdd.sdd_ref(alpha,manager)

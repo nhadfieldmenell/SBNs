@@ -293,8 +293,6 @@ def main():
 
     full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy_no_mp)
     
-    most_likely_completions(full_datasets,partial_instances,num_epochs,rows,cols,edge2index)
-    return
     
     partials_completed = []
     for i in range(num_epochs):
@@ -307,6 +305,8 @@ def main():
                 else:
                     partials_completed[i][j].append(0)
 
+    most_likely_completions(full_datasets,partials_completed,num_epochs,rows,cols,edge2index)
+    return
     """
     for i in range(num_epochs):
         print len(partial_instances[i])

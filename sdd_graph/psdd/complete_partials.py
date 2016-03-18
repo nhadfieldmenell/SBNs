@@ -101,6 +101,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
         bad_file.close()
         for i in bad_lines:
             bad_paths[int(i)] = True
+            print bad_paths
 
     full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
     part_ints = map(lambda x: map(int,x[:-1].split(',')),partials_lines)

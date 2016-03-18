@@ -258,10 +258,23 @@ def main():
         print "  zero parameters: %d (should be zero)" % copy.zero_count()
         copy.marginals()
 
+        print "== best-m MPE =="
+        count = 0
+        mpe = []
+        for val,model in copy.enumerate():
+            if count == 0: mpe = model
+            count += 1
+            val = val/copy.theta_sum
+            check_val = copy.probability(evidence=model)
+            print "%.6e (%.6e): %s" % (val,check_val,str(model))
+            if count == 10: break
+
+        continue
+
         for j in range(len(partial_instances[i])):
             evidence = DataSet.evidence(partial_instances[i][j])
             mpe_val, mpe_inst = copy.mpe(evidence)
-            print mpe_val
+            #print mpe_val
             total_mpe_val += mpe_val
             #print mpe_inst
             mpe_array = []
@@ -271,7 +284,7 @@ def main():
                 else:
                     mpe_array.append(0)
             #print full_instances[i][j]
-            print_3(partials_completed[i][j],mpe_array,full_instances[i][j],rows,cols,edge2index)
+            #print_3(partials_completed[i][j],mpe_array,full_instances[i][j],rows,cols,edge2index)
             correct,incorrect,not_guessed = evaluate_prediction(mpe_array,full_instances[i][j],partial_instances[i][j])
             total_correct += correct
             total_incorrect += incorrect

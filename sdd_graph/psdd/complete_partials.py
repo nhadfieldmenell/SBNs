@@ -85,12 +85,19 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     full_file = open("../datasets/full_data_%d_%d.txt" % (rows,cols), "r")
     partials_file = open("../datasets/partials_%d_%d.txt" % (rows,cols), "r")
-
     full_lines = full_file.readlines()
     partials_lines = partials_file.readlines()
     full_file.close()
     partials_file.close()
-    
+
+    bad_filename = "bad_paths/bad_%d_%d.txt"
+    bad_file = open(bad_filename,'r')
+    bad_lines = bad_file.readlines()
+    bad_file.close()
+    bad_paths = {}
+    for i in bad_lines:
+        bad_paths[int(i)] = True
+
     full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
     part_ints = map(lambda x: map(int,x[:-1].split(',')),partials_lines)
 
@@ -123,35 +130,73 @@ def epochs_partial(rows,cols,num_epochs,copy):
     total_bad = 0
     total_good = 0
 
-    for i in range(len(full_and_part)):
-        model = full_and_part[i][0]
-        partial_model = full_and_part[i][1]
-        if str(model) in bad_models:
-            total_bad += 1
-            continue
-        evidence = DataSet.evidence(model)
-        probability = copy.probability(evidence)
-        if probability == 0:
-            #print "bad: %s" % str(model)
-            bad_models[str(model)] = True
-            unique_bad += 1
-            total_bad += 1
-            continue
+    bad_indices = {}
 
-        else:
-            total_good += 1
-            full_epochs[epoch_num].append(model)
-            partial_epochs[epoch_num].append(partial_model)
-            epoch_num = (epoch_num+1) % num_epochs
+    if len(bad_lines) == 0:
+        for i in range(len(full_and_part)):
+            model = full_and_part[i][0]
+            partial_model = full_and_part[i][1]
+            if str(model) in bad_models:
+                total_bad += 1
+                bad_indices[i] = True
+                continue
+            evidence = DataSet.evidence(model)
+            probability = copy.probability(evidence)
+            if probability == 0:
+                #print "bad: %s" % str(model)
+                bad_models[str(model)] = True
+                unique_bad += 1
+                total_bad += 1
+                bad_indices[i] = True
+                continue
 
-    print "total bad: %d, unique bad: %d, total good: %d" % (total_bad,unique_bad, total_good)
-    full_datasets = []
+            else:
+                total_good += 1
+                full_epochs[epoch_num].append(model)
+                partial_epochs[epoch_num].append(partial_model)
+                epoch_num = (epoch_num+1) % num_epochs
 
-    for i in range(num_epochs):
-        counts = [1 for j in range(len(full_epochs[i]))]
-        full_datasets.append(DataSet.to_dict(full_epochs[i],counts))
+        print "total bad: %d, unique bad: %d, total good: %d" % (total_bad,unique_bad, total_good)
+        full_datasets = []
 
-    return full_datasets,full_epochs,partial_epochs
+        bad_file = open(bad_filename,'w')
+        for i in bad_indices.keys():
+            bad_file.write("%d\n" % i)
+
+        for i in range(num_epochs):
+            counts = [1 for j in range(len(full_epochs[i]))]
+            full_datasets.append(DataSet.to_dict(full_epochs[i],counts))
+
+        return full_datasets,full_epochs,partial_epochs
+
+    else:
+        for i in range(len(full_and_part)):
+            model = full_and_part[i][0]
+            partial_model = full_and_part[i][1]
+            if str(model) in bad_models:
+                total_bad += 1
+                continue
+            if i in bad_paths:
+                bad_models[str(model)] = True
+                unique_bad += 1
+                total_bad += 1
+                continue
+
+            else:
+                total_good += 1
+                full_epochs[epoch_num].append(model)
+                partial_epochs[epoch_num].append(partial_model)
+                epoch_num = (epoch_num+1) % num_epochs
+
+        print "total bad: %d, unique bad: %d, total good: %d" % (total_bad,unique_bad, total_good)
+        full_datasets = []
+
+        for i in range(num_epochs):
+            counts = [1 for j in range(len(full_epochs[i]))]
+            full_datasets.append(DataSet.to_dict(full_epochs[i],counts))
+
+        return full_datasets,full_epochs,partial_epochs
+
 
 def compare_edges(full_inst, partial_inst, mpe_inst):
     return

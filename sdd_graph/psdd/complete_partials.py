@@ -267,7 +267,7 @@ def main():
             val = val/copy.theta_sum
             check_val = copy.probability(evidence=model)
             print "%.6e (%.6e): %s" % (val,check_val,str(model))
-            draw_grid(model,rows,cols,edges2index)
+            draw_grid(model,rows,cols,edge2index)
             if count == 10: break
 
         continue

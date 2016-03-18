@@ -222,6 +222,8 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
         observed_partials = {}
         for q in range(len(partial_epochs[i])):
             part_inst = partial_epochs[i][q]
+            print part_inst
+            return
             if tuple(part_inst) in observed_partials:
                 continue
             observed_partials[tuple(part_inst)] = True

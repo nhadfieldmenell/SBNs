@@ -207,7 +207,7 @@ def most_likely_completions(full_datasets,partial_epochs,num_epochs):
         for model,count in full_datasets[i]:
             full_instances[0].append(model)
             full_instances[1].append(count)
-        print full_instances[0][0]
+        print full_instances[0]
         return
         observed_partials = {}
         for part_inst in partial_epochs[i]:

@@ -245,15 +245,14 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                         possibles.pop(k)
             heap = []
             for j in possibles:
-                print "count: %d, model: %s" % (full_instances[j][1],str(full_instances[j][0]))
-                heapq.heappush(heap,(full_instances[j][1],full_instances[j][0]))
+                heapq.heappush(heap,(0-full_instances[j][1],full_instances[j][0]))
             print "Partial"
             draw_grid(partial_completed[i][q],rows,cols,edge2index)
             for j in range(3):
                 if len(heap) == 0:
                     break
                 count,model = heapq.heappop(heap)
-                print count
+                print "Count: %d" % (0-count)
                 draw_grid(model,rows,cols,edge2index)
                 
             

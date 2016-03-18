@@ -205,8 +205,11 @@ def epochs_partial(rows,cols,num_epochs,copy):
 def most_likely_completions(full_datasets,partial_epochs,num_epochs,rows,cols,edge2index):
     for i in range(num_epochs):
         full_instances = []
+        total_count = 0
         for model,count in full_datasets[i]:
             full_instances.append([model,count])
+            total_count += count
+        print "Total count: %d" % total_count
         observed_partials = {}
         for part_inst in partial_epochs[i]:
             if tuple(part_inst) in observed_partials:
@@ -227,6 +230,8 @@ def most_likely_completions(full_datasets,partial_epochs,num_epochs,rows,cols,ed
             print "Partial"
             draw_grid(part_inst,rows,cols,edge2index)
             for j in range(3):
+                if len(heap) == 0:
+                    break
                 count,model = heapq.heappop(heap)
                 print count
                 draw_grid(model,rows,cols,edge2index)

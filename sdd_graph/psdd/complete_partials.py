@@ -203,6 +203,8 @@ def epochs_partial(rows,cols,num_epochs,copy):
         return full_datasets,full_epochs,partial_epochs
 
 def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_epochs,rows,cols,edge2index):
+    best_one = 0
+    best_other = 0
     for i in range(3):
         models = []
         counts = []
@@ -248,14 +250,21 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                 heapq.heappush(heap,(0-full_instances[j][1],full_instances[j][0]))
             print "Partial"
             draw_grid(partial_completed[i][q],rows,cols,edge2index)
+            partial_edge_count = partial_inst.count(1)
             for j in range(3):
                 if len(heap) == 0:
                     break
                 count,model = heapq.heappop(heap)
+                if model.count(1) == partial_edge_count + 1:
+                    best_one += 1
+                else:
+                    best_other += 1
                 print "Count: %d" % (0-count)
                 draw_grid(model,rows,cols,edge2index)
             print ""
                 
+    print "best one: %d" % best_one
+    print "best other: %d" % best_other
             
 
 

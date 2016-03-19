@@ -431,7 +431,7 @@ def main():
             mpe_val, mpe_inst = copy.mpe(evidence)
             #print mpe_val
             total_mpe_val += mpe_val
-            #print mpe_inst
+            print mpe_inst
             mpe_array = []
             for k in range(len(full_instances[i][j])):
                 if mpe_inst[k+1] == 1:

@@ -228,8 +228,15 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
         for q in range(len(partial_epochs[i])):
             part_inst = partial_epochs[i][q]
             if tuple(part_inst) in observed_partials:
+                num_matched += 1
+                observed_val = observed_partials[tuple(part_inst)]
+                if observed_val == 0:
+                    best_one += 1
+                elif observed_val == 1:
+                    best_other += 1
+                else:
+                    best_overfit += 1
                 continue
-            observed_partials[tuple(part_inst)] = True
             possibles = [k for k in range(len(full_instances))]
             for j in range(len(part_inst)):
                 if part_inst[j] == 1:
@@ -265,12 +272,16 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                 count = 0-count
                 if j == 0:
                     if model.count(1) == partial_edge_count + 1:
+                        observed_partials[tuple(part_inst)] = 0
                         best_one += 1
                     else:
                         if count > 3:
-                            print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                            observed_partials[tuple(part_inst)] = 1
+                            print "Longer"
                             best_other += 1
                         else:
+                            observed_partials[tuple(part_inst)] = 2 
+                            print "Overfit"
                             best_overfit += 1
                 print "Count: %d" % (count)
                 draw_grid(model,rows,cols,edge2index)

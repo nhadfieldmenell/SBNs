@@ -425,6 +425,8 @@ def main():
 
         #continue
 
+        print "lalala"
+    
         for j in range(len(partial_instances[i])):
             evidence = DataSet.evidence(partial_instances[i][j])
             mpe_val, mpe_inst = copy.mpe(evidence)

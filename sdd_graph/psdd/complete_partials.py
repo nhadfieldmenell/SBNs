@@ -267,7 +267,7 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
                     if model.count(1) == partial_edge_count + 1:
                         best_one += 1
                     else:
-                        if count <= 3:
+                        if count > 3:
                             print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                             best_other += 1
                         else:

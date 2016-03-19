@@ -420,7 +420,7 @@ def main():
             for k in range(num_edges):
                 model_array.append(model[k+1])
             draw_grid(model_array,rows,cols,edge2index)
-            if count == 10: break
+            if count == 15: break
 
         #continue
 

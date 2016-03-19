@@ -357,7 +357,6 @@ def main():
                     partials_completed[i][j].append(0)
 
     most_likely_completions(full_datasets,partial_instances,partials_completed,num_epochs,rows,cols,edge2index)
-    return
     """
     for i in range(num_epochs):
         print len(partial_instances[i])

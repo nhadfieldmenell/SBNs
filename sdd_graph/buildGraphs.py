@@ -601,6 +601,7 @@ def single_epoch(g,rows,cols):
 
     #trip_list = g.node2trip_ids[g.best_node]
     trip_list = g.node2trip_ids[top_nodes[one_to_select]]
+    print "Selected midpoint: %d" % top_nodes[one_to_select]]
     out_file = open("datasets/full_data_%d_%d.txt" % (rows,cols),'w')
     partial_file = open("datasets/partials_%d_%d.txt" % (rows,cols), 'w')
     for i in range(len(trip_list)):

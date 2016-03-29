@@ -67,7 +67,7 @@ class Graph(object):
 
     def top_n_nodes(self,num_best):
         heap = []
-        for node_num in node2visited.keys():
+        for node_num in self.node2visited.keys():
             neg_num_visits = 0 - self.node2visited[node_num]
             heapq.heappush(heap,(neg_num_visits,node_num))
         for i in range(num_best):

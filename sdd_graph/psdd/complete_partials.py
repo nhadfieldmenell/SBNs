@@ -421,6 +421,7 @@ def main():
         print "== best-m MPE =="
         count = 0
         mpe = []
+        """
         for val,model in copy.enumerate():
             if count == 0: mpe = model
             count += 1
@@ -432,7 +433,7 @@ def main():
                 model_array.append(model[k+1])
             draw_grid(model_array,rows,cols,edge2index)
             if count == 15: break
-
+        """
         #continue
 
         print "lalala"

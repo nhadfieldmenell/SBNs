@@ -651,11 +651,20 @@ def main():
     max_lon = -122.38
     """
 
-    """SF action coords (3.8x3.3 mi)"""
+    """SF action coords (3.8x3.3 mi)
     min_lat = 37.755
     max_lat = 37.803
     min_lon = -122.46
     max_lon = -122.39
+    """
+
+    """SF zoom coords (2.2x2.4 mi)"""
+    min_lat = 37.763
+    max_lat = 37.795
+    min_lon = -122.445
+    max_lon = -122.4
+
+    
 
     #rows = 5 
     #cols = 5

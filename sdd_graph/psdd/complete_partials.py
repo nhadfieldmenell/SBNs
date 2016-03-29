@@ -439,7 +439,8 @@ def main():
         print "lalala"
     
         for j in range(len(partial_instances[i])):
-            print partial_instances[i]
+            print j
+            print partial_instances[i][j]
             evidence = DataSet.evidence(partial_instances[i][j])
             mpe_val, mpe_inst = copy.mpe(evidence)
             #print mpe_val

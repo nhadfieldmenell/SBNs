@@ -79,6 +79,7 @@ class Graph(object):
             print self.node_to_coords(node_num)
             print num_visits
             print ""
+        return best_nodes
 
 
     def edge_num(self,row1,col1,row2,col2):

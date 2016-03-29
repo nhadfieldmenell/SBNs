@@ -70,9 +70,11 @@ class Graph(object):
         for node_num in self.node2visited.keys():
             neg_num_visits = 0 - self.node2visited[node_num]
             heapq.heappush(heap,(neg_num_visits,node_num))
+        best_nodes = []
         for i in range(num_best):
             num_visits,node_num = heapq.heappop(heap)
             num_visits = 0 - num_visits
+            best_nodes.append(node_num)
             print node_num
             print self.node_to_coords(node_num)
             print num_visits
@@ -562,7 +564,36 @@ def single_epoch(g,rows,cols):
         Nothing
     """
 
-    g.top_n_nodes(5)
+    num_top = 5
+    top_nodes = g.top_n_nodes(num_top)
+    for k in range(num_top):
+        trip_list = g.node2trip_ids[top_nodes[k]]
+        out_file = open("paths_%d.txt" % k,"w")
+        for i in range(len(trip_list)):
+            trip_id = trip_list[i]
+            line_num = g.trip_id2line_num[trip_id]
+            p = Path(trip_id,g,line_num)
+            #"""
+            print i
+            print trip_id
+            p.print_path()
+            for i in range(p.graph.num_edges):
+                if p.edges[i]:
+                    out_file.write("%d, " % (i + 1))
+            out_file.write("\n")
+            out_file.write("1s: ")
+            for key in p.partials.keys():
+                if p.partials[key]:
+                    out_file.write("%d, " % (key + 1))
+            sys.stdout.write("\n0s: ")
+            for key in p.partials.keys():
+                if not p.partials[key]:
+                    out_file.write("%d, " % (key + 1))
+            out_file.write("\n")
+            #"""
+    
+    return
+
     trip_list = g.node2trip_ids[g.best_node]
     out_file = open("datasets/full_data_%d_%d.txt" % (rows,cols),'w')
     partial_file = open("datasets/partials_%d_%d.txt" % (rows,cols), 'w')

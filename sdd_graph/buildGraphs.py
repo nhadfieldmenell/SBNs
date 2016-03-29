@@ -568,8 +568,12 @@ def single_epoch(g,rows,cols):
     num_top = 5
     top_nodes = g.top_n_nodes(num_top)
     for k in range(num_top):
-        trip_list = g.node2trip_ids[top_nodes[k]]
-        out_file = open("paths_%d.txt" % k,"w")
+        node_num = top_nodes[k]
+        trip_list = g.node2trip_ids[node_num]
+        print "Next Midpoint: %d" % k
+        print node_num
+        print g.node_to_coords(node_num)
+        print "Num trips: %d" %d len(trip_list)
         for i in range(len(trip_list)):
             trip_id = trip_list[i]
             line_num = g.trip_id2line_num[trip_id]
@@ -580,17 +584,17 @@ def single_epoch(g,rows,cols):
             p.print_path()
             for i in range(p.graph.num_edges):
                 if p.edges[i]:
-                    out_file.write("%d, " % (i + 1))
-            out_file.write("\n")
-            out_file.write("1s: ")
+                    sys.stdout.write("%d, " % (i + 1))
+            sys.stdout.write("\n")
+            sys.stdout.write("1s: ")
             for key in p.partials.keys():
                 if p.partials[key]:
-                    out_file.write("%d, " % (key + 1))
+                    sys.stdout.write("%d, " % (key + 1))
             sys.stdout.write("\n0s: ")
             for key in p.partials.keys():
                 if not p.partials[key]:
-                    out_file.write("%d, " % (key + 1))
-            out_file.write("\n")
+                    sys.stdout.write("%d, " % (key + 1))
+            sys.stdout.write("\n")
             #"""
     
     return

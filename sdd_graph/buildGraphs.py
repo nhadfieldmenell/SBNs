@@ -2,6 +2,7 @@
 import sys
 import random
 import pickle
+import heapq
 from collections import defaultdict
 import numpy as np
 import decodeGps as dg
@@ -62,6 +63,20 @@ class Graph(object):
                 self.best_node_score = self.node2visited[node_num]
                 self.best_node = node_num
             self.node2trip_ids[node_num].append(trip_id)
+
+
+    def top_n_nodes(self,num_best):
+        heap = []
+        for node_num in node2visited.keys():
+            neg_num_visits = 0 - self.node2visited[node_num]
+            heapq.heappush(heap,(neg_num_visits,node_num))
+        for i in range(num_best):
+            num_visits,node_num = heapq.heappop(heap)
+            num_visits = 0 - num_visits
+            print node_num
+            print self.node_to_coords(node_num)
+            print num_visits
+            print ""
 
 
     def edge_num(self,row1,col1,row2,col2):
@@ -547,6 +562,7 @@ def single_epoch(g,rows,cols):
         Nothing
     """
 
+    g.top_n_nodes(5)
     trip_list = g.node2trip_ids[g.best_node]
     out_file = open("datasets/full_data_%d_%d.txt" % (rows,cols),'w')
     partial_file = open("datasets/partials_%d_%d.txt" % (rows,cols), 'w')

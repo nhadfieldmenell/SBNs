@@ -14,16 +14,20 @@ from data import DataSet
 class EnumerateModel:
     counter = 0
 
-    def __init__(self,element=None,pnext=None,snext=None):
+    def __init__(self,evidence=None,element=None,pnext=None,snext=None):
+        if evidence is not None:
+            self.evidence = evidence
+
         if element is not None:
             self.prime,self.sub = element
-            self.pit,self.sit = self.prime.enumerate(),self.sub.enumerate()
+            self.pit = self.prime.enumerate(evidence)
+            self.sit = self.sub.enumerate(evidence)
             self.pval,self.pinst = self.pit.next()
             self.sval,self.sinst = self.sit.next()
         elif pnext is not None:
             self.pval,self.pinst,model = pnext
             self.prime,self.sub = model.prime,model.sub
-            self.pit,self.sit = model.pit,self.sub.enumerate()
+            self.pit,self.sit = model.pit,self.sub.enumerate(evidence)
             self.sval,self.sinst = self.sit.next()
         elif snext is not None:
             self.sval,self.sinst,model = snext
@@ -48,7 +52,7 @@ class EnumerateModel:
         except StopIteration:
             return None
         pnext = (pval,pinst,self)
-        return EnumerateModel(pnext=pnext)
+        return EnumerateModel(evidence=self.evidence,pnext=pnext)
 
     def snext(self):
         try:
@@ -56,7 +60,7 @@ class EnumerateModel:
         except StopIteration:
             return None
         snext = (sval,sinst,self)
-        return EnumerateModel(snext=snext)
+        return EnumerateModel(evidence=self.evidence,snext=snext)
 
     def __cmp__(self,other):
         val = -cmp(self.val,other.val)
@@ -109,16 +113,16 @@ class PSddNode(SddNode):
 # ENUMERATE A PSDD
 ########################################
 
-    def enumerate(self):
-        for val,model in self._enumerate():
+    def enumerate(self,evidence):
+        for val,model in self._enumerate(evidence):
             yield val,model
         self.clear_data()
 
-    def _enumerate(self):
+    def _enumerate(self,evidence):
         if self.is_decomposition():
-            return self._enumerate_decomposition()
+            return self._enumerate_decomposition(evidence)
         else:
-            return self._enumerate_terminal()
+            return self._enumerate_terminal(evidence)
 
     def _enumerate_update_queue(self,theta,eit,queue):
         try:
@@ -128,7 +132,7 @@ class PSddNode(SddNode):
         item = (-theta*val,inst,theta,eit)
         queue.put(item)
 
-    def _enumerate_decomposition(self):
+    def _enumerate_decomposition(self,evidence):
         # set up cache for elements
         if self.data is None:
             self.data = {}
@@ -139,7 +143,7 @@ class PSddNode(SddNode):
         for element in self.elements:
             theta = self.theta[element]
             cache = self.data[element]
-            eit = self._enumerate_element(element,cache)
+            eit = self._enumerate_element(element,evidence,cache)
             self._enumerate_update_queue(theta,eit,queue)
 
         while not queue.empty():
@@ -147,7 +151,7 @@ class PSddNode(SddNode):
             self._enumerate_update_queue(theta,eit,queue)
             yield (-val,inst)
 
-    def _enumerate_element(self,element,cache):
+    def _enumerate_element(self,element,evidence,cache):
         p,s = element
         if s.is_false_sdd: return
 
@@ -155,7 +159,7 @@ class PSddNode(SddNode):
 
         if not last in cache:
             queue = pq()
-            model = EnumerateModel(element=element)
+            model = EnumerateModel(evidence=evidence,element=element)
             queue.put(model)
             cache[last] = queue
 
@@ -181,10 +185,18 @@ class PSddNode(SddNode):
                 cache[last] = queue
                 yield val,inst
 
-    def _enumerate_terminal(self):
+    def _enumerate_terminal(self,evidence):
         var = self.vtree.var
         if self.is_false():
             pass
+        elif var in evidence:
+            val = evidence[var]
+            if self.is_true():
+                yield (self.theta[val],{var:val})
+            elif self.is_literal():
+                lit_val = 0 if self.literal < 0 else 1
+                if val == lit_val:
+                    yield (self.theta[val],{var:val})
         elif self.is_true():
             vals = [0,1] if self.theta[0] >= self.theta[1] else [1,0]
             for val in vals:

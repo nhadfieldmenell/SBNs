@@ -203,6 +203,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
         return full_datasets,full_epochs,partial_epochs
 
 def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_epochs,rows,cols,edge2index):
+    """Find the most likely instances that share all the edges with the partial path"""
     best_one = 0
     best_other = 0
     best_overfit = 0
@@ -335,14 +336,13 @@ def main():
     copy_no_mp = pmanager_no_mp.copy_and_normalize_sdd(sdd_no_mp,vtree_no_mp)
     pmanager_no_mp.make_unique_true_sdds(copy_no_mp,make_true=False) #AC: set or not set?
 
-
+    """With Midpoint SDD Stuff"""
     vtree = Vtree.read(vtree_filename)
     manager = SddManager(vtree)
     sdd = SddNode.read(sdd_filename,manager)
     pmanager = PSddManager(vtree)
     copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
     pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
-
 
     psdd_parameters = copy.theta_count()
 
@@ -438,6 +438,7 @@ def main():
         print "lalala"
     
         for j in range(len(partial_instances[i])):
+            print partial_instances[i]
             evidence = DataSet.evidence(partial_instances[i][j])
             mpe_val, mpe_inst = copy.mpe(evidence)
             #print mpe_val

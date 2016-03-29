@@ -554,7 +554,7 @@ def single_epoch(g,rows,cols):
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
-        """
+        #"""
         print i
         print trip_id
         p.print_path()
@@ -571,7 +571,7 @@ def single_epoch(g,rows,cols):
             if not p.partials[key]:
                 sys.stdout.write("%d, " % (key + 1))
         sys.stdout.write("\n")
-        """
+        #"""
         out_string = str(p.edges)[1:-1]
         out_file.write("%s\n" % out_string)
         for i in range(p.graph.num_edges):

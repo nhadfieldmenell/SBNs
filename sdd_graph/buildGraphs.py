@@ -573,7 +573,7 @@ def single_epoch(g,rows,cols):
         print "Next Midpoint: %d" % k
         print node_num
         print g.node_to_coords(node_num)
-        print "Num trips: %d" %d len(trip_list)
+        print "Num trips: %d" % len(trip_list)
         for i in range(len(trip_list)):
             trip_id = trip_list[i]
             line_num = g.trip_id2line_num[trip_id]

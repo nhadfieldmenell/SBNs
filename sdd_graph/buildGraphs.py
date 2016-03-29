@@ -566,6 +566,7 @@ def single_epoch(g,rows,cols):
     """
 
     num_top = 5
+    one_to_select = 3
     top_nodes = g.top_n_nodes(num_top)
     for k in range(num_top):
         node_num = top_nodes[k]
@@ -597,16 +598,16 @@ def single_epoch(g,rows,cols):
             sys.stdout.write("\n")
             #"""
     
-    return
 
-    trip_list = g.node2trip_ids[g.best_node]
+    #trip_list = g.node2trip_ids[g.best_node]
+    trip_list = g.node2trip_ids[top_nodes[one_to_select]]
     out_file = open("datasets/full_data_%d_%d.txt" % (rows,cols),'w')
     partial_file = open("datasets/partials_%d_%d.txt" % (rows,cols), 'w')
     for i in range(len(trip_list)):
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]
         p = Path(trip_id,g,line_num)
-        #"""
+        """
         print i
         print trip_id
         p.print_path()
@@ -623,7 +624,7 @@ def single_epoch(g,rows,cols):
             if not p.partials[key]:
                 sys.stdout.write("%d, " % (key + 1))
         sys.stdout.write("\n")
-        #"""
+        """
         out_string = str(p.edges)[1:-1]
         out_file.write("%s\n" % out_string)
         for i in range(p.graph.num_edges):

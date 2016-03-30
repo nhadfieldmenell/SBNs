@@ -294,7 +294,7 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
     print "num matched: %d" % num_matched
 
             
-def enumerate_mpe(copy,num_enumerate,evidence):
+def enumerate_mpe(copy,num_enumerate,evidence,num_edges,edge2index):
     print "== best-m MPE =="
     count = 0
     mpe = []
@@ -453,7 +453,7 @@ def main():
             if count == 15: break
         """
 
-        enumerate_mpe(copy,15,empty_evidence)
+        enumerate_mpe(copy,15,empty_evidence,num_edges,edge2index)
 
         #continue
 
@@ -484,7 +484,7 @@ def main():
                 total_only_guessed_one += 1
                 print "Only guessed one!"
             print "Top 5:"
-            enumerate_mpe(copy,5,evidence)
+            enumerate_mpe(copy,5,evidence,num_edges,edge2index)
             print ""
 
     #return

@@ -569,6 +569,7 @@ def single_epoch(g,rows,cols):
     #3 for 8x8
     one_to_select = 0
     top_nodes = g.top_n_nodes(num_top)
+    '''
     for k in range(num_top):
         node_num = top_nodes[k]
         trip_list = g.node2trip_ids[node_num]
@@ -580,7 +581,7 @@ def single_epoch(g,rows,cols):
             trip_id = trip_list[i]
             line_num = g.trip_id2line_num[trip_id]
             p = Path(trip_id,g,line_num)
-            #"""
+            """
             print i
             print trip_id
             p.print_path()
@@ -598,7 +599,7 @@ def single_epoch(g,rows,cols):
                     sys.stdout.write("%d, " % (key + 1))
             sys.stdout.write("\n")
             #"""
-    
+    '''
 
     #trip_list = g.node2trip_ids[g.best_node]
     trip_list = g.node2trip_ids[top_nodes[one_to_select]]

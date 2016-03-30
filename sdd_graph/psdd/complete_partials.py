@@ -453,7 +453,7 @@ def main():
             if count == 15: break
         """
 
-        enumerate_mpe(copy,15,empty_evidence,num_edges,edge2index,rows,cols)
+        #enumerate_mpe(copy,15,empty_evidence,num_edges,edge2index,rows,cols)
 
         #continue
 

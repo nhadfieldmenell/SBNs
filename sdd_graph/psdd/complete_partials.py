@@ -294,7 +294,21 @@ def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_e
     print "num matched: %d" % num_matched
 
             
-
+def enumerate_mpe(copy,num_enumerate,evidence):
+    print "== best-m MPE =="
+    count = 0
+    mpe = []
+    for val,model in copy.enumerate(evidence):
+        if count == 0: mpe = model
+        count += 1
+        val = val/copy.theta_sum
+        check_val = copy.probability(evidence=model)
+        print "%.6e (%.6e): %s" % (val,check_val,str(model))
+        model_array = []
+        for k in range(num_edges):
+            model_array.append(model[k+1])
+        draw_grid(model_array,rows,cols,edge2index)
+        if count == num_enumerate: break
 
 
 def main():
@@ -422,6 +436,7 @@ def main():
         print "  zero parameters: %d (should be zero)" % copy.zero_count()
         copy.marginals()
 
+        """
         print "== best-m MPE =="
         count = 0
         mpe = []
@@ -436,6 +451,9 @@ def main():
                 model_array.append(model[k+1])
             draw_grid(model_array,rows,cols,edge2index)
             if count == 15: break
+        """
+
+        enumerate_mpe(copy,15,empty_evidence)
 
         #continue
 
@@ -465,6 +483,9 @@ def main():
             if mpe_array.count(1) == partials_completed[i][j].count(1) + 1:
                 total_only_guessed_one += 1
                 print "Only guessed one!"
+            print "Top 5:"
+            enumerate_mpe(copy,5,evidence)
+            print ""
 
     #return
     average_correct = total_correct/num_evaluated

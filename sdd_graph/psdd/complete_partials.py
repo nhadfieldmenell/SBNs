@@ -453,9 +453,9 @@ def main():
             if count == 15: break
         """
 
-        if i == 0:
-            print "ENUMERATING"
-            enumerate_mpe(copy,15,empty_evidence,num_edges,edge2index,rows,cols)
+        #if i == 0:
+        #    print "ENUMERATING"
+        #    enumerate_mpe(copy,15,empty_evidence,num_edges,edge2index,rows,cols)
 
         #continue
 

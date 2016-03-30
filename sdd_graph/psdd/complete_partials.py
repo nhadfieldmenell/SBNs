@@ -203,7 +203,6 @@ def epochs_partial(rows,cols,num_epochs,copy):
         return full_datasets,full_epochs,partial_epochs
 
 def most_likely_completions(full_datasets,partial_epochs,partial_completed,num_epochs,rows,cols,edge2index):
-    """Find the most likely instances that share all the edges with the partial path"""
     best_one = 0
     best_other = 0
     best_overfit = 0
@@ -305,6 +304,10 @@ def main():
     edge_filename = '../graphs/edge-nums-%d-%d.pickle' % (rows,cols)
     edge2index = pickle.load(open(edge_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
+    empty_data = [-1 for i in range(num_edges)]
+    empty_data = tuple(empty_data)
+    empty_evidence = DataSet.evidence(empty_data)
+
     
 
 
@@ -336,13 +339,14 @@ def main():
     copy_no_mp = pmanager_no_mp.copy_and_normalize_sdd(sdd_no_mp,vtree_no_mp)
     pmanager_no_mp.make_unique_true_sdds(copy_no_mp,make_true=False) #AC: set or not set?
 
-    """With Midpoint SDD Stuff"""
+
     vtree = Vtree.read(vtree_filename)
     manager = SddManager(vtree)
     sdd = SddNode.read(sdd_filename,manager)
     pmanager = PSddManager(vtree)
     copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
     pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
+
 
     psdd_parameters = copy.theta_count()
 
@@ -421,8 +425,7 @@ def main():
         print "== best-m MPE =="
         count = 0
         mpe = []
-        """
-        for val,model in copy.enumerate():
+        for val,model in copy.enumerate(empty_evidence):
             if count == 0: mpe = model
             count += 1
             val = val/copy.theta_sum
@@ -433,14 +436,12 @@ def main():
                 model_array.append(model[k+1])
             draw_grid(model_array,rows,cols,edge2index)
             if count == 15: break
-        """
+
         #continue
 
         print "lalala"
     
         for j in range(len(partial_instances[i])):
-            print j
-            print partial_instances[i][j]
             evidence = DataSet.evidence(partial_instances[i][j])
             mpe_val, mpe_inst = copy.mpe(evidence)
             #print mpe_val

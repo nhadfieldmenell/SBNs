@@ -116,7 +116,6 @@ if __name__ == '__main__':
     #create an empty GraphSet
     paths = GraphSet()
     paths_no_mp = GraphSet()
-    #paths = GraphSet.paths(start, goal)
     for i in range(start,goal):
         print i
         for j in range(i+1,goal+1):

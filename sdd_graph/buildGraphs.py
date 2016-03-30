@@ -292,13 +292,16 @@ class Path(object):
             is used, 0 otherwise.
     """
     #@profile
-    def __init__(self,trip_id,graph,fn,line_num=-1):
+    def __init__(self,trip_id,graph,line_num=-1,midpoint=None):
         self.graph = graph
         self.trip_id = trip_id
         self.line_num = line_num
         self.bad_graph = False
         self.next_line = 0
         self.line_num = self.find_path()
+        self.midpoint = midpoint
+        if midpoint == None:
+            self.midpoint = self.graph.best_node
         self.path,self.edges,self.good,self.partials = self.create_path()
 
     def print_path(self):
@@ -377,7 +380,6 @@ class Path(object):
         partials = []
         partials.append({})
 
-        midpoint = self.graph.node_to_coords(self.graph.best_node)
         #this variable is true if we have not yet recorded the first edge of a path
         first_edge = True
         #this variable is false until we hit the midpoint
@@ -419,10 +421,10 @@ class Path(object):
                                 if other_edge != -1:
                                     partials[matrices_index][other_edge] = 0
                             first_edge = False
-                            if self.graph.coords_to_node(prev_coords[0],prev_coords[1]) == self.graph.best_node:
+                            if self.graph.coords_to_node(prev_coords[0],prev_coords[1]) == self.midpoint:
                                 hit_midpoint = True
                         partials[matrices_index][edge_num] = 1
-                        if self.graph.coords_to_node(coords[0],coords[1]) == self.graph.best_node:
+                        if self.graph.coords_to_node(coords[0],coords[1]) == self.midpoint:
                             hit_midpoint = True
 
 
@@ -541,7 +543,7 @@ def create_all(graph):
     trip_id = 1
     line_num = 0
     #paths = {}
-    p = Path(trip_id,graph,full_fn,line_num)
+    p = Path(trip_id,graph,line_num=line_num)
     full_fn.close()
     #paths[trip_id] = p
     while p.next_line != file_length:
@@ -549,7 +551,7 @@ def create_all(graph):
         full_fn = open('csvGPS.txt','r')
         line_num = p.next_line
         trip_id = dg.normalize(lines[line_num])[0]
-        p = Path(trip_id,graph,full_fn,line_num)
+        p = Path(trip_id,graph,line_num=line_num)
         full_fn.close()
        # paths[trip_id] = p
     graph.trip_id2line_num[trip_id] = line_num
@@ -602,14 +604,16 @@ def single_epoch(g,rows,cols):
     '''
 
     #trip_list = g.node2trip_ids[g.best_node]
-    trip_list = g.node2trip_ids[top_nodes[one_to_select]]
+    midpoint = top_nodes[one_to_select]
+    trip_list = g.node2trip_ids[midpoint]
     print "Selected midpoint: %d" % top_nodes[one_to_select]
+    print g.node_to_coords(midpoint)
     out_file = open("datasets/full_data_%d_%d.txt" % (rows,cols),'w')
     partial_file = open("datasets/partials_%d_%d.txt" % (rows,cols), 'w')
     for i in range(len(trip_list)):
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]
-        p = Path(trip_id,g,line_num)
+        p = Path(trip_id,g,line_num=line_num,midpoint=midpoint)
         """
         print i
         print trip_id
@@ -653,7 +657,7 @@ def create_epochs(g,rows,cols):
         trip_id = trip_list[i]
         #print trip_id
         line_num = g.trip_id2line_num[trip_id]
-        p = Path(trip_id,g,line_num)
+        p = Path(trip_id,g,line_num=line_num)
         epoch = int(float(i) / len(trip_list) * 10)
         #print epoch
         out_string = str(p.edges)[1:-1]
@@ -686,7 +690,7 @@ def print_some(g,trip_nums):
     for i in trip_nums:
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]
-        p = Path(trip_id,g,line_num)
+        p = Path(trip_id,g,line_num=line_num)
         print trip_id
         print p.edges
         print p.path

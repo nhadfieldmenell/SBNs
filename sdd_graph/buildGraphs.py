@@ -566,7 +566,8 @@ def single_epoch(g,rows,cols):
     """
 
     num_top = 5
-    one_to_select = 3
+    #3 for 8x8
+    one_to_select = 0
     top_nodes = g.top_n_nodes(num_top)
     for k in range(num_top):
         node_num = top_nodes[k]

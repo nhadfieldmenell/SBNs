@@ -63,6 +63,7 @@ class Graph(object):
         cur_id = 0
         prev_lat = 0
         prev_lon = 0
+        big_hops = {}
         print "Bad Distances"
         for line in self.lines:
             normalized = dg.normalize(line)
@@ -72,11 +73,17 @@ class Graph(object):
             if cur_id == prev_id:
                 distance = gps_dist_miles(prev_lat,prev_lon,lat,lon)
                 if distance > 1:
+                    big_hops[cur_id] = 1
                     print cur_id
                 trip_id2length[cur_id] += distance 
             prev_lat = lat
             prev_lon = lon
             prev_id = cur_id
+
+        print len(trip_id2length.keys())
+        for bad_id in big_hops.keys():
+            del trip_id2length[bad_id]
+
 
         #for i in range(1,25001):
         #    if i not in trip_id2length.keys():

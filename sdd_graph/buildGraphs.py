@@ -69,6 +69,10 @@ class Graph(object):
             lat = normalized[1]
             lon = normalized[2]
             if cur_id == prev_id:
+                print prev_lat
+                print prev_lon
+                print lat
+                print lon
                 trip_id2length[cur_id] += gps_dist_miles(prev_lat,prev_lon,lat,lon)
             prev_lat = lat
             prev_lon = lon

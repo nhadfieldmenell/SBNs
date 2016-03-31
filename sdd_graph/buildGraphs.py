@@ -99,10 +99,10 @@ class Graph(object):
             total_len += trip_id2length[i]
         heap = []
         for i in trip_id2length:
-            heap.push(i)
+            heapq.heappush(heap,i)
         for i in range(num_trips/2):
-            heap.pop()
-        median = heap.pop()
+            heapq.heappop(heap)
+        median = heapq.heappop(heap)
         print "Median length %f" % median
         num_trips = len(trip_id2length.keys())
         print num_trips

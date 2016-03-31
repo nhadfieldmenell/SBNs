@@ -3,6 +3,7 @@ import sys
 import random
 import pickle
 import heapq
+from haversine import haversine
 from collections import defaultdict
 import numpy as np
 import decodeGps as dg
@@ -717,6 +718,8 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
    
+    print "distance: %f" % haversine((min_lat,min_lon),(max_lat,max_lon),miles=True)
+    return
 
     """SF zoom coords (2.2x2.4 mi)
     min_lat = 37.763
@@ -732,27 +735,6 @@ def main():
     try_lat = 37.721396 
     try_lon = -122.400256
 
-
-    """
-    full_fn = open('csvGPS.txt','r')
-    p = Path(1,g,full_fn,0)
-    full_fn.close()
-    full_fn = open('csvGPS.txt','r')
-    lines = full_fn.readlines()
-    print lines[0]
-    print lines[27]
-    full_fn.close()
-
-    for i in (20,21,22,23,24,25,26,27,28):
-        full_fn = open('csvGPS.txt','r')
-        p = Path(i,g,full_fn)
-        full_fn.close()
-    
-    print g.node2visited
-    print g.node2trip_ids
-    print g.best_node_score
-    print g.best_node
-    """
     create_all(g)
     print g.best_node_score
     print g.best_node

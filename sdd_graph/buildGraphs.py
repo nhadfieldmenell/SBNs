@@ -77,6 +77,9 @@ class Graph(object):
         for i in (15,16,17,18,19):
             print "%d: %f" % (i,trip_id2length[i])
 
+        for i in range(1,25001):
+            if i not in trip_id2length.keys():
+                print i
         num_trips = len(trip_id2length.keys())
         print trip_id2length.keys()
         print num_trips

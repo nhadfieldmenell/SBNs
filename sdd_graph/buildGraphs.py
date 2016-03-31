@@ -81,6 +81,8 @@ class Graph(object):
         print num_trips
         total_len = 0.0
         for i in range(1,25001):
+            if i not in trip_id2length.keys():
+                continue
             if trip_id2length[i] > 50:
                 del trip_id2length[i]
             total_len += trip_id2length[i]

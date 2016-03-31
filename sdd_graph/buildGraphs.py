@@ -82,7 +82,7 @@ class Graph(object):
         for trip_len in trip_id2length:
             total_len += trip_len
         avg_len = total_len/num_trips
-        print "average length: %f" % avg_length 
+        print "average length: %f" % avg_len 
         return trip_id2length,avg_len
 
 

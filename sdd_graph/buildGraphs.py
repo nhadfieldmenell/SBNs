@@ -3,7 +3,7 @@ import sys
 import random
 import pickle
 import heapq
-from haversine import haversine
+import math
 from collections import defaultdict
 import numpy as np
 import decodeGps as dg
@@ -260,7 +260,7 @@ class Graph(object):
         #print "lat: %f lon: %f lat_spot: %f lon_spot: %f" % (lat,lon,lat_spot,lon_spot)
         return (lat_spot,lon_spot)
 
-def dist_points(x,y):
+dist_points(x,y):
     """Finds the shortest distance between two points in a grid graph.
         
     Args:
@@ -698,6 +698,28 @@ def print_some(g,trip_nums):
         p.print_path()
 
 
+def gps_dist_miles(lat1, long1, lat2, long2):
+ 
+    # Convert latitude and longitude to 
+    # spherical coordinates in radians.
+    degrees_to_radians = math.pi/180.0
+         
+    # phi = 90 - latitude
+    phi1 = (90.0 - lat1)*degrees_to_radians
+    phi2 = (90.0 - lat2)*degrees_to_radians
+         
+    # theta = longitude
+    theta1 = long1*degrees_to_radians
+    theta2 = long2*degrees_to_radians
+     
+    cos = (math.sin(phi1)*math.sin(phi2)*math.cos(theta1 - theta2) + 
+           math.cos(phi1)*math.cos(phi2))
+    arc = math.acos( cos )
+ 
+    earth_radius_miles = 3959
+
+    return arc*earth_radius_miles
+
 def main():
 
     rows = int(sys.argv[1])
@@ -718,7 +740,7 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
    
-    print "distance: %f" % haversine((min_lat,min_lon),(max_lat,max_lon),miles=True)
+    print "distance: %f" % gps_dist_miles(min_lat,min_lon,max_lat,max_lon) 
     return
 
     """SF zoom coords (2.2x2.4 mi)

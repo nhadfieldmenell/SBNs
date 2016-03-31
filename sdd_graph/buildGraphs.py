@@ -78,6 +78,8 @@ class Graph(object):
             print "%d: %f" % (i,trip_id2length[i])
 
         num_trips = len(trip_id2length.keys())
+        print trip_id2length.keys()
+        print num_trips
         total_len = 0.0
         for trip_len in trip_id2length:
             total_len += trip_len

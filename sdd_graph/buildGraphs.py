@@ -739,6 +739,8 @@ def print_some(g,trip_nums):
 
 
 def gps_dist_miles(lat1, long1, lat2, long2):
+    if lat1 == lat2 and long1 == long2:
+        return 0.0
  
     # Convert latitude and longitude to 
     # spherical coordinates in radians.

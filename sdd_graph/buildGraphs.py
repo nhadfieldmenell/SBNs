@@ -260,7 +260,7 @@ class Graph(object):
         #print "lat: %f lon: %f lat_spot: %f lon_spot: %f" % (lat,lon,lat_spot,lon_spot)
         return (lat_spot,lon_spot)
 
-dist_points(x,y):
+def dist_points(x,y):
     """Finds the shortest distance between two points in a grid graph.
         
     Args:

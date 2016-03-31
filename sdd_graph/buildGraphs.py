@@ -97,6 +97,13 @@ class Graph(object):
             if trip_id2length[i] > 50:
                 del trip_id2length[i]
             total_len += trip_id2length[i]
+        heap = []
+        for i in trip_id2length:
+            heap.push(i)
+        for i in range(num_trips/2):
+            heap.pop()
+        median = heap.pop()
+        print "Median length %f" % median
         num_trips = len(trip_id2length.keys())
         print num_trips
         avg_len = total_len/num_trips

@@ -740,7 +740,7 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
    
-    print "distance: %f" % gps_dist_miles(min_lat,min_lon,max_lat,max_lon) 
+    print "distance: %f" % gps_dist_miles(min_lat,min_lon,min_lat,max_lon) 
     return
 
     """SF zoom coords (2.2x2.4 mi)

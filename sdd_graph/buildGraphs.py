@@ -48,7 +48,43 @@ class Graph(object):
         self.node2trip_ids = defaultdict(list)
         self.best_node = 1
         self.best_node_score = 0
+        self.trip_id2lengths,self.avg_length = self.path_lengths()
         #print self.num_edges
+
+    def path_lengths(self):
+        """Determines the length of each path in the dataset
+
+        Returns:
+            A dict mapping trip_id (key) to path length (value)
+            The average path length in the dataset
+        """
+        trip_id2length = defaultdict(float)
+        prev_id = 0
+        cur_id = 0
+        prev_lat = 0
+        prev_lon = 0
+        for line in self.lines:
+            normalized = dg.normalize(line)
+            cur_id = normalized[0]
+            lat = normalized[1]
+            lon = normalized[2]
+            if cur_id == prev_id:
+                trip_id2length[cur_id] += gps_dist_miles(prev_lat,prev_lon,lat,lon)
+            prev_lat = lat
+            prev_lon = lon
+            prev_id = cur_id
+
+        for i in (15,16,17,18,19):
+            print "%d: %f" % (i,trip_id2length)
+
+        num_trips = len(trip_id2length.keys())
+        total_len = 0.0
+        for trip_len in trip_id2length:
+            total_len += trip_len
+        avg_len = total_len/num_trips
+        print "average length: %f" % avg_length 
+        return trip_id2length,avg_len
+
 
     def node_visit(self,trip_id,coords):
         """Set nodes_visited and node2visited to reflect that the node coords is visited by trip number trip_id.
@@ -740,9 +776,6 @@ def main():
     min_lon = -122.46
     max_lon = -122.39
    
-    print "distance: %f" % gps_dist_miles(min_lat,min_lon,min_lat,max_lon) 
-    return
-
     """SF zoom coords (2.2x2.4 mi)
     min_lat = 37.763
     max_lat = 37.795

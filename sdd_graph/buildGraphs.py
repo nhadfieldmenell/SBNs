@@ -84,6 +84,8 @@ class Graph(object):
         for bad_id in big_hops.keys():
             del trip_id2length[bad_id]
 
+        for i in (15,18,333,24,12345):
+            print "%d: %f" % (i,trip_id2length[i])
 
         #for i in range(1,25001):
         #    if i not in trip_id2length.keys():

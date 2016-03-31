@@ -103,11 +103,12 @@ class Graph(object):
         for i in range(num_trips/2):
             heapq.heappop(heap)
         median = heapq.heappop(heap)
-        print "Median length %f" % median
         num_trips = len(trip_id2length.keys())
         print num_trips
         avg_len = total_len/num_trips
         print "average length: %f" % avg_len 
+        print "Median length %f" % median
+        print "total length %f" % total_len
         return trip_id2length,avg_len
 
 

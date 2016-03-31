@@ -74,7 +74,7 @@ class Graph(object):
                 distance = gps_dist_miles(prev_lat,prev_lon,lat,lon)
                 if distance > 1:
                     big_hops[cur_id] = 1
-                    print cur_id
+                    #print cur_id
                 trip_id2length[cur_id] += distance 
             prev_lat = lat
             prev_lon = lon

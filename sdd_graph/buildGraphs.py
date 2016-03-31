@@ -63,13 +63,17 @@ class Graph(object):
         cur_id = 0
         prev_lat = 0
         prev_lon = 0
+        print "Bad Distances"
         for line in self.lines:
             normalized = dg.normalize(line)
             cur_id = normalized[0]
             lat = normalized[1]
             lon = normalized[2]
             if cur_id == prev_id:
-                trip_id2length[cur_id] += gps_dist_miles(prev_lat,prev_lon,lat,lon)
+                distance = gps_dist_miles(prev_lat,prev_lon,lat,lon)
+                if distance > 1:
+                    print cur_id
+                trip_id2length[cur_id] += distance 
             prev_lat = lat
             prev_lon = lon
             prev_id = cur_id

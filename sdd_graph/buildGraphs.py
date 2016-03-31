@@ -74,9 +74,6 @@ class Graph(object):
             prev_lon = lon
             prev_id = cur_id
 
-        for i in (15,16,17,18,19):
-            print "%d: %f" % (i,trip_id2length[i])
-
         for i in range(1,25001):
             if i not in trip_id2length.keys():
                 print i
@@ -84,8 +81,9 @@ class Graph(object):
         print trip_id2length.keys()
         print num_trips
         total_len = 0.0
-        for trip_len in trip_id2length:
-            total_len += trip_len
+        for i in range(1,25001):
+            print "%d: %f" % (i,trip_id2length[i])
+            total_len += trip_id2length[i]
         avg_len = total_len/num_trips
         print "average length: %f" % avg_len 
         return trip_id2length,avg_len

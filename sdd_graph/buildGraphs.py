@@ -102,14 +102,21 @@ class Graph(object):
         heap = []
         for i in trip_id2length.keys():
             heapq.heappush(heap,trip_id2length[i])
-        for i in range(num_trips/2):
+        quarter_len = num_trips/4
+        for i in range(quarter_len):
             heapq.heappop(heap)
-        median = heapq.heappop(heap)
+        print "25th percentile: %f" % heapq.heappop(heap)
+        for i in range(quarter_len):
+            heapq.heappop(heap)
+        print "median: %f" % heapq.heappop(heap)
+        for i in range(quarter_len):
+            heapq.heappop(heap)
+        print "75th percentile: %f" % heapq.heappop(heap)
+
         num_trips = len(trip_id2length.keys())
         print num_trips
         avg_len = total_len/num_trips
         print "average length: %f" % avg_len 
-        print "Median length %f" % median
         print "total length %f" % total_len
         return trip_id2length,avg_len
 

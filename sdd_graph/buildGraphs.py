@@ -98,8 +98,8 @@ class Graph(object):
                 del trip_id2length[i]
             total_len += trip_id2length[i]
         heap = []
-        for i in trip_id2length:
-            heapq.heappush(heap,i)
+        for i in trip_id2length.keys():
+            heapq.heappush(heap,trip_id2length[i])
         for i in range(num_trips/2):
             heapq.heappop(heap)
         median = heapq.heappop(heap)

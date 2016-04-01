@@ -63,7 +63,7 @@ class Graph(object):
         prev_lat = 0
         prev_lon = 0
         big_hops = {}
-        #print "Bad Distances"
+        print "Bad Distances"
         for line in self.lines:
             #normalized = dg.normalize(line)
             normalized = normalize_simple(line)

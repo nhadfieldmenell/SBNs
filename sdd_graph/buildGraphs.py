@@ -65,7 +65,8 @@ class Graph(object):
         big_hops = {}
         print "Bad Distances"
         for line in self.lines:
-            normalized = dg.normalize(line)
+            #normalized = dg.normalize(line)
+            normalized = normalize_simple(line)
             cur_id = normalized[0]
             lat = normalized[1]
             lon = normalized[2]
@@ -399,9 +400,11 @@ class Path(object):
 
         max_line = self.graph.gps_length - 1
         min_line = 0
-        last_id = dg.normalize(self.graph.lines[-1])[0]
+        #last_id = dg.normalize(self.graph.lines[-1])[0]
+        last_id = normalize_simple(self.graph.lines[-1])[0]
         pivot = int((self.trip_id-1)/float(last_id)*self.graph.gps_length)
-        cur_id = dg.normalize(self.graph.lines[pivot])[0]
+        #cur_id = dg.normalize(self.graph.lines[pivot])[0]
+        cur_id = normalize_simple(self.graph.lines[pivot])[0]
         while cur_id != self.trip_id:
             if cur_id < self.trip_id:
                 min_line = pivot
@@ -409,9 +412,11 @@ class Path(object):
                 max_line = pivot
             #TODO: could make this run in essentially constant time by hopping predetermined distance
             pivot = (min_line + max_line) / 2
-            cur_id = dg.normalize(self.graph.lines[pivot])[0]
+            #cur_id = dg.normalize(self.graph.lines[pivot])[0]
+            cur_id = normalize_simple(self.graph.lines[pivot])[0]
 
-        while  dg.normalize(self.graph.lines[pivot])[0] == self.trip_id:
+        #while dg.normalize(self.graph.lines[pivot])[0] == self.trip_id:
+        while normalize_simple(self.graph.lines[pivot])[0] == self.trip_id:
             pivot -= 1
 
         pivot += 1
@@ -667,7 +672,8 @@ def create_all(graph):
     while p.next_line != file_length:
         graph.trip_id2line_num[trip_id] = line_num
         line_num = p.next_line
-        trip_id = dg.normalize(lines[line_num])[0]
+        trip_id = normalize_simple(lines[line_num])[0]
+        #trip_id = dg.normalize(lines[line_num])[0]
         p = Path(trip_id,graph,line_num=line_num)
        # paths[trip_id] = p
     graph.trip_id2line_num[trip_id] = line_num

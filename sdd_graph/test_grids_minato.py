@@ -73,12 +73,17 @@ def print_edge_numbering(universe,rows,cols):
 
 def create_edge_to_index(paths,dim):
     tuple2edge = {}
+    edge2tuple = {}
     universe = paths.universe()
     for i in range(len(universe)):
         tuple2edge[universe[i]] = i
+        edge2tuple[i] = universe[i]
+    point_filename = "graphs/edge-to-tuple-%d-%d.pickle" % dim
     edge_filename = "graphs/edge-nums-%d-%d.pickle" % dim
     with open(edge_filename,'wb') as output:
         pickle.dump(tuple2edge,output)
+    with open(point_filename,'wb') as output:
+        pickle.dump(edge2tuple,output)
 
 
 ########################################

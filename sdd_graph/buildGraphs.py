@@ -521,7 +521,8 @@ class Path(object):
             cur_line += 1
             if cur_line == len(self.graph.lines):
                 break
-            normalized = dg.normalize(self.graph.lines[cur_line])
+            #normalized = dg.normalize(self.graph.lines[cur_line])
+            normalized = normalize_simple(self.graph.lines[cur_line])
 
         self.next_line = cur_line
         best_index = 0
@@ -628,11 +629,11 @@ def normalize_simple(line):
         flot: longitude
     """
     first = find_next_comma_newline(line,0)
-    print "first: %d" % first
+    #print "first: %d" % first
     second = find_next_comma_newline(line,first+1)
-    print "second: %d" % second
+    #print "second: %d" % second
     third = find_next_comma_newline(line,second+1)
-    print "third: %d" % third
+    #print "third: %d" % third
     if third == -1:
         lon = float(line[second+1:])
     else:

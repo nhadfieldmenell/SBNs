@@ -465,7 +465,8 @@ class Path(object):
         good_graphs.append(True)
         nodes_visited = []
         nodes_visited.append([])
-        normalized = dg.normalize(self.graph.lines[cur_line])
+        #normalized = dg.normalize(self.graph.lines[cur_line])
+        normalized = normalize_simple(self.graph.lines[cur_line])
         matrices_index = 0
         prev_coords = (-1,-1)
         while normalized[0] == self.trip_id:
@@ -841,7 +842,8 @@ def main():
 
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
-    full_fn = open('csvGPS.txt','r')
+    #full_fn = open('csvGPS.txt','r')
+    full_fn = open('cab_trips.txt','r')
     orig_fn = open('firstLast.txt','r')
 
     """full SF coords

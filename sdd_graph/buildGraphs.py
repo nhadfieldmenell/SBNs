@@ -594,6 +594,49 @@ class Path(object):
 
         return edges
 
+def find_next_comma_newline(line,index):
+    """Find the index of the next comma or newline character in a line.
+
+    Attributes:
+        string: line
+        int: index 
+            The position from which you want to find the next of those characters.
+            First check the next position
+
+    Returns:
+        int: the next occurrence of a comma or newline
+            return -1 if there is no other comma or newline
+    """
+
+    index += 1
+    while index < len(line) and line[index] != "," and line[index] != "\n":
+        index += 1
+    if index == len(line):
+        return -1
+    return index
+
+def normalize_simple(line):
+    """Finds trip id, latitude and longitude of a line.
+
+    Lines must be of the form "id,latitude,longitude,..."
+        or of the form "id,latitude,longitude\n"
+
+    Returns:
+        int: trip id
+        float: latitude
+        flot: longitude
+    """
+    index = 0
+    first = find_next_comma_newline(line,index)
+    second = find_next_comma_newline(line,index)
+    third = find_next_comma_newline(line,index)
+    lon = float(line[second+1:third])
+    if third == -1:
+        lon = float(line[second+1:])
+    return int(line[0:first]),float(line[first+1,second]),lon
+
+
+
 #@profile
 def create_all(graph):
     """Creates a dict containing every path in the file.

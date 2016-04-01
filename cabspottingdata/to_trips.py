@@ -63,7 +63,6 @@ def create_trip_list(ids):
 
 def main():
     ids = find_ids()
-    print ids
     #convert_all_to_csv(ids)
     create_trip_list(ids)
     return

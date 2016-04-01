@@ -145,7 +145,6 @@ def epochs_partial(rows,cols,num_epochs,copy):
             model = full_and_part[i][0]
             partial_model = full_and_part[i][1]
             if str(model) in good_models:
-                unique_good += 1
                 total_good += 1
                 full_epochs[epoch_num].append(model)
                 partial_epochs[epoch_num].append(partial_model)
@@ -167,6 +166,7 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
             else:
                 good_models[str(model)] = True
+                unique_good += 1
                 total_good += 1
                 full_epochs[epoch_num].append(model)
                 partial_epochs[epoch_num].append(partial_model)

@@ -48,8 +48,7 @@ class Graph(object):
         self.node2trip_ids = defaultdict(list)
         self.best_node = 1
         self.best_node_score = 0
-        self.trip_id2lengths,self.avg_length = self.path_lengths()
-        #print self.num_edges
+        #self.trip_id2lengths,self.avg_length = self.path_lengths()
 
     def path_lengths(self):
         """Determines the length of each path in the dataset

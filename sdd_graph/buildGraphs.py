@@ -626,19 +626,17 @@ def normalize_simple(line):
         float: latitude
         flot: longitude
     """
-    index = 0
-    first = find_next_comma_newline(line,index)
-    index = first
+    first = find_next_comma_newline(line,0)
     print "first: %d" % first
-    second = find_next_comma_newline(line,index)
-    index = second
+    second = find_next_comma_newline(line,first+1)
     print "second: %d" % second
-    third = find_next_comma_newline(line,index)
+    third = find_next_comma_newline(line,second+1)
     print "third: %d" % third
-    lon = float(line[second+1:third])
     if third == -1:
         lon = float(line[second+1:])
-    return int(line[0:first]),float(line[first+1,second]),lon
+    else:
+        lon = float(line[second+1:third])
+    return int(line[0:first]),float(line[first+1:second]),lon
 
 
 

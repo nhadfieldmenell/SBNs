@@ -669,7 +669,7 @@ def create_all(graph):
     #paths = {}
     p = Path(trip_id,graph,line_num=line_num)
     #paths[trip_id] = p
-    while p.next_line != len(graph.lines)#file_length:
+    while p.next_line != len(graph.lines):#file_length:
         graph.trip_id2line_num[trip_id] = line_num
         line_num = p.next_line
         trip_id = normalize_simple(graph.lines[line_num])[0]

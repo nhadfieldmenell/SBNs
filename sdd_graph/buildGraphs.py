@@ -660,19 +660,19 @@ def create_all(graph):
     Returns:
         dict of paths, indexed by trip_id
     """
-    full_fn = open('csvGPS.txt','r')
-    lines = full_fn.readlines()
-    file_length = len(lines)
-    full_fn.close()
+    #full_fn = open('csvGPS.txt','r')
+    #lines = full_fn.readlines()
+    #file_length = len(lines)
+    #full_fn.close()
     trip_id = 1
     line_num = 0
     #paths = {}
     p = Path(trip_id,graph,line_num=line_num)
     #paths[trip_id] = p
-    while p.next_line != file_length:
+    while p.next_line != len(graph.lines)#file_length:
         graph.trip_id2line_num[trip_id] = line_num
         line_num = p.next_line
-        trip_id = normalize_simple(lines[line_num])[0]
+        trip_id = normalize_simple(graph.lines[line_num])[0]
         #trip_id = dg.normalize(lines[line_num])[0]
         p = Path(trip_id,graph,line_num=line_num)
        # paths[trip_id] = p

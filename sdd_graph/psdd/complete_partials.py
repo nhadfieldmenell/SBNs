@@ -495,6 +495,8 @@ def main():
             if mpe_array.count(1) == partials_completed[i][j].count(1) + 1:
                 total_only_guessed_one += 1
                 print "Only guessed one!"
+            else:
+                print "Guessed more than one!"
             #print "Top 5:"
             #enumerate_mpe(copy,5,evidence,num_edges,edge2index,rows,cols)
             print ""

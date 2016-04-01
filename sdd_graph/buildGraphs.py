@@ -610,24 +610,23 @@ def create_all(graph):
     lines = full_fn.readlines()
     file_length = len(lines)
     full_fn.close()
-    full_fn = open('csvGPS.txt','r')
     trip_id = 1
     line_num = 0
     #paths = {}
     p = Path(trip_id,graph,line_num=line_num)
-    full_fn.close()
     #paths[trip_id] = p
     while p.next_line != file_length:
         graph.trip_id2line_num[trip_id] = line_num
-        full_fn = open('csvGPS.txt','r')
         line_num = p.next_line
         trip_id = dg.normalize(lines[line_num])[0]
         p = Path(trip_id,graph,line_num=line_num)
-        full_fn.close()
        # paths[trip_id] = p
     graph.trip_id2line_num[trip_id] = line_num
     #return paths
         
+def create_all_cab(graph):
+    """Creates a dict containing every path in the file"""
+    return
 
 def single_epoch(g,rows,cols):
     """Create a single epoch of data.
@@ -818,13 +817,8 @@ def main():
     min_lon = -122.445
     max_lon = -122.4
     """
-    
 
-    #rows = 5 
-    #cols = 5
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
-    try_lat = 37.721396 
-    try_lon = -122.400256
 
     create_all(g)
     print g.best_node_score

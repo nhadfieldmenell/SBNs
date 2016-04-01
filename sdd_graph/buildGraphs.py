@@ -609,7 +609,7 @@ def find_next_comma_newline(line,index):
     """
 
     index += 1
-    while index < len(line) and line[index] != "," and line[index] != "\n":
+    while index < len(line) and line[index] != "," and line[index] != "\\":
         index += 1
     if index == len(line):
         return -1

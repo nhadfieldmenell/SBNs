@@ -1,0 +1,7 @@
+number of paths with at least 2 points: 24644
+number of these paths with no hops over 1 mile: 24580
+average path length: 1.30 mi
+25th percentile length: 0.63 mi
+median path length: 0.98 mi
+75th percentile length: 1.54 mi
+total length: 32,00 mi

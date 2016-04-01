@@ -135,13 +135,22 @@ def epochs_partial(rows,cols,num_epochs,copy):
     unique_bad = 0
     total_bad = 0
     total_good = 0
+    unique_good = 0
 
     bad_indices = {}
+    good_models = {}
 
     if not file_exists: 
         for i in range(len(full_and_part)):
             model = full_and_part[i][0]
             partial_model = full_and_part[i][1]
+            if str(model) in good_models:
+                unique_good += 1
+                total_good += 1
+                full_epochs[epoch_num].append(model)
+                partial_epochs[epoch_num].append(partial_model)
+                epoch_num = (epoch_num+1) % num_epochs
+                continue
             if str(model) in bad_models:
                 total_bad += 1
                 bad_indices[i] = True
@@ -157,12 +166,13 @@ def epochs_partial(rows,cols,num_epochs,copy):
                 continue
 
             else:
+                good_models[str(model)] = True
                 total_good += 1
                 full_epochs[epoch_num].append(model)
                 partial_epochs[epoch_num].append(partial_model)
                 epoch_num = (epoch_num+1) % num_epochs
 
-        print "total bad: %d, unique bad: %d, total good: %d" % (total_bad,unique_bad, total_good)
+        print "total bad: %d, unique bad: %d, total good: %d, unique good: %d" % (total_bad,unique_bad, total_good, unique_good)
         full_datasets = []
 
         bad_file = open(bad_filename,'w')

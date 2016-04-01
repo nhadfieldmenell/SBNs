@@ -62,6 +62,7 @@ class Graph(object):
         cur_id = 0
         prev_lat = 0
         prev_lon = 0
+        num_big_hops = 0
         big_hops = {}
         print "Bad Distances"
         for line in self.lines:
@@ -74,6 +75,7 @@ class Graph(object):
                 distance = gps_dist_miles(prev_lat,prev_lon,lat,lon)
                 if distance > 1:
                     big_hops[cur_id] = 1
+                    num_big_hops += 1
                     print cur_id
                 trip_id2length[cur_id] += distance 
             prev_lat = lat
@@ -93,11 +95,10 @@ class Graph(object):
         num_trips = len(trip_id2length.keys())
         print num_trips
         total_len = 0.0
-        for i in range(1,25001):
-            if i not in trip_id2length.keys():
-                continue
+        for i in trip_id2length.keys():
             if trip_id2length[i] > 50:
-                del trip_id2length[i]
+                print "Big trip: %d" % i
+                #del trip_id2length[i]
             total_len += trip_id2length[i]
         heap = []
         for i in trip_id2length.keys():
@@ -118,6 +119,7 @@ class Graph(object):
         avg_len = total_len/num_trips
         print "average length: %f" % avg_len 
         print "total length %f" % total_len
+        print "number of big hops: %d" % num_big_hops
         return trip_id2length,avg_len
 
 

@@ -455,7 +455,7 @@ class Path(object):
 
         partials = []
         partials.append({})
-        print self.trip_id
+        #print self.trip_id
 
         #this variable is true if we have not yet recorded the first edge of a path
         first_edge = True

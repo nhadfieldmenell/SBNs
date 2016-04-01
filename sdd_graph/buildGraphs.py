@@ -628,8 +628,11 @@ def normalize_simple(line):
     """
     index = 0
     first = find_next_comma_newline(line,index)
+    print "first: %d" % first
     second = find_next_comma_newline(line,index)
+    print "second: %d" % second
     third = find_next_comma_newline(line,index)
+    print "third: %d" % third
     lon = float(line[second+1:third])
     if third == -1:
         lon = float(line[second+1:])

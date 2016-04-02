@@ -136,6 +136,7 @@ def endpoint_dist(prediction,full,partial,midpoint,rows,cols,edge2index,edge_ind
     prev_point = mid_point
     cur_point,prev_edge = find_next_point(prev_edge,prediction,mid_point,rows,cols,edge2index,edge_index2tuple)
     while cur_point != (-1,-1):
+        print cur_point
         prev_point = cur_point
         cur_point,prev_edge = find_next_point(prev_edge,prediction,mid_point,rows,cols,edge2index,edge_index2tuple)
     last_point_prediction = prev_point

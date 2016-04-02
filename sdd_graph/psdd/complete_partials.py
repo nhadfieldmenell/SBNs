@@ -94,6 +94,7 @@ def find_next_point(prev_edge,instantiation,point,rows,cols,edge2index,edge_inde
     point_node = tuple_to_node(point,cols)
     edges = neighboring_edges(point,edge2index,rows,cols)
     for edge in edges:
+        print edge
         if edge == prev_edge:
             continue
         if instantiation[edge] == 1:

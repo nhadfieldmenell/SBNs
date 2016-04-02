@@ -132,6 +132,8 @@ def endpoint_dist(prediction,full,partial,midpoint,rows,cols,edge2index,edge_ind
         if partial[edge] == 1:
             prev_edge = edge
             break
+    print "prev edge"
+    print prev_edge
     orig_edge = prev_edge
     prev_point = mid_point
     cur_point,prev_edge = find_next_point(prev_edge,prediction,mid_point,rows,cols,edge2index,edge_index2tuple)

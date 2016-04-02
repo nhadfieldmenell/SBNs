@@ -34,7 +34,7 @@ def evaluate_prediction(prediction,full,partial,midpoint,rows,cols,edge2index,ed
     print "Incorrectly guessed edges: %d" % incorrectly_guessed
     print "Not guessed edges: %d" % not_guessed
 
-    print "Endpoint difference: %f" % endpoint_dist(prediction,full,partial,midpoint,rows,cols,edge2index,edge_index2tuple):
+    print "Endpoint difference: %f" % endpoint_dist(prediction,full,partial,midpoint,rows,cols,edge2index,edge_index2tuple)
 
     return correctly_guessed,incorrectly_guessed,not_guessed
 

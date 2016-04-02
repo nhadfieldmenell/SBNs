@@ -126,7 +126,7 @@ def endpoint_dist(prediction,full,partial,midpoint,rows,cols,edge2index,edge_ind
         distance (float) between the two end points)
     """
     mid_point = node_to_tuple(midpoint,cols)
-    edges = neighboring_edges(mid_point)
+    edges = neighboring_edges(mid_point,edge2index,rows,cols)
     prev_edge = None
     for edge in edges:
         if partial[edge] == 1:
@@ -521,7 +521,7 @@ def main():
                 else:
                     partials_completed[i][j].append(0)
 
-    most_likely_completions(full_datasets,partial_instances,partials_completed,num_epochs,rows,cols,edge2index)
+    #most_likely_completions(full_datasets,partial_instances,partials_completed,num_epochs,rows,cols,edge2index)
     """
     for i in range(num_epochs):
         print len(partial_instances[i])

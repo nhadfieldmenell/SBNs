@@ -34,9 +34,9 @@ def evaluate_prediction(prediction,full,partial,midpoint,rows,cols,edge2index,ed
     print "Incorrectly guessed edges: %d" % incorrectly_guessed
     print "Not guessed edges: %d" % not_guessed
 
-    print "Endpoint difference: %f" % endpoint_dist(prediction,full,partial,midpoint,rows,cols,edge2index,edge_index2tuple)
-
-    return correctly_guessed,incorrectly_guessed,not_guessed
+    endpoint_dif = endpoint_dist(prediction,full,partial,midpoint,rows,cols,edge2index,edge_index2tuple)
+    print "Endpoint difference: %f" % endpoint_dif 
+    return correctly_guessed,incorrectly_guessed,not_guessed,endpoint_dif
 
 def neighboring_edges(point,edge2index,rows,cols):
     """Find all the edges that are incident on a point.
@@ -133,13 +133,10 @@ def endpoint_dist(prediction,full,partial,midpoint,rows,cols,edge2index,edge_ind
         if partial[edge] == 1:
             prev_edge = edge
             break
-    print "prev edge"
-    print prev_edge
     orig_edge = prev_edge
     prev_point = mid_point
     cur_point,prev_edge = find_next_point(prev_edge,prediction,mid_point,rows,cols,edge2index,edge_index2tuple)
     while cur_point != (-1,-1):
-        print cur_point
         prev_point = cur_point
         cur_point,prev_edge = find_next_point(prev_edge,prediction,cur_point,rows,cols,edge2index,edge_index2tuple)
     last_point_prediction = prev_point
@@ -544,6 +541,7 @@ def main():
     total_not_guessed = 0
     total_fully_guessed = 0
     total_only_guessed_one = 0
+    total_endpoint_dist = 0.0
     for i in range(num_epochs):
         testing  = full_datasets[i]
         
@@ -615,10 +613,11 @@ def main():
                     mpe_array.append(0)
             #print full_instances[i][j]
             print_3(partials_completed[i][j],mpe_array,full_instances[i][j],rows,cols,edge2index)
-            correct,incorrect,not_guessed = evaluate_prediction(mpe_array,full_instances[i][j],partial_instances[i][j],midpoint,rows,cols,edge2index,edge_index2tuple)
+            correct,incorrect,not_guessed,endpoint_dist = evaluate_prediction(mpe_array,full_instances[i][j],partial_instances[i][j],midpoint,rows,cols,edge2index,edge_index2tuple)
             total_correct += correct
             total_incorrect += incorrect
             total_not_guessed += not_guessed
+            total_endpoint_dist += endpoint_dist
             num_evaluated += 1
             if not_guessed == 0  and incorrect == 0:
                 total_fully_guessed += 1
@@ -636,11 +635,13 @@ def main():
     average_incorrect = total_incorrect/num_evaluated
     average_not_guessed = total_not_guessed/num_evaluated
     average_mpe = total_mpe_val/num_evaluated
+    average_endpoint_dist = total_endpoint_dist/num_evaluated
     print "Total Evaluated: %.8f" % num_evaluated
     print "average correct: %.8f" % average_correct
     print "average incorrect: %.8f" % average_incorrect
     print "average not guessed: %.8f" % average_not_guessed
     print "average mpe val: %.8f" % average_mpe
+    print "average endpoint distance: %.8f" % average_endpoint_dist
     print "total fully guessed: %d" % total_fully_guessed
     print "total only guessed one: %d" % total_only_guessed_one
 

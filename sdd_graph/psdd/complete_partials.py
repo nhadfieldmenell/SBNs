@@ -16,7 +16,7 @@ from pypsdd import *
 import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
-def evaluate_prediction(prediction,full,partial):
+def evaluate_prediction(prediction,full,partial,midpoint,rows,cols,edge2index,edge_index2tuple):
     correctly_guessed = 0
     incorrectly_guessed = 0
     not_guessed = 0
@@ -34,7 +34,118 @@ def evaluate_prediction(prediction,full,partial):
     print "Incorrectly guessed edges: %d" % incorrectly_guessed
     print "Not guessed edges: %d" % not_guessed
 
+    print "Endpoint difference: %f" % endpoint_dist(prediction,full,partial,midpoint,rows,cols,edge2index,edge_index2tuple):
+
     return correctly_guessed,incorrectly_guessed,not_guessed
+
+def neighboring_edges(point,edge2index,rows,cols):
+    """Find all the edges that are incident on a point.
+
+    Parameters:
+        point: tuple(int)
+            the point
+        edge2index: dict(tuple->int)
+            dict containing the mappings of edge to edge index
+        rows: rows in the graph
+        cols: cols in the graph
+
+    Returns:
+        a list of index of edges incident on point
+    """
+    point_node = tuple_to_node(point,cols)
+    neighbor_points = []
+    if point[0] > 0:
+        neighbor_points.append(tuple_to_node((point[0]-1,point[1]),cols))
+    if point[0] < rows-1:
+        neighbor_points.append(tuple_to_node((point[0]+1,point[1]),cols))
+    if point[1] > 0:
+        neighbor_points.append(tuple_to_node((point[0],point[1]-1),cols))
+    if point[1] < cols-1:
+        neighbor_points.append(tuple_to_node((point[0],point[1]+1),cols))
+
+    edges = []
+    for neighbor in neighbor_points:
+        edges.append(edge2index[min(point_node,neighbor),max(point_node,neighbor)])
+    return edges
+
+
+def find_next_point(prev_edge,instantiation,point,rows,cols,edge2index,edge_index2tuple):
+    """Find the next node in a path.
+
+    Parameters:
+        prev_edge: int
+            index of the last edge we took
+        instantiation: list(int)
+            A path instantiation
+        point: tuple(int)
+            the point we are at
+        rows: rows in the graph
+        cols: columns in the graph
+        edge2index: dict(tuple->int)
+            dict containing mappings of edge to edge index
+        edge_index2tuple: dict(int->tuple)
+            dict containing mappings of edge index to edge
+
+    Returns:
+        The next point reached in the graph
+            If there is no other point reached, return (-1,-1)
+        The edge taken to get that point
+    """
+    point_node = tuple_to_node(point,cols)
+    edges = neighboring_edges(point,edge2index,rows,cols)
+    for edge in edges:
+        if edge == prev_edge:
+            continue
+        if instantiation[edge] == 1:
+            points = edge_index2tuple[edge]
+            next_node = points[0]
+            if points[0] == point_node:
+                next_node = points[1]
+            return node_to_tuple(next_node,cols),edge
+
+    return (-1,-1),-1
+            
+
+
+def endpoint_dist(prediction,full,partial,midpoint,rows,cols,edge2index,edge_index2tuple):
+    """Find the distance between the predicted end point and the actual end point.
+
+    Parameters:
+        prediction: the prediction instantiation
+        full: the actual full path instantiation
+        partial: the partial path instantiation
+        midpoint: the midpoint of the graph
+        rows: rows in the graph
+        cols: columns in the graph
+        edge2index: dict(tuple->int)
+            dict containing mappings of edge to edge index
+        edge_index2tuple: dict(int->tuple)
+            dict containing mappings of edge index to edge
+
+    returns:
+        distance (float) between the two end points)
+    """
+    mid_point = node_to_tuple(midpoint,cols)
+    edges = neighboring_edges(mid_point)
+    prev_edge = None
+    for edge in edges:
+        if partial[edge] == 1:
+            prev_edge = edge
+            break
+    orig_edge = prev_edge
+    prev_point = mid_point
+    cur_point,prev_edge = find_next_point(prev_edge,prediction,mid_point,rows,cols,edge2index,edge_index2tuple)
+    while cur_point != (-1,-1):
+        prev_point = cur_point
+        cur_point,prev_edge = find_next_point(prev_edge,prediction,mid_point,rows,cols,edge2index,edge_index2tuple)
+    last_point_prediction = prev_point
+    prev_point = mid_point
+    cur_point,prev_edge = find_next_point(orig_edge,full,mid_point,rows,cols,edge2index,edge_index2tuple)
+    while cur_point != (-1,-1):
+        prev_point = cur_point
+        cur_point,prev_edge = find_next_point(prev_edge,full,mid_point,rows,cols,edge2index,edge_index2tuple)
+    last_point_actual = prev_point
+    return tuple_dist(last_point_prediction,last_point_actual) 
 
 def print_3(partial,mpe,full,rows,cols,edge2index):
     """Draw grids for all 3 paths, followed by an extra newline"""
@@ -320,13 +431,28 @@ def enumerate_mpe(copy,num_enumerate,evidence,num_edges,edge2index,rows,cols):
         draw_grid(model_array,rows,cols,edge2index)
         if count == num_enumerate: break
 
+def tuple_to_node(point,cols):
+    return cols*point[0] + point[1] + 1
+
+def node_to_tuple(node_num,cols):
+    row = (node_num-1) / cols
+    col = (node_num-1) % cols
+    return (row,col)
+
+def tuple_dist(t1,t2):
+    row_dif = abs(t1[0]-t2[0])
+    col_dif = abs(t1[1]-t2[1])
+    return math.sqrt(math.pow(row_dif,2) + math.pow(col_dif,2))
 
 def main():
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
+    midpoint = int(sys.argv[3])
     num_epochs = 10
     edge_filename = '../graphs/edge-nums-%d-%d.pickle' % (rows,cols)
     edge2index = pickle.load(open(edge_filename,'rb'))
+    edge_tuple_filename = '../graphs/edge-to-tuple-%d-%d.pickle' % (rows,cols)
+    edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
     empty_data = [-1 for i in range(num_edges)]
     empty_data = tuple(empty_data)
@@ -485,7 +611,7 @@ def main():
                     mpe_array.append(0)
             #print full_instances[i][j]
             print_3(partials_completed[i][j],mpe_array,full_instances[i][j],rows,cols,edge2index)
-            correct,incorrect,not_guessed = evaluate_prediction(mpe_array,full_instances[i][j],partial_instances[i][j])
+            correct,incorrect,not_guessed = evaluate_prediction(mpe_array,full_instances[i][j],partial_instances[i][j],midpoint,rows,cols,edge2index,edge_index2tuple)
             total_correct += correct
             total_incorrect += incorrect
             total_not_guessed += not_guessed

@@ -9,7 +9,7 @@ def main():
     outfile = open('cab_chronological.txt','w')
     i = 0
     cur_id = bg.normalize(lines[i])[0]
-    while i < len(lines.len())
+    while i < len(lines):
         this_trip = []
         prev_id = cur_id
         while i < len(lines) and cur_id == prev_id:

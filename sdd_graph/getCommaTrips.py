@@ -5,7 +5,7 @@ import pickle
 def writeTrip(trip_num,lines,out,trip_id2line_num):
     #found = 0
     i = trip_id2line_num[trip_num]
-    while b.normalize_simple(lines[i])[0] == trip_num:
+    while bg.normalize_simple(lines[i])[0] == trip_num:
         out.write(lines[i])
         i += 1
     """

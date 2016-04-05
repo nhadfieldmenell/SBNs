@@ -182,7 +182,7 @@ def draw_grid(model,m,n,edge2index):
                 sys.stdout.write(' ')
         sys.stdout.write('\n')
 
-def epochs_partial(rows,cols,num_epochs,copy):
+def epochs_partial(rows,cols,num_epochs,copy,edge2index):
     """Randomize the data instances and separate the data instances and partials into equal collections
 
     Keep relationship between full and partial data.
@@ -250,9 +250,16 @@ def epochs_partial(rows,cols,num_epochs,copy):
 
     bad_indices = {}
     good_models = {}
+    bad_printed = 0
+    times_printed = 0
 
     if not file_exists: 
+        cur_time = time.time()
         for i in range(len(full_and_part)):
+            prev_time = cur_time
+            cur_time = time.time()
+            if times_printed < 100:
+                print "time to evaluate model %d: %f" % (i-1,cur_time-prev_time)
             model = full_and_part[i][0]
             partial_model = full_and_part[i][1]
             if str(model) in good_models:
@@ -269,6 +276,10 @@ def epochs_partial(rows,cols,num_epochs,copy):
             probability = copy.probability(evidence)
             if probability == 0:
                 #print "bad: %s" % str(model)
+                if bad_printed < 25:
+                    bad_printed += 1
+                    print "Bad model:"
+                    draw_grid(model,rows,cols,edge2index)
                 bad_models[str(model)] = True
                 unique_bad += 1
                 total_bad += 1
@@ -507,7 +518,7 @@ def main():
         #    (locale.format("%d",model_count,grouping=True),time.time()-start)
 
 
-    full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy_no_mp)
+    full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy_no_mp,edge2index)
     
     
     partials_completed = []

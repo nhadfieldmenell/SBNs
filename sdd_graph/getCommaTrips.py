@@ -22,4 +22,6 @@ print "num args: %d" % numArgs
 for i in range(1,numArgs):
     print i
     writeTrip(int(sys.argv[i][:-1]),orig,out)
+orig.close()
+out.close()
 

@@ -14,7 +14,7 @@ def main():
     prev_id = 0
 
     for i in range(len(lines)):
-        cur_id = normalize(lines[i])
+        cur_id = normalize(lines[i])[0]
         if cur_id != prev_id:
             print cur_id
             trip_id2line_num[cur_id] = i

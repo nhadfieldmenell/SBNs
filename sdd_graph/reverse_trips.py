@@ -8,7 +8,7 @@ def main():
     infile.close()
     outfile = open('cab_chronological.txt','w')
     i = 0
-    cur_id = bg.normalize(lines[i])[0]
+    cur_id = bg.normalize_simple(lines[i])[0]
     while i < len(lines):
         this_trip = []
         prev_id = cur_id
@@ -17,7 +17,7 @@ def main():
             i += 1
             if i >= len(lines):
                 break
-            cur_id = bg.normalize(lines[i])[0]
+            cur_id = bg.normalize_simple(lines[i])[0]
         for j in range(len(this_trip)-1,-1,-1):
             outfile.write(this_trip[j])
     outfile.close()

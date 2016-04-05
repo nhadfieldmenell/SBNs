@@ -21,7 +21,7 @@ def main():
 
 
     with open('trip_id2line_num.pickle','wb') as output:
-        pickle.dump(trip_id2linenum,output)
+        pickle.dump(trip_id2line_num,output)
 
 
 if __name__ == '__main__':

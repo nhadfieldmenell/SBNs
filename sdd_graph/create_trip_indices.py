@@ -20,7 +20,7 @@ def main():
             trip_id2line_num[cur_id] = i
         prev_id = cur_id
 
-    print trip_id2line_num.keys()
+    #print trip_id2line_num.keys()
 
     with open('trip_id2line_num.pickle','wb') as output:
         pickle.dump(trip_id2line_num,output)

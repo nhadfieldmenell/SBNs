@@ -18,6 +18,7 @@ def writeTrip(tripNum,orig,out):
 orig = open('cab_chronological.txt','r')
 out = open('getTripsOut.txt','w')
 numArgs = len(sys.argv)
+print "num args: %d" % numArgs
 for i in range(1,numArgs):
     writeTrip(int(sys.argv[i][:-1]),orig,out)
 

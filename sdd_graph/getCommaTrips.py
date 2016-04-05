@@ -1,5 +1,6 @@
 import sys
 import buildGraphs as bg
+import pickle
 
 def writeTrip(trip_num,lines,out,trip_id2line_num):
     #found = 0

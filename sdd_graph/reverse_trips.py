@@ -20,6 +20,7 @@ def main():
             cur_id = bg.normalize(lines[i])[0]
         for j in range(len(this_trip)-1,-1,-1):
             outfile.write(this_trip[j])
+    outfile.close()
             
 
 

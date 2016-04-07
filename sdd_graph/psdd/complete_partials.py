@@ -565,6 +565,7 @@ def main():
     total_incorrect = 0
     total_not_guessed = 0
     total_fully_guessed = 0
+    total_more_fully_guessed = 0
     total_only_guessed_one = 0
     same_endpoint_more = 0
     total_endpoint_dist = 0.0
@@ -657,6 +658,9 @@ def main():
                 print "Only guessed one!"
             else:
                 print "Guessed more than one!"
+                if not_guessed == 0  and incorrect == 0:
+                    total_more_fully_guessed += 1
+
                 if endpoint_dist == 0:
                     same_endpoint_more += 1
 
@@ -691,8 +695,11 @@ def main():
     print "total only guessed one: %d" % total_only_guessed_one
     print "total guessed more than one: %d" % total_guessed_more 
     print "same endpoint with multiple guessed: %d" % same_endpoint_more
-    print "percentege guessed more than one: %.8f" % (total_guessed_more/float(num_evaluated))
-    print "percentege correct endpoint for more than one: %.8f" % (same_endpoint_more/float(total_guessed_more))
+    print "fully guessed with multiple guessed: %d" % total_more_fully_guessed
+    print "percentage guessed more than one: %.8f" % (total_guessed_more/float(num_evaluated))
+    print "percentage correct endpoint for more than one: %.8f" % (same_endpoint_more/float(total_guessed_more))
+    print "perceneage fully guessed for more than one: %.8f" % (total_more_fully_guessed/folat(total_guessed_more))
+   
 
     ########################################
     # SIMULATE

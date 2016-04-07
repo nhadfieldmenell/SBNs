@@ -662,6 +662,7 @@ def main():
     print "average not guessed: %.8f" % average_not_guessed
     print "average mpe val: %.8f" % average_mpe
     print "average partial length: %.8f" % average_partial_length
+    print "average completion length: .8f" % (average_full_length-average_partial_length)
     print "average full length: %.8f" % average_full_length
     print "average endpoint distance: %.8f" % average_endpoint_dist
     print "total correct endpoint: %d" % total_right_endpoint

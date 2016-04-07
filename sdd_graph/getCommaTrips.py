@@ -28,10 +28,8 @@ orig = open('cab_chronological.txt','r')
 lines = orig.readlines()
 orig.close()
 out = open('getTripsOut.txt','w')
-numArgs = len(sys.argv)
-print "num args: %d" % numArgs
-for i in range(1,numArgs):
-    print i
-    writeTrip(int(sys.argv[i][:-1]),lines,out,trip_id2line_num)
+trip_nums = map(int,sys.argv[1].split(','))
+for trip_num in trip_nums: 
+    writeTrip(trip_num,lines,out,trip_id2line_num)
 out.close()
 

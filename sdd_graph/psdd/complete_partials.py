@@ -528,6 +528,7 @@ def main():
             full_counts.append(count)
 
     full_set = DataSet.to_dict(full_models,full_counts)
+    print "unique instances: %d" % len(full_set.data)
     print "FULL DATASET"
     print full_set
     

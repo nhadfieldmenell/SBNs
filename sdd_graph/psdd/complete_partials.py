@@ -675,6 +675,7 @@ def main():
     print "average endpoint distance: %.8f" % average_endpoint_dist
     print "total correct endpoint: %d" % total_right_endpoint
     print "total fully guessed: %d" % total_fully_guessed
+    print "percentage fully guessed: %.8f" % (total_fully_guessed/float(num_evaluated))
     print "total only guessed one: %d" % total_only_guessed_one
     print "total guessed more than one: %d" % total_guessed_more 
     print "same endpoint with multiple guessed: %d" % same_endpoint_more

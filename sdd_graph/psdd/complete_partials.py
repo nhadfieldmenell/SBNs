@@ -650,19 +650,22 @@ def main():
 
     #return
     average_correct = total_correct/num_evaluated
+    average_incorrect = total_incorrect/num_evaluated
     average_partial_length = float(total_partial_length)/num_evaluated
     average_full_length = float(total_full_length)/num_evaluated
-    average_incorrect = total_incorrect/num_evaluated
+    average_completion_length = average_full_length-average_partial_length
+    average_guessed_length = average_correct + average_incorrect
     average_not_guessed = total_not_guessed/num_evaluated
     average_mpe = total_mpe_val/num_evaluated
     average_endpoint_dist = total_endpoint_dist/num_evaluated
     print "Total Evaluated: %.8f" % num_evaluated
     print "average correct: %.8f" % average_correct
     print "average incorrect: %.8f" % average_incorrect
+    print "average guessed edges: %.8f" % average_guessed_length
     print "average not guessed: %.8f" % average_not_guessed
     print "average mpe val: %.8f" % average_mpe
     print "average partial length: %.8f" % average_partial_length
-    print "average completion length: .8f" % (average_full_length-average_partial_length)
+    print "average completion length: .8f" % average_completion_length 
     print "average full length: %.8f" % average_full_length
     print "average endpoint distance: %.8f" % average_endpoint_dist
     print "total correct endpoint: %d" % total_right_endpoint

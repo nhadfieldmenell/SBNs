@@ -23,7 +23,6 @@ def writeTrip(trip_num,lines,out,trip_id2line_num):
 #orig = open('csvGPS.txt','r')
 #orig = open('cab_trips.txt','r')
 trip_id2line_num = pickle.load(open('trip_id2line_num.pickle','rb'))
-print "loaded"
 orig = open('cab_chronological.txt','r')
 lines = orig.readlines()
 orig.close()

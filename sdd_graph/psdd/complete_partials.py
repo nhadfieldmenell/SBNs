@@ -182,7 +182,7 @@ def draw_grid(model,m,n,edge2index):
                 sys.stdout.write(' ')
         sys.stdout.write('\n')
 
-def epochs_partial(rows,cols,num_epochs,copy,edge2index):
+def epochs_partial(rows,cols,num_epochs,copy,edge2index,midpoint):
     """Randomize the data instances and separate the data instances and partials into equal collections
 
     Keep relationship between full and partial data.
@@ -197,8 +197,8 @@ def epochs_partial(rows,cols,num_epochs,copy,edge2index):
             The different epochs have the same data instances as the corresponding epochs in full datasets.
     """
 
-    full_file = open("../datasets/full_data_%d_%d.txt" % (rows,cols), "r")
-    partials_file = open("../datasets/partials_%d_%d.txt" % (rows,cols), "r")
+    full_file = open("../datasets/full_data_%d_%d_%d.txt" % (rows,cols,midpoint), "r")
+    partials_file = open("../datasets/partials_%d_%d_%d.txt" % (rows,cols,midpoint), "r")
     full_lines = full_file.readlines()
     partials_lines = partials_file.readlines()
     full_file.close()
@@ -206,7 +206,7 @@ def epochs_partial(rows,cols,num_epochs,copy,edge2index):
 
     bad_lines = None
     bad_paths = {}
-    bad_filename = "bad_paths/bad_%d_%d.txt" % (rows,cols)
+    bad_filename = "bad_paths/bad_%d_%d_%d.txt" % (rows,cols,midpoint)
     file_exists = os.path.isfile(bad_filename)
     if file_exists:
         bad_file = open(bad_filename,'r')
@@ -472,12 +472,12 @@ def main():
     
 
 
-    vtree_filename = '../graphs/asdf-%d-%d.vtree' % (rows,cols)
-    sdd_filename = '../graphs/asdf-%d-%d.sdd' % (rows,cols)
+    vtree_filename = '../graphs/asdf-%d-%d-%d.vtree' % (rows,cols,midpoint)
+    sdd_filename = '../graphs/asdf-%d-%d-%d.sdd' % (rows,cols,midpoint)
 
 
-    vtree_filename_no_mp = '../graphs/asdf-no-mp-%d-%d.vtree' % (rows,cols)
-    sdd_filename_no_mp = '../graphs/asdf-no-mp-%d-%d.sdd' % (rows,cols)
+    vtree_filename_no_mp = '../graphs/asdf-no-mp-%d-%d-%d.vtree' % (rows,cols,midpoint)
+    sdd_filename_no_mp = '../graphs/asdf-no-mp-%d-%d-%d.sdd' % (rows,cols,midpoint)
 
     psi,scale = 2.0,None # learning hyper-parameters
     N,M = 2**10,2**10 # size of training/testing dataset
@@ -518,7 +518,7 @@ def main():
         #    (locale.format("%d",model_count,grouping=True),time.time()-start)
 
 
-    full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy_no_mp,edge2index)
+    full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy_no_mp,edge2index,midpoint)
     
     
     partials_completed = []

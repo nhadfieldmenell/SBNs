@@ -685,7 +685,7 @@ def create_all_cab(graph):
     """Creates a dict containing every path in the file"""
     return
 
-def single_epoch(g,rows,cols):
+def single_epoch(g,rows,cols,midpoint):
     """Create a single epoch of data.
 
     Outputs a text file with all of the edge instatniations for all trips that pass through the best point.
@@ -694,8 +694,8 @@ def single_epoch(g,rows,cols):
         Nothing
     """
 
-    num_top = 5
-    #3 for 8x8
+    num_top = 10 10 10 10 10 10 10 10 10 10 
+    #3 for 8x 10 10 10 10 10 10 10 10 10 108
     one_to_select = 0 
     top_nodes = g.top_n_nodes(num_top)
     '''
@@ -731,12 +731,12 @@ def single_epoch(g,rows,cols):
     '''
 
     #trip_list = g.node2trip_ids[g.best_node]
-    midpoint = top_nodes[one_to_select]
+    #midpoint = top_nodes[one_to_select]
     trip_list = g.node2trip_ids[midpoint]
-    print "Selected midpoint: %d" % top_nodes[one_to_select]
+    print "Selected midpoint: %d" % midpoint 
     print g.node_to_coords(midpoint)
-    out_file = open("datasets/full_data_%d_%d.txt" % (rows,cols),'w')
-    partial_file = open("datasets/partials_%d_%d.txt" % (rows,cols), 'w')
+    out_file = open("datasets/full_data_%d_%d_%d.txt" % (rows,cols,midpoint),'w')
+    partial_file = open("datasets/partials_%d_%d_%d.txt" % (rows,cols,midpoint), 'w')
     for i in range(len(trip_list)):
         trip_id = trip_list[i]
         line_num = g.trip_id2line_num[trip_id]
@@ -852,6 +852,7 @@ def main():
 
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
+    midpoint = int(sys.argv[3])
     #full_fn = open('csvGPS.txt','r')
     full_fn = open('cab_trips.txt','r')
     orig_fn = open('firstLast.txt','r')
@@ -892,7 +893,7 @@ def main():
 
     #print_some(g,fiveBad)
 
-    single_epoch(g,rows,cols)
+    single_epoch(g,rows,cols,midpoint)
 
     return
 

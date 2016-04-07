@@ -143,12 +143,12 @@ if __name__ == '__main__':
 
     #dim = (dimension[0]+1,dimension[1]+1)
     #""" AC: SAVE ZDD TO FILE
-    f = open("graphs/asdf-%d-%d.zdd" % dim,"w")
+    f = open("graphs/asdf-%d-%d-%d.zdd" % (dim[0],dim[1],midpoint),"w")
     pathsThruMidpoint.dump(f)
     f.close()
     #"""
     #""" AC: SAVE ZDD TO FILE
-    f = open("graphs/asdf-no-mp-%d-%d.zdd" % dim,"w")
+    f = open("graphs/asdf-no-mp-%d-%d-%d.zdd" % (dim[0],dim[1],midpoint),"w")
     pathsNoMidpoint.dump(f)
     f.close()
     #"""
@@ -162,7 +162,7 @@ if __name__ == '__main__':
         x,y = nodes[x],nodes[y]
         graph[x].append( (index+1,y) )
         graph[y].append( (index+1,x) )
-    graph_filename = "graphs/asdf-%d-%d.graph.pickle" % dim
+    graph_filename = "graphs/asdf-%d-%d-%d.graph.pickle" % (dim[0],dim[1],midpoint)
 
     nodesNoMP = [None] + [ (x,y) for x in xrange(dim[0]) for y in xrange(dim[1]) ]
     graphNoMP = defaultdict(list)
@@ -171,7 +171,7 @@ if __name__ == '__main__':
         x,y = nodesNoMP[x],nodesNoMP[y]
         graphNoMP[x].append( (index+1,y) )
         graphNoMP[y].append( (index+1,x) )
-    graphNoMP_filename = "graphs/asdf-no-mp-%d-%d.graph.pickle" % dim
+    graphNoMP_filename = "graphs/asdf-no-mp-%d-%d-%d.graph.pickle" % (dim[0],dim[1],midpoint)
 
     # save to file
     import pickle

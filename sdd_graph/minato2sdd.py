@@ -123,13 +123,13 @@ def start_manager(var_count,order):
 if __name__ == '__main__':
     import sys
 
-    if len(sys.argv) != 3:
-        print "usage: %s [GRID-M] [GRID-N]" % sys.argv[0]
+    if len(sys.argv) != 4:
+        print "usage: %s [GRID-M] [GRID-N] [MIDPOINT]" % sys.argv[0]
         exit(1)
 
-    m,n = int(sys.argv[1]),int(sys.argv[2])
-    filename = fnPrefix = ("graphs/asdf-%d-%d" % (m,n))
-    filenameNoMP = fnPrefixNoMP = ("graphs/asdf-no-mp-%d-%d" % (m,n))
+    m,n,midpoint = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3])
+    filename = fnPrefix = ("graphs/asdf-%d-%d-%d" % (m,n,midpoint))
+    filenameNoMP = fnPrefixNoMP = ("graphs/asdf-no-mp-%d-%d-%d" % (m,n,midpoint))
 
     start = time.time()
     manager,alpha = parse_bdd(filename+".zdd")

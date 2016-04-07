@@ -546,7 +546,10 @@ def main():
 
     total_mpe_val = 0.0
     num_evaluated = 0.0
+    total_partial_length = 0
+    total_full_length = 0
     total_correct = 0
+    total_right_endpoint = 0
     total_incorrect = 0
     total_not_guessed = 0
     total_fully_guessed = 0
@@ -610,6 +613,8 @@ def main():
         print "lalala"
     
         for j in range(len(partial_instances[i])):
+            total_partial_length += partial_instances[i][j].count(1)
+            total_full_length += full_instances[i][j].count(1)
             evidence = DataSet.evidence(partial_instances[i][j])
             mpe_val, mpe_inst = copy.mpe(evidence)
             #print mpe_val
@@ -628,6 +633,9 @@ def main():
             total_incorrect += incorrect
             total_not_guessed += not_guessed
             total_endpoint_dist += endpoint_dist
+            if endpoint_dist == 0:
+                print "same endpoint!"
+                total_right_endpoint += 1
             num_evaluated += 1
             if not_guessed == 0  and incorrect == 0:
                 total_fully_guessed += 1
@@ -642,6 +650,8 @@ def main():
 
     #return
     average_correct = total_correct/num_evaluated
+    average_partial_length = float(total_partial_length)/num_evaluated
+    average_full_length = float(total_full_length)/num_evaluated
     average_incorrect = total_incorrect/num_evaluated
     average_not_guessed = total_not_guessed/num_evaluated
     average_mpe = total_mpe_val/num_evaluated
@@ -651,7 +661,10 @@ def main():
     print "average incorrect: %.8f" % average_incorrect
     print "average not guessed: %.8f" % average_not_guessed
     print "average mpe val: %.8f" % average_mpe
+    print "average partial length: %.8f" % average_partial_length
+    print "average full length: %.8f" % average_full_length
     print "average endpoint distance: %.8f" % average_endpoint_dist
+    print "total correct endpoint: %d" % total_right_endpoint
     print "total fully guessed: %d" % total_fully_guessed
     print "total only guessed one: %d" % total_only_guessed_one
 

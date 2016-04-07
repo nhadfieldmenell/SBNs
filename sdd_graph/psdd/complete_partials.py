@@ -519,6 +519,17 @@ def main():
 
 
     full_datasets, full_instances, partial_instances = epochs_partial(rows,cols,num_epochs,copy_no_mp,edge2index,midpoint)
+
+    full_models = []
+    full_counts = []
+    for j in range(num_epochs):
+        for model,count in full_datasets[j]:
+            full_models.append(model)
+            full_counts.append(count)
+
+    full_set = DataSet.to_dict(full_models,full_counts)
+    print "FULL DATASET"
+    print full_set
     
     
     partials_completed = []

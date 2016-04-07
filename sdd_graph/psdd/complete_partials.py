@@ -554,6 +554,7 @@ def main():
     total_not_guessed = 0
     total_fully_guessed = 0
     total_only_guessed_one = 0
+    same_endpoint_more = 0
     total_endpoint_dist = 0.0
     for i in range(num_epochs):
         testing  = full_datasets[i]
@@ -644,11 +645,15 @@ def main():
                 print "Only guessed one!"
             else:
                 print "Guessed more than one!"
+                if endpoint_dist == 0:
+                    same_endpoint_more += 1
+
             #print "Top 5:"
             #enumerate_mpe(copy,5,evidence,num_edges,edge2index,rows,cols)
             print ""
 
     #return
+    total_guessed_more = (num_evaluated - total_only_guessed_one)
     average_correct = total_correct/num_evaluated
     average_incorrect = total_incorrect/num_evaluated
     average_partial_length = float(total_partial_length)/num_evaluated
@@ -671,6 +676,9 @@ def main():
     print "total correct endpoint: %d" % total_right_endpoint
     print "total fully guessed: %d" % total_fully_guessed
     print "total only guessed one: %d" % total_only_guessed_one
+    print "total guessed more than one: %d" % total_guessed_more 
+    print "same endpoint with multiple guessed: %d" % same_endpoint_more
+    print "percentege guessed more than one: %.8f" % (total_guessed_more/float(num_evaluated))
 
     ########################################
     # SIMULATE

@@ -694,8 +694,8 @@ def single_epoch(g,rows,cols,midpoint):
         Nothing
     """
 
-    num_top = 10 10 10 10 10 10 10 10 10 10 
-    #3 for 8x 10 10 10 10 10 10 10 10 10 108
+    num_top = 10 
+    #3 for 8x8
     one_to_select = 0 
     top_nodes = g.top_n_nodes(num_top)
     '''

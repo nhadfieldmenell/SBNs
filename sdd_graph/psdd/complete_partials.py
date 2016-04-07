@@ -679,6 +679,7 @@ def main():
     print "total guessed more than one: %d" % total_guessed_more 
     print "same endpoint with multiple guessed: %d" % same_endpoint_more
     print "percentege guessed more than one: %.8f" % (total_guessed_more/float(num_evaluated))
+    print "percentege correct endpoint for more than one: %.8f" % (same_endpoint_more/float(total_guessed_more))
 
     ########################################
     # SIMULATE

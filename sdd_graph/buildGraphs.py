@@ -545,6 +545,8 @@ class Path(object):
             #normalized = dg.normalize(self.graph.lines[cur_line])
             normalized = normalize_simple(self.graph.lines[cur_line])
 
+        prev_node = self.graph.coords_to_node(prev_coords[0],prev_coords[1])
+        first_lasts[matrices_index][1] = prev_node
         self.next_line = cur_line
         best_index = 0
         best_score = 0

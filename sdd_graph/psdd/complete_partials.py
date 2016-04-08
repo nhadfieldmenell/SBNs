@@ -698,7 +698,7 @@ def main():
     print "fully guessed with multiple guessed: %d" % total_more_fully_guessed
     print "percentage guessed more than one: %.8f" % (total_guessed_more/float(num_evaluated))
     print "percentage correct endpoint for more than one: %.8f" % (same_endpoint_more/float(total_guessed_more))
-    print "perceneage fully guessed for more than one: %.8f" % (total_more_fully_guessed/folat(total_guessed_more))
+    print "perceneage fully guessed for more than one: %.8f" % (total_more_fully_guessed/float(total_guessed_more))
    
 
     ########################################

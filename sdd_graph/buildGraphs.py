@@ -559,6 +559,8 @@ class Path(object):
             self.graph.node_visit(self.trip_id,coords)
 
         if self.trip_id not in self.graph.trip_id2line_num:
+            if first_last[best_index] == [0,0]:
+                print "no FL: %d" % self.trip_id
             self.graph.first_last2trip_ids[str(first_lasts[best_index])].append(self.trip_id)
 
         return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index],partials[best_index]

@@ -896,6 +896,11 @@ def main():
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
 
+    test_lat,test_lon = 37.775245,-122.419189
+    coords = self.graph.gps_to_coords(test_lat,test_lon)
+    print graph.coords_to_node(coords)
+    return
+
     create_all(g)
     print g.best_node_score
     print g.best_node

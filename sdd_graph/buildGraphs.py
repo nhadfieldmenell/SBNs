@@ -466,7 +466,7 @@ class Path(object):
         hit_midpoint = False
 
         first_lasts = []
-        first_lasts.append((0,0))
+        first_lasts.append([0,0])
         matrices = []
         matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
         edge_sets = []
@@ -522,7 +522,7 @@ class Path(object):
 
             if coords[0] == -1:
                 matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
-                first_lasts.append((0,0))
+                first_lasts.append([0,0])
                 edge_sets.append([0 for i in range(self.graph.num_edges)])
                 good_graphs.append(True)
                 nodes_visited.append([])
@@ -556,7 +556,7 @@ class Path(object):
             self.graph.node_visit(self.trip_id,coords)
 
         if self.trip_id not in self.graph.trip_id2line_num:
-            self.graph.first_last2trip_ids[first_lasts[best_index]].append(self.trip_id)
+            self.graph.first_last2trip_ids[str(first_lasts[best_index])].append(self.trip_id)
 
         return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index],partials[best_index]
 
@@ -892,6 +892,10 @@ def main():
     print g.best_node
     print g.node_to_coords(g.best_node)
   
+    total_endpoint_pairs = 0
+    for key in g.first_last2trip_ids.keys():
+        total_endpoint_pairs += len(g.first_last2trip_ids[key])
+
     fourBad = (109,553,416,194,558,629,179,216)
     fiveBad = (702,203,20,570,491)
     sixBad = (353,105,476,455,166+482,5+482,84+482)

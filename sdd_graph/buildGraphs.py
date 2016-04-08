@@ -904,7 +904,8 @@ def main():
         nodes = map(int,key[1:-1].split(','))
         print "(%d,%d): %d" % (g.node_to_coords(nodes[0]),g.node_to_coords(nodes[1]),num_with)
     print "graph has %d trips" % g.num_trips
-    print "first last has %d trips" % total_endpoint pairs
+    print "first last has %d trips" % total_endpoint_pairs
+    print "there are %d unique first/last pairs" % len(g.first_last2trip_ids.keys())
 
     fourBad = (109,553,416,194,558,629,179,216)
     fiveBad = (702,203,20,570,491)

@@ -48,6 +48,7 @@ class Graph(object):
         self.node2trip_ids = defaultdict(list)
         self.best_node = 1
         self.best_node_score = 0
+        self.first_last2trip_ids = defaultdict(list)
         #self.trip_id2lengths,self.avg_length = self.path_lengths()
 
     def path_lengths(self):
@@ -464,6 +465,8 @@ class Path(object):
         #this variable is false until we hit the midpoint
         hit_midpoint = False
 
+        first_lasts = []
+        first_lasts.append((0,0))
         matrices = []
         matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
         edge_sets = []
@@ -481,6 +484,14 @@ class Path(object):
             lat = normalized[1]
             lon = normalized[2]
             coords = self.graph.gps_to_coords(lat,lon)
+            node = self.graph.coords_to_node(coords[0],coords[1])
+
+            if prev_coords == (-1,-1) and coords[0] != -1:
+                first_lasts[matrices_index][0] = node
+
+            if coords[0] == -1 and prev_coords[0] != -1:
+                prev_node = self.graph.coords_to_node(prev_coords[0],prev_coords[1])
+                first_lasts[matrices_index][1] = prev_node
 
             if prev_coords != (-1,-1) and coords[0] != -1 and coords != prev_coords:
                 edge_num = self.graph.edge_num(prev_coords[0],prev_coords[1],coords[0],coords[1])
@@ -511,6 +522,7 @@ class Path(object):
 
             if coords[0] == -1:
                 matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
+                first_lasts.append((0,0))
                 edge_sets.append([0 for i in range(self.graph.num_edges)])
                 good_graphs.append(True)
                 nodes_visited.append([])
@@ -542,6 +554,9 @@ class Path(object):
 
         for coords in nodes_visited[best_index]:
             self.graph.node_visit(self.trip_id,coords)
+
+        if self.trip_id not in self.graph.trip_id2line_num:
+            self.graph.first_last2trip_ids[first_lasts[best_index]].append(self.trip_id)
 
         return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index],partials[best_index]
 
@@ -662,10 +677,6 @@ def create_all(graph):
     Returns:
         dict of paths, indexed by trip_id
     """
-    #full_fn = open('csvGPS.txt','r')
-    #lines = full_fn.readlines()
-    #file_length = len(lines)
-    #full_fn.close()
     trip_id = 1
     line_num = 0
     #paths = {}
@@ -681,9 +692,6 @@ def create_all(graph):
     graph.trip_id2line_num[trip_id] = line_num
     #return paths
         
-def create_all_cab(graph):
-    """Creates a dict containing every path in the file"""
-    return
 
 def single_epoch(g,rows,cols,midpoint):
     """Create a single epoch of data.

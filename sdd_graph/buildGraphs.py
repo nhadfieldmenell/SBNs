@@ -898,7 +898,7 @@ def main():
 
     test_lat,test_lon = 37.775245,-122.419189
     coords = g.gps_to_coords(test_lat,test_lon)
-    print g.coords_to_node(coords)
+    print g.coords_to_node(coords[0],coords[1])
     return
 
     create_all(g)

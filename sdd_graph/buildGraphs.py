@@ -27,6 +27,7 @@ class Graph(object):
         self.lines = fn.readlines()
         self.gps_length = len(self.lines)
         self.trip_id2line_num = {}
+        self.num_trips = 0
 
         self.rows = rows
         self.cols = cols
@@ -679,8 +680,10 @@ def create_all(graph):
     """
     trip_id = 1
     line_num = 0
+    num_trips = 0
     #paths = {}
     p = Path(trip_id,graph,line_num=line_num)
+    num_trips += 1
     #paths[trip_id] = p
     while p.next_line != len(graph.lines):#file_length:
         graph.trip_id2line_num[trip_id] = line_num
@@ -688,8 +691,10 @@ def create_all(graph):
         trip_id = normalize_simple(graph.lines[line_num])[0]
         #trip_id = dg.normalize(lines[line_num])[0]
         p = Path(trip_id,graph,line_num=line_num)
+        num_trips += 1
        # paths[trip_id] = p
     graph.trip_id2line_num[trip_id] = line_num
+    graph.num_trips = num_trips
     #return paths
         
 
@@ -896,8 +901,10 @@ def main():
     for key in g.first_last2trip_ids.keys():
         num_with = len(g.first_last2trip_ids[key])
         total_endpoint_pairs += num_with
-        coords = map(int,key[1:-1].split(','))
-        print str(g.node_to_coords(coords[0],coords[1])) + ": " + str(num_with)
+        nodes = map(int,key[1:-1].split(','))
+        print "(%d,%d): %d" % (g.node_to_coords(nodes[0]),g.node_to_coords(nodes[1]),num_with)
+    print "graph has %d trips" % g.num_trips
+    print "first last has %d trips" % total_endpoint pairs
 
     fourBad = (109,553,416,194,558,629,179,216)
     fiveBad = (702,203,20,570,491)

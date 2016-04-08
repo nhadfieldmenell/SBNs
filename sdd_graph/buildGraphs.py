@@ -894,7 +894,10 @@ def main():
   
     total_endpoint_pairs = 0
     for key in g.first_last2trip_ids.keys():
-        total_endpoint_pairs += len(g.first_last2trip_ids[key])
+        num_with = len(g.first_last2trip_ids[key])
+        total_endpoint_pairs += num_with
+        coords = map(int,key[1:-1].split(','))
+        print str(g.node_to_coords(coords[0],coords[1])) + ": " + str(num_with)
 
     fourBad = (109,553,416,194,558,629,179,216)
     fiveBad = (702,203,20,570,491)

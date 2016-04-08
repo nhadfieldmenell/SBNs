@@ -902,7 +902,7 @@ def main():
         num_with = len(g.first_last2trip_ids[key])
         total_endpoint_pairs += num_with
         nodes = map(int,key[1:-1].split(','))
-        print "(%d,%d): %d" % (g.node_to_coords(nodes[0]),g.node_to_coords(nodes[1]),num_with)
+        print "(%s,%s): %d" % (str(g.node_to_coords(nodes[0])),str(g.node_to_coords(nodes[1])),num_with)
     print "graph has %d trips" % g.num_trips
     print "first last has %d trips" % total_endpoint_pairs
     print "there are %d unique first/last pairs" % len(g.first_last2trip_ids.keys())

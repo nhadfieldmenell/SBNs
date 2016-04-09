@@ -14,7 +14,7 @@ if __name__ == '__main__':
         exit(1)
 
     m,n,start,end = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4])
-    filename = fnPrefix = ("graphs/start_end-%d-%d-%d-%d.zdd" % (m,n,start,end))
+    filename = fnPrefix = ("graphs/start_end-%d-%d-%d-%d" % (m,n,start,end))
 
     start = time.time()
     manager,alpha = orig.parse_bdd(filename+".zdd")

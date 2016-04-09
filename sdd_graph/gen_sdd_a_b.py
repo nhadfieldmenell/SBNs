@@ -47,7 +47,7 @@ if __name__ == '__main__':
     
     """ AC: SAVE ZDD TO FILE """
     f = open("graphs/start_end-%d-%d-%d-%d.zdd" % (dim[0],dim[1],startpoint,endpoint),"w")
-    pathsThruMidpoint.dump(f)
+    paths.dump(f)
     f.close()
 
     

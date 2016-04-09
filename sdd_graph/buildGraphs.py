@@ -559,8 +559,8 @@ class Path(object):
             self.graph.node_visit(self.trip_id,coords)
 
         if self.trip_id not in self.graph.trip_id2line_num:
-            if first_lasts[best_index] == [0,0]:
-                print "no FL: %d" % self.trip_id
+            if first_lasts[best_index] == [38,90]:
+                print "a to b: " % self.trip_id
             self.graph.first_last2trip_ids[str(first_lasts[best_index])].append(self.trip_id)
 
         return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index],partials[best_index]
@@ -895,9 +895,6 @@ def main():
     """
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
-    print g.coords_to_node(3,7)
-    print g.coords_to_node(8,9)
-    return
 
     #test_lat,test_lon = 37.775245,-122.419189
     #coords = g.gps_to_coords(test_lat,test_lon)

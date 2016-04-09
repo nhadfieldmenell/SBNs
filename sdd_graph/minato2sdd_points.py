@@ -22,7 +22,7 @@ if __name__ == '__main__':
     print "      sdd node count: %d" % sdd.sdd_count(alpha)
     print "            sdd size: %d" % sdd.sdd_size(alpha)
     print "     sdd model count: %d" % sdd.sdd_model_count(alpha,manager)
-    print "  global model count: %d" % global_model_count(alpha,manager)
+    print "  global model count: %d" % orig.global_model_count(alpha,manager)
     print "       read bdd time: %.3fs" % (end-start)
 
     sdd.sdd_save(filename + ".sdd",alpha)

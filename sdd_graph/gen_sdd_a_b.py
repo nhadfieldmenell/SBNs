@@ -4,6 +4,7 @@ from time import time
 import sys
 import pickle
 import sdd
+import test_grids_minato as minato
 
 def neighbors(point,cols):
     """Get the W, S, and SW neighbors of a point"""
@@ -43,5 +44,25 @@ if __name__ == '__main__':
         for end in ends:
             paths = GraphSet.union(paths,GraphSet.paths(start,end))
 
-    for i in range(4):
-        tl.draw(paths.choice())
+    
+    """ AC: SAVE ZDD TO FILE """
+    f = open("graphs/start_end-%d-%d-%d-%d.zdd" % (dim[0],dim[1],startpoint,endpoint),"w")
+    pathsThruMidpoint.dump(f)
+    f.close()
+
+    
+    """ AC: SAVE GRAPH """
+    nodes = [None] + [ (x,y) for x in xrange(dim[0]) for y in xrange(dim[1]) ]
+    from collections import defaultdict
+    graph = defaultdict(list)
+    for index,edge in enumerate(paths.universe()):
+        x,y = edge
+        x,y = nodes[x],nodes[y]
+        graph[x].append( (index+1,y) )
+        graph[y].append( (index+1,x) )
+    graph_filename = "graphs/start_end-%d-%d-%d-%d.graph.pickle" % (dim[0],dim[1],startpoint,endpoint)
+
+    # save to file
+    import pickle
+    with open(graph_filename,'wb') as output:
+        pickle.dump(graph,output)

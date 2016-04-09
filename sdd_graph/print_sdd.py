@@ -15,7 +15,7 @@ if __name__ == '__main__':
         print "usage: %s [GRID-M] [GRID-N] [STARTPOINT] [ENDPOINT]" % sys.argv[0]
         exit(1)
 
-    m,n,start,end = int(sys.argv[1]),int(sys.argv[2]),(int(sys.argv[3]),int(sys.argv[4])
+    m,n,start,end = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4])
     #fnPrefix = ("graphs/asdf-%d-%d" % (m,n))
     #gFn = ("graphs/asdf-%d-%d.graph.pickle" % (m,n))
     fnPrefix = ("graphs/start_end-%d-%d-%d-%d" % (m,n,start,end))

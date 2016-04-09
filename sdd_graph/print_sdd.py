@@ -1,5 +1,3 @@
-[noah@deduction sdd_graph]$ vim print_sdd.py 
-
 #!/usr/bin/env python
 
 import test_graph as g

@@ -881,7 +881,7 @@ def main():
     max_lon = -122.38
     """
 
-    """SF action coords (3.8x3.8 mi)"""
+    """SF action coords (3.8x3.8 mi) - 95% of all paths pass through heret"""
     min_lat = 37.75
     max_lat = 37.806
     min_lon = -122.46
@@ -895,6 +895,9 @@ def main():
     """
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
+    print g.coords_to_node(3,7)
+    print g.coords_to_node(8,9)
+    return
 
     #test_lat,test_lon = 37.775245,-122.419189
     #coords = g.gps_to_coords(test_lat,test_lon)

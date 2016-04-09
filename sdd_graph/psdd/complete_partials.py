@@ -624,7 +624,6 @@ def main():
 
         #continue
 
-        print "lalala"
     
         for j in range(len(partial_instances[i])):
             total_partial_length += partial_instances[i][j].count(1)

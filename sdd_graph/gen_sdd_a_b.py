@@ -44,6 +44,7 @@ if __name__ == '__main__':
         for end in ends:
             paths = GraphSet.union(paths,GraphSet.paths(start,end))
 
+    print "number of paths: " + str(paths.len())
     
     """ AC: SAVE ZDD TO FILE """
     f = open("graphs/start_end-%d-%d-%d-%d.zdd" % (dim[0],dim[1],startpoint,endpoint),"w")

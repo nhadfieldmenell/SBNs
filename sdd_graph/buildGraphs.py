@@ -896,7 +896,7 @@ def main():
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
 
-    test_lat,test_lon = 37.789010, -122.404143 
+    test_lat,test_lon = 37.757941, -122.435157 
     coords = g.gps_to_coords(test_lat,test_lon)
     print g.coords_to_node(coords[0],coords[1])
     return

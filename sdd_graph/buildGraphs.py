@@ -559,7 +559,7 @@ class Path(object):
             self.graph.node_visit(self.trip_id,coords)
 
         if self.trip_id not in self.graph.trip_id2line_num:
-            if first_lasts[best_index] == [24,9]:
+            if first_lasts[best_index] == [23,9]:
                 print "a to b: %d" % self.trip_id
             self.graph.first_last2trip_ids[str(first_lasts[best_index])].append(self.trip_id)
 

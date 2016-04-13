@@ -20,7 +20,7 @@ def create_mappings(in_filename,out_filename):
 
     trip_id2line_num = pickle.load(open('trip_id2line_num.pickle','rb'))
 
-    print get_unix_time(line[trip_id2line_num[66]])
+    print get_unix_time(lines[trip_id2line_num[66]])
 
 def main():
     create_mappings('cab_chronological.txt','trip_id2time.pickle')

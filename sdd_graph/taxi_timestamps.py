@@ -3,6 +3,7 @@ import pickle
 import datetime
 import buildGraphs as bg
 from collections import defaultdict
+import heapq
 
 def get_unix_time(line):
     i = len(line)-1
@@ -60,8 +61,15 @@ def analyze_times(to_time_fn):
         time_obj = trip_id2time[trip_id]
         day_hour2trip_ids[(time_obj[0],time_obj[1])].append(trip_id)
 
+    sorted_times = []
     for time in day_hour2trip_ids.keys():
-        print "%s: %d" % (str(time),len(day_hour2trip_ids[time]))
+        counts = day_hour2trip_ids[time]
+        heapq.heappush((-counts,time))
+        #print "%s: %d" % (str(time),len(day_hour2trip_ids[time]))
+
+    while len(sorted_times) > 0:
+        popped = heapq.heappop(sorted_times)
+        print "%s: %d" % (str(popped[1]),(0-popped[0]))
 
 
 

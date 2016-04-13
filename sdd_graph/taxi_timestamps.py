@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import pickle
 import datetime
-#from datetime.datetime import fromtimestamp
 import buildGraphs as bg
 
 def get_unix_time(line):
@@ -34,7 +33,7 @@ def create_mappings(in_filename,out_filename):
 
     trip_id2line_num = pickle.load(open('trip_id2line_num.pickle','rb'))
 
-    for i in (5,77,15):
+    for i in (5,77,15,1235,1452):
         line_num = trip_id2line_num[i]
         line = lines[line_num]
         unix = get_unix_time(line)

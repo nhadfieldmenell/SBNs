@@ -3,7 +3,7 @@ import pickle
 import buildGraphs as bg
 
 def get_unix_time(line):
-    i = len(line-1)
+    i = len(line)-1
     while i != ',':
         i -= 1
     i += 1

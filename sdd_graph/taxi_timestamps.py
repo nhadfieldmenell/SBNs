@@ -2,6 +2,7 @@
 import pickle
 import datetime
 import buildGraphs as bg
+from collections import defaultdict
 
 def get_unix_time(line):
     i = len(line)-1
@@ -50,8 +51,26 @@ def create_mappings(in_filename,out_filename):
         pickle.dump(trip_id2time_obj,output)
 
 
+def analyze_times(to_time_fn):
+    trip_id2time = pickle.load(open(to_time_fn,'rb'))
+
+    day_hour2trip_ids = defaultdict(list)
+
+    for trip_id in trip_id2time.keys():
+        time_obj = trip_id2time[trip_id]
+        day_hour2trip_ids[(time_obj[0],time_obj[1])].append(trip_id)
+
+    for time in day_hour2trip_ids.keys():
+        print "%s: %d" % (str(time),len(day_hour2trip_ids[time]))
+
+
+
 def main():
-    create_mappings('cab_chronological.txt','trip_id2time.pickle')
+    to_time_filename = 'trip_id2time.pickle'
+    #create_mappings('cab_chronological.txt',to_time_filename)
+    analyze_times(to_time_filename)
+
+
 
 
 if __name__ == '__main__':

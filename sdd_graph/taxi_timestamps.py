@@ -63,8 +63,8 @@ def analyze_times(to_time_fn):
 
     sorted_times = []
     for time in day_hour2trip_ids.keys():
-        counts = day_hour2trip_ids[time]
-        heapq.heappush(sorted_times,[(0-counts),time])
+        counts = 0-day_hour2trip_ids[time]
+        heapq.heappush(sorted_times,[counts,time])
         #print "%s: %d" % (str(time),len(day_hour2trip_ids[time]))
 
     while len(sorted_times) > 0:

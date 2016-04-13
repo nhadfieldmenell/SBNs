@@ -1,0 +1,57 @@
+For 2 4-point clusters:
+    6x6
+        Gen time: 0.4s
+            log gen time: -0.91
+        Convert time: 0.2s
+            log convert time: -1.6
+        SDD size: 17238
+            log size: 9.8
+        Model count: 9568932 
+
+    8x8
+        Gen time: 3.9s
+            log gen time: 1.3
+        Convert time: 3.3s
+            log convert time: 1.2
+        SDD size: 397218
+            log size: 12.9
+        Model count: 6506340634116 
+
+    9x9
+        Gen time: 7s
+            log gen time: 1.9
+        Convert time: 10s
+            log convert time: 2.3
+        SDD size: 1142630
+            log size: 13.9
+        Model count: 25013963580812216 
+
+    10x10
+        Gen time: 28s
+            log gen time: 3.3
+        Convert time: 40s
+            log convert time: 3.7
+        SDD size: 4215378
+            log size: 15.2
+        Model count: 2034807258574180352
+
+    11x11
+        Gen time: 436s
+            log gen time: 6.1
+        Convert time: 237s
+            log convert time: 5.5
+        SDD size: 20620338
+            log size: 16.8
+        Model count: 13522279155737985024
+
+    12x12
+        Gen time: 588s
+            log gen time: 6.4
+        Convert time: 947s
+            log convert time: 6.9
+        SDD size: 52652320
+            log size: 17.8
+        Model count: 9074491489831067648
+
+    13x13
+        Gen time: 21068s

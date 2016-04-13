@@ -11,8 +11,9 @@ def get_unix_time(line):
     return int(line[i:])
 
 def convert_unix_time(unix):
-    """return [day_of_week (Monday is 0),hour,minute]"""
+    """return [day_of_week (MONDAY is 0),hour,minute]"""
     date = datetime.datetime.fromtimestamp(unix)
+    print "unix: %d" % unix
     print "date object: %s" % str(date)
     day = date.day + (date.month-5)*31
     day_of_week = day % 7 - 5

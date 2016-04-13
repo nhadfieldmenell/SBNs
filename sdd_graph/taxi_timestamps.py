@@ -5,7 +5,7 @@ import buildGraphs as bg
 def get_unix_time(line):
     print "getting time"
     i = len(line)-1
-    while i != ',':
+    while line[i] != ',':
         i -= 1
     i += 1
     return int(line[i:])

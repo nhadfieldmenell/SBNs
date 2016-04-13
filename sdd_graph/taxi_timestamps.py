@@ -3,6 +3,7 @@ import pickle
 import buildGraphs as bg
 
 def get_unix_time(line):
+    print "getting time"
     i = len(line)-1
     while i != ',':
         i -= 1
@@ -18,7 +19,11 @@ def create_mappings(in_filename,out_filename):
     with open(in_filename,'r') as infile:
         lines = infile.readlines()
 
+    print "loading"
+
     trip_id2line_num = pickle.load(open('trip_id2line_num.pickle','rb'))
+
+    print "loaded"
 
     print get_unix_time(lines[trip_id2line_num[66]])
 

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import pickle
-from datetime.datetime import fromtimestamp
+import datetime
+#from datetime.datetime import fromtimestamp
 import buildGraphs as bg
 
 def get_unix_time(line):
@@ -12,7 +13,7 @@ def get_unix_time(line):
 
 def convert_unix_time(unix):
     """return [day_of_week (Monday is 0),hour,minute]"""
-    date = fromtimestamp(unix)
+    date = datetime.datetime.fromtimestamp(unix)
     print "date object: %s" % str(date)
     day = date.day + (date.month-5)*31
     day_of_week = day % 7 - 5

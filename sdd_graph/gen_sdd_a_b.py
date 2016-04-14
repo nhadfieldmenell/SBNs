@@ -23,7 +23,7 @@ def all_paths(dimension,dim):
             paths = GraphSet.union(paths,GraphSet.paths(i,j))
 
     f = open("graphs/all_paths-%d-%d.zdd" % (dim[0],dim[1]),"w")
-    pathsThruMidpoint.dump(f)
+    paths.dump(f)
     f.close()
 
     nodes = [None] + [ (x,y) for x in xrange(dim[0]) for y in xrange(dim[1]) ]

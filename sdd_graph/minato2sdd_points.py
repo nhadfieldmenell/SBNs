@@ -6,16 +6,7 @@ import time
 from test_grids_minato import print_grids
 import minato2sdd as orig
 
-if __name__ == '__main__':
-    import sys
-
-    if len(sys.argv) != 5:
-        print "usage: %s [GRID-M] [GRID-N] [STARTPOINT] [ENDPOINT]" % sys.argv[0]
-        exit(1)
-
-    m,n,start,end = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4])
-    filename = fnPrefix = ("graphs/start_end-%d-%d-%d-%d" % (m,n,start,end))
-
+def convert(filename):
     start = time.time()
     manager,alpha = orig.parse_bdd(filename+".zdd")
     end = time.time()
@@ -39,3 +30,20 @@ if __name__ == '__main__':
     sdd.sdd_manager_garbage_collect(manager)
     print "live size:", sdd.sdd_manager_live_count(manager)
     print "dead size:", sdd.sdd_manager_dead_count(manager)
+
+def main():
+    import sys
+
+    if len(sys.argv) != 5:
+        print "usage: %s [GRID-M] [GRID-N] [STARTPOINT] [ENDPOINT]" % sys.argv[0]
+        exit(1)
+
+    m,n,start,end = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4])
+    #filename = fnPrefix = ("graphs/start_end-%d-%d-%d-%d" % (m,n,start,end))
+    filename = ("graphs/all_graphs-%d-%d" % (m,n))
+
+    convert(filename)
+
+
+if __name__ == '__main__':
+    main()

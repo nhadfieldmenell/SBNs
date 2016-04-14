@@ -40,7 +40,7 @@ def main():
 
     m,n,start,end = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4])
     #filename = fnPrefix = ("graphs/start_end-%d-%d-%d-%d" % (m,n,start,end))
-    filename = ("graphs/all_graphs-%d-%d" % (m,n))
+    filename = ("graphs/all_paths-%d-%d" % (m,n))
 
     convert(filename)
 

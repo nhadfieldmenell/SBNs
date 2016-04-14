@@ -37,7 +37,7 @@ def all_paths(dimension,dim):
     with open(graph_filename,'wb') as output:
         pickle.dump(graph,output)
 
-def main()
+def main():
     """Create a structure that represents all paths going from a group of startpoints to a group of endpoints.
 
     The start point given by the user is the NE point of a group of 4 points

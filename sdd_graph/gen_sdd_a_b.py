@@ -11,6 +11,8 @@ def neighbors(point,cols):
     return [point,point-1, point+cols, point+cols-1]
 
 def all_paths(dimension,dim):
+    from graphillion import GraphSet
+    import graphillion.tutorial as tl
     start,goal = 1,(dimension[0]+1)*(dimension[1]+1)
     
     universe = tl.grid(*dimension)

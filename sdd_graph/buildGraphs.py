@@ -702,6 +702,27 @@ def create_all(graph):
     #return paths
         
 
+def taxi_epochs(g,rows,cols,start,end):
+    self.trip_id2class = pickle.load(open('../trip_id2class.pickle','rb'))
+    outfiles = []
+    for i in range(6):
+        fn = 'datasets/start_end-%d-%d-%d-%d-%d.txt' % (rows,cols,start,end,i)
+        outfile = open(fn,'w')
+        outfiles.append(outfile)
+
+    for first in (start,start-1,start+cols,start+cols-1):
+        for last in (end,end-1,end+cols,end+cols-1):
+            for trip_id in g.first_last2trip_ids[first,last]:
+                time_class = trip_id2class[trip_id]
+                line_num = g.trip_id2line_num[trip_id]
+                p = Path(trip_id,g,line_num=line_num)
+
+                out_string = str(p.edges)[1:-1]
+                outfiles[time_class].write("%s\n" % out_string)
+
+    for outfile in outfiles:
+        outfile.close()
+
 def single_epoch(g,rows,cols,midpoint):
     """Create a single epoch of data.
 
@@ -881,7 +902,7 @@ def main():
     max_lon = -122.38
     """
 
-    """SF action coords (3.8x3.8 mi) - 95% of all paths pass through heret"""
+    """SF action coords (3.8x3.8 mi) - 95% of all paths pass through here"""
     min_lat = 37.75
     max_lat = 37.806
     min_lon = -122.46
@@ -902,9 +923,9 @@ def main():
     #return
 
     create_all(g)
-    print g.best_node_score
-    print g.best_node
-    print g.node_to_coords(g.best_node)
+    #print g.best_node_score
+    #print g.best_node
+    #print g.node_to_coords(g.best_node)
   
     total_endpoint_pairs = 0
     for key in g.first_last2trip_ids.keys():
@@ -916,36 +937,19 @@ def main():
     print "first last has %d trips" % total_endpoint_pairs
     print "there are %d unique first/last pairs" % len(g.first_last2trip_ids.keys())
 
+    """
     fourBad = (109,553,416,194,558,629,179,216)
     fiveBad = (702,203,20,570,491)
     sixBad = (353,105,476,455,166+482,5+482,84+482)
     sevenBad = (291,229,243,363,345)
     tenBad = (133,256,10,278,203,166,221,177,191,115,297,281,78,89,180)
-
+    """
 
     #print_some(g,fiveBad)
 
-    single_epoch(g,rows,cols,midpoint)
-
-    return
-
-    trips = dg.createTrips(orig_fn)
-
-    full_trips,best_coords,trips_with_point = dg.create_full(full_fn,trips,
-                                                            g.lat_step,
-                                                            g.lon_step,
-                                                            g.min_lat,
-                                                            g.min_lon)
-    print best_coords
-    print len(trips_with_point)
-    coords =  g.gps_to_coords(best_coords[0],best_coords[1])
-    node_num = g.coords_to_node(coords[0],coords[1])
-    print coords
-    print node_num
-
-    full_fn.close()
-    full_fn = open('csvGPS.txt','r')
-    #print g.gps_to_coords(try_lat,try_lon)
+    #single_epoch(g,rows,cols,midpoint)
+    taxi_epochs(g,rows,cols,start,end)
+    
 
     
 if __name__ == '__main__':

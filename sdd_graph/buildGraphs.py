@@ -709,7 +709,7 @@ def create_all(graph,first_last_fn):
     #return paths
         
 
-def taxi_epochs(g,rows,cols,start,end):
+def taxi_epochs(g,rows,cols,start,end,trip_id2line_num):
     trip_id2class = pickle.load(open('trip_id2class.pickle','rb'))
     fl_fn = 'first_last2trip_ids-%d-%d.pickle' % (rows,cols)
     first_last2trip_ids = pickle.load(open(fl_fn,'rb'))
@@ -909,6 +909,7 @@ def main():
     #midpoint = int(sys.argv[3])
     #full_fn = open('csvGPS.txt','r')
     full_fn = open('cab_trips.txt','r')
+    trip_id2line_num = pickle.load(open('trip_id2line_num.pickle','rb'))
 
     """full SF coords
     min_lat = 37.72
@@ -966,7 +967,7 @@ def main():
     #print_some(g,fiveBad)
 
     #single_epoch(g,rows,cols,midpoint)
-    taxi_epochs(g,rows,cols,start,end)
+    taxi_epochs(g,rows,cols,start,end,trip_id2line_num)
     
 
     

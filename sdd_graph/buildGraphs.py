@@ -708,7 +708,7 @@ def create_all(graph,first_last_fn):
         
 
 def taxi_epochs(g,rows,cols,start,end):
-    self.trip_id2class = pickle.load(open('trip_id2class.pickle','rb'))
+    trip_id2class = pickle.load(open('trip_id2class.pickle','rb'))
     outfiles = []
     for i in range(6):
         fn = 'datasets/start_end-%d-%d-%d-%d-%d.txt' % (rows,cols,start,end,i)

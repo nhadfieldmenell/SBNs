@@ -711,6 +711,7 @@ def taxi_epochs(g,rows,cols,start,end):
     trip_id2class = pickle.load(open('trip_id2class.pickle','rb'))
     fl_fn = 'first_last2trip_ids-%d-%d.pickle' % (rows,cols)
     first_last2trip_ids = pickle.load(open(fl_fn,'rb'))
+    print first_last2trip_ids[7,49]
     outfiles = []
     for i in range(6):
         fn = 'datasets/start_end-%d-%d-%d-%d-%d.txt' % (rows,cols,start,end,i)

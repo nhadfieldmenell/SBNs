@@ -720,7 +720,6 @@ def taxi_epochs(g,rows,cols,start,end,trip_id2line_num):
         outfile = open(fn,'w')
         outfiles.append(outfile)
 
-    print "here"
 
     for first in (start,start-1,start+cols,start+cols-1):
         for last in (end,end-1,end+cols,end+cols-1):
@@ -730,7 +729,6 @@ def taxi_epochs(g,rows,cols,start,end,trip_id2line_num):
                 p = Path(trip_id,g,line_num=line_num)
 
                 out_string = str(p.edges)[1:-1]
-                print out_string
                 outfiles[time_class].write("%s\n" % out_string)
 
     for outfile in outfiles:

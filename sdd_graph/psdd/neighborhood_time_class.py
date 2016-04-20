@@ -42,64 +42,32 @@ def draw_grid(model,m,n,edge2index):
                 sys.stdout.write(' ')
         sys.stdout.write('\n')
 
-def epochs_partial(rows,cols,num_epochs,copy,edge2index,midpoint):
-    """Randomize the data instances and separate the data instances and partials into equal collections
-
-    Keep relationship between full and partial data.
-
-    Returns:
-        A list of num_epochs full datasets.
-
-        A list of num_epochs arrays of full_data tuples.
-
-        A list of num_epochs list of arrays.
-            Each array holds multiple incomplete data instances.
-            The different epochs have the same data instances as the corresponding epochs in full datasets.
+def filter_bad(copy,in_fn,bad_fn):
+    """Create a dataset from the file that consists of only models that are consistent with the sdd
+    If there is a file that already contains the indices of the bad paths, then don't recompute.
+    If there is no such file, find the bad paths and store their indices in the file with name bad_fn.
+    '../datasets/first_last-%d-%d-%d-%d-%d' % (rows,cols,start,end,run)
     """
 
-    full_file = open("../datasets/full_data_%d_%d_%d.txt" % (rows,cols,midpoint), "r")
-    partials_file = open("../datasets/partials_%d_%d_%d.txt" % (rows,cols,midpoint), "r")
+
+
+    full_file = open(in_fn, "r")
     full_lines = full_file.readlines()
-    partials_lines = partials_file.readlines()
     full_file.close()
-    partials_file.close()
+
+    full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
 
     bad_lines = None
     bad_paths = {}
-    bad_filename = "bad_paths/bad_%d_%d_%d.txt" % (rows,cols,midpoint)
-    file_exists = os.path.isfile(bad_filename)
+    file_exists = os.path.isfile(bad_fn)
     if file_exists:
-        bad_file = open(bad_filename,'r')
+        bad_file = open(bad_fn,'r')
         bad_lines = bad_file.readlines()
         bad_file.close()
         for i in bad_lines:
             bad_paths[int(i)] = True
 
-    full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
-    part_ints = map(lambda x: map(int,x[:-1].split(',')),partials_lines)
-
-    full_tuple = map(tuple,full_ints)
-    part_tuple = map(tuple,part_ints)
-
-    full_and_part = zip(full_tuple,part_tuple)
-    print full_and_part[0]
-    
-    """
-    for i in range(len(full_and_part)):
-        print i
-        for j in range(len(full_and_part[i][0])):
-            if full_and_part[i][1][j] == 1:
-                print "%d: 1 %d" % (j+1, full_and_part[i][0][j])
-            elif full_and_part[i][1][j] == 0:
-                print "%d: 0 %d" % (j+1, full_and_part[i][0][j])
-        print ""
-    """
-    
-    #random.shuffle(full_and_part)
-
-    epoch_num = 0
-    full_epochs = [[] for i in range(num_epochs)]
-    partial_epochs = [[] for i in range(num_epochs)]
+    data = []
 
     copy.uniform_weights()
     bad_models = {}
@@ -115,18 +83,15 @@ def epochs_partial(rows,cols,num_epochs,copy,edge2index,midpoint):
 
     if not file_exists: 
         cur_time = time.time()
-        for i in range(len(full_and_part)):
+        for i in range(len(full_ints)):
             prev_time = cur_time
             cur_time = time.time()
             if times_printed < 100:
                 print "time to evaluate model %d: %f" % (i-1,cur_time-prev_time)
-            model = full_and_part[i][0]
-            partial_model = full_and_part[i][1]
+            model = full_ints[i]
             if str(model) in good_models:
                 total_good += 1
-                full_epochs[epoch_num].append(model)
-                partial_epochs[epoch_num].append(partial_model)
-                epoch_num = (epoch_num+1) % num_epochs
+                data.append(model)
                 continue
             if str(model) in bad_models:
                 total_bad += 1
@@ -135,7 +100,6 @@ def epochs_partial(rows,cols,num_epochs,copy,edge2index,midpoint):
             evidence = DataSet.evidence(model)
             probability = copy.probability(evidence)
             if probability == 0:
-                #print "bad: %s" % str(model)
                 if bad_printed < 25:
                     bad_printed += 1
                     print "Bad model:"
@@ -150,28 +114,24 @@ def epochs_partial(rows,cols,num_epochs,copy,edge2index,midpoint):
                 good_models[str(model)] = True
                 unique_good += 1
                 total_good += 1
-                full_epochs[epoch_num].append(model)
-                partial_epochs[epoch_num].append(partial_model)
-                epoch_num = (epoch_num+1) % num_epochs
+                data.append(model)
 
         print "total bad: %d, unique bad: %d, total good: %d, unique good: %d" % (total_bad,unique_bad, total_good, unique_good)
-        full_datasets = []
+        full_dataset = []
 
-        bad_file = open(bad_filename,'w')
+        bad_file = open(bad_fn,'w')
         for i in bad_indices.keys():
             bad_file.write("%d\n" % i)
         bad_file.close()
 
-        for i in range(num_epochs):
-            counts = [1 for j in range(len(full_epochs[i]))]
-            full_datasets.append(DataSet.to_dict(full_epochs[i],counts))
+        counts = [1 for j in range(len(full_ints))]
+        full_datasets.append(DataSet.to_dict(data,counts))
 
-        return full_datasets,full_epochs,partial_epochs
+        return full_dataset
 
     else:
-        for i in range(len(full_and_part)):
-            model = full_and_part[i][0]
-            partial_model = full_and_part[i][1]
+        for i in range(len(full_ints)):
+            model = full_ints[i]
             if i in bad_paths:
                 bad_models[str(model)] = True
                 unique_bad += 1
@@ -179,20 +139,23 @@ def epochs_partial(rows,cols,num_epochs,copy,edge2index,midpoint):
                 continue
 
             else:
-                total_good += 1
-                full_epochs[epoch_num].append(model)
-                partial_epochs[epoch_num].append(partial_model)
-                epoch_num = (epoch_num+1) % num_epochs
+                if str(model) in good_models:
+                    total_good += 1
+                    data.append(model)
+                    continue
+                else:
+                    good_models[str(model)] = True
+                    unique_good += 1
+                    total_good += 1
+                    data.append(model)
 
         print "total bad: %d, total good: %d" % (len(bad_paths), total_good)
-        full_datasets = []
-
-        for i in range(num_epochs):
-            counts = [1 for j in range(len(full_epochs[i]))]
-            full_datasets.append(DataSet.to_dict(full_epochs[i],counts))
+        full_dataset = []
+        counts = [1 for j in range(len(full_ints))]
+        full_datasets.append(DataSet.to_dict(data,counts))
 
         print "num bad paths: %d" % len(bad_paths)
-        return full_datasets,full_epochs,partial_epochs
+        return full_dataset
 
             
 def enumerate_mpe(copy,num_enumerate,evidence,num_edges,edge2index,rows,cols):
@@ -260,6 +223,9 @@ def main():
 
     psdd_parameters = copy.theta_count()
 
+    filter_bad(copy,'../datasets/first_last-6-6-4-28-0.txt','bad_paths/taxi-6-6-4-28-0.txt')
+
+    return
 
 
     psdds = []

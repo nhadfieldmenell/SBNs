@@ -6,6 +6,8 @@ from collections import defaultdict
 import heapq
 
 def get_unix_time(line):
+    """Parse unix timestamp from a line of data in taxi dataset
+    """
     i = len(line)-1
     while line[i] != ',':
         i -= 1
@@ -52,8 +54,11 @@ def create_mappings(in_filename,out_filename):
         pickle.dump(trip_id2time_obj,output)
 
 
-def analyze_times(to_time_fn):
-    trip_id2time = pickle.load(open(to_time_fn,'rb'))
+def analyze_times(trip_id2time):
+    """Prints out mapping of (day,hour) to number of trips in dataset that depart at that time
+
+    Elements printed in descending order of number of trips per element
+    """
 
     day_hour2trip_ids = defaultdict(list)
 
@@ -72,11 +77,90 @@ def analyze_times(to_time_fn):
         print "%s: %d" % (str(popped[1]),(0-popped[0]))
 
 
+def classify_trips(trip_id2time):
+    """Creates a mapping of trip id to time class of that trip
+
+    Classes:
+        0 - Weekend Evening:
+            Friday 7PM-Midnight
+            Saturday Midnight-7AM
+            Saturday 7PM-Midnight
+            Sunday Midnight-7AM
+            
+        1 - Weekend Day:
+            Saturday 7AM-7PM
+            Sunday 7AM-7PM
+
+        2 - Morning Rush:
+            Monday-Friday 7AM-9:30AM
+
+        3 - Evening Rush:
+            Monday-Friday 4PM-7PM
+
+        4 - Weekday Day:
+            Monday-Friday 9:30AM-4PM
+
+        5 - Weekday Night:
+            Sunday-Thursday 7PM-Midnight
+            Monday-Friday Midnight-7AM
+    """
+
+    def weekday_class(hour,minute):
+        if hour < 7 or hour >= 19:
+            return 5
+        elif hour >= 7 and (hour < 9 or hour == 9 and minute < 30):
+            return 2
+        elif hour >= 16 and hour <= 19:
+            return 3
+        else:
+            return 4
+
+    def friday_class(hour,minute):
+        if hour < 19:
+            return weekday_cat(hour_minute)
+        else:
+            return 0
+
+    def saturday_class(hour,minute):
+        if hour < 7 or hour >= 19:
+            return 0
+        else:
+            return 1
+
+    def sunday_class(hour,minute):
+        if hour < 7:
+            return 0
+        elif hour < 19:
+            return 1
+        else: return 5
+
+    trip_id2time_class = {}
+
+    for trip_id in trip_id2time.keys():
+        day,hour,minute = trip_id2time[trip_id]
+        trip_class = 0
+        if day < 4:
+            trip_class = weekday_class(hour,minute)
+        elif day == 4:
+            trip_class = friday_class(hour,minute)
+        elif day == 5:
+            trip_class = saturday_class(hour,minute)
+        else:
+            trip_class = sunday_class(hour,minute)
+
+        trip_id2time_class[trip_id] = trip_class
+
+        print "(%d %d:%d): %d" % (day, hour, minute, time_class)
+
+
+    with open('trip_id2class.pickle','wb') as output:
+        pickle.dump(trip_id2time_class,output)
 
 def main():
-    to_time_filename = 'trip_id2time.pickle'
+    to_time_fn = 'trip_id2time.pickle'
+    trip_id2time = pickle.load(open(to_time_fn,'rb'))
     #create_mappings('cab_chronological.txt',to_time_filename)
-    analyze_times(to_time_filename)
+    analyze_times(trip_id2time)
 
 
 

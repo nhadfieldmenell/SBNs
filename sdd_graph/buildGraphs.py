@@ -558,6 +558,8 @@ class Path(object):
 
         for coords in nodes_visited[best_index]:
             self.graph.node_visit(self.trip_id,coords)
+        
+        print "whaat"
 
         if self.trip_id not in self.graph.trip_id2line_num:
             #if first_lasts[best_index] == [28,5]:

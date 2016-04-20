@@ -559,13 +559,11 @@ class Path(object):
         for coords in nodes_visited[best_index]:
             self.graph.node_visit(self.trip_id,coords)
         
-        print "whaat"
 
         if self.trip_id not in self.graph.trip_id2line_num:
             #if first_lasts[best_index] == [28,5]:
             #    print "a to b: %d" % self.trip_id
-            self.graph.first_last2trip_ids[str(first_lasts[best_index])].append(self.trip_id)
-            print "doing this"
+            self.graph.first_last2trip_ids[tuple(first_lasts[best_index])].append(self.trip_id)
 
         return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index],partials[best_index]
 
@@ -704,6 +702,7 @@ def create_all(graph,first_last_fn):
     graph.trip_id2line_num[trip_id] = line_num
     graph.num_trips = num_trips
 
+
     with open(first_last_fn,'wb') as output:
         pickle.dump(graph.first_last2trip_ids,output)
 
@@ -714,7 +713,7 @@ def taxi_epochs(g,rows,cols,start,end):
     trip_id2class = pickle.load(open('trip_id2class.pickle','rb'))
     fl_fn = 'first_last2trip_ids-%d-%d.pickle' % (rows,cols)
     first_last2trip_ids = pickle.load(open(fl_fn,'rb'))
-    print first_last2trip_ids[7,49]
+    print first_last2trip_ids[(7,49)]
     outfiles = []
     for i in range(6):
         fn = 'datasets/start_end-%d-%d-%d-%d-%d.txt' % (rows,cols,start,end,i)
@@ -725,7 +724,7 @@ def taxi_epochs(g,rows,cols,start,end):
 
     for first in (start,start-1,start+cols,start+cols-1):
         for last in (end,end-1,end+cols,end+cols-1):
-            for trip_id in first_last2trip_ids[first,last]:
+            for trip_id in first_last2trip_ids[(first,last)]:
                 time_class = trip_id2class[trip_id]
                 line_num = g.trip_id2line_num[trip_id]
                 p = Path(trip_id,g,line_num=line_num)

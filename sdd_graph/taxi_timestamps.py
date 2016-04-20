@@ -117,7 +117,7 @@ def classify_trips(trip_id2time):
 
     def friday_class(hour,minute):
         if hour < 19:
-            return weekday_cat(hour_minute)
+            return weekday_class(hour_minute)
         else:
             return 0
 

@@ -2,6 +2,7 @@
 import sys
 import random
 import pickle
+import os.path
 import heapq
 import math
 from collections import defaultdict
@@ -559,8 +560,8 @@ class Path(object):
             self.graph.node_visit(self.trip_id,coords)
 
         if self.trip_id not in self.graph.trip_id2line_num:
-            if first_lasts[best_index] == [28,5]:
-                print "a to b: %d" % self.trip_id
+            #if first_lasts[best_index] == [28,5]:
+            #    print "a to b: %d" % self.trip_id
             self.graph.first_last2trip_ids[str(first_lasts[best_index])].append(self.trip_id)
 
         return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index],partials[best_index]
@@ -671,7 +672,7 @@ def normalize_simple(line):
 
 
 #@profile
-def create_all(graph):
+def create_all(graph,first_last_fn):
     """Creates a dict containing every path in the file.
 
     Used to determine the best node and paths through that node.
@@ -699,6 +700,10 @@ def create_all(graph):
        # paths[trip_id] = p
     graph.trip_id2line_num[trip_id] = line_num
     graph.num_trips = num_trips
+
+    with open(first_last_fn,'wb') as output:
+        pickle.dump(g.first_last2trip_ids,output)
+
     #return paths
         
 
@@ -890,7 +895,10 @@ def main():
 
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
-    midpoint = int(sys.argv[3])
+    start = int(sys.argv[3])
+    end = int(sys.argv[4])
+
+    #midpoint = int(sys.argv[3])
     #full_fn = open('csvGPS.txt','r')
     full_fn = open('cab_trips.txt','r')
 
@@ -921,7 +929,10 @@ def main():
     #print g.coords_to_node(coords[0],coords[1])
     #return
 
-    create_all(g)
+    first_last_fn = '../first_last2trip_ids-%d-%d.pickle' % (rows,cols)
+    file_exists = os.path.isfile(first_last_fn)
+    if not file_exists:
+        create_all(g,first_last_fn)
     #print g.best_node_score
     #print g.best_node
     #print g.node_to_coords(g.best_node)

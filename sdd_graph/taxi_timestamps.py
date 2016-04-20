@@ -160,7 +160,8 @@ def main():
     to_time_fn = 'trip_id2time.pickle'
     trip_id2time = pickle.load(open(to_time_fn,'rb'))
     #create_mappings('cab_chronological.txt',to_time_filename)
-    analyze_times(trip_id2time)
+    #analyze_times(trip_id2time)
+    classify_trips(trip_id2time)
 
 
 

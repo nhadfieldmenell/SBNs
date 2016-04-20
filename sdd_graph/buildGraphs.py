@@ -702,7 +702,7 @@ def create_all(graph,first_last_fn):
     graph.num_trips = num_trips
 
     with open(first_last_fn,'wb') as output:
-        pickle.dump(g.first_last2trip_ids,output)
+        pickle.dump(graph.first_last2trip_ids,output)
 
     #return paths
         

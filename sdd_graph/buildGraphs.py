@@ -708,7 +708,7 @@ def create_all(graph,first_last_fn):
         
 
 def taxi_epochs(g,rows,cols,start,end):
-    self.trip_id2class = pickle.load(open('../trip_id2class.pickle','rb'))
+    self.trip_id2class = pickle.load(open('trip_id2class.pickle','rb'))
     outfiles = []
     for i in range(6):
         fn = 'datasets/start_end-%d-%d-%d-%d-%d.txt' % (rows,cols,start,end,i)
@@ -929,7 +929,7 @@ def main():
     #print g.coords_to_node(coords[0],coords[1])
     #return
 
-    first_last_fn = '../first_last2trip_ids-%d-%d.pickle' % (rows,cols)
+    first_last_fn = 'first_last2trip_ids-%d-%d.pickle' % (rows,cols)
     file_exists = os.path.isfile(first_last_fn)
     if not file_exists:
         create_all(g,first_last_fn)
@@ -937,6 +937,7 @@ def main():
     #print g.best_node
     #print g.node_to_coords(g.best_node)
   
+    """
     total_endpoint_pairs = 0
     for key in g.first_last2trip_ids.keys():
         num_with = len(g.first_last2trip_ids[key])
@@ -947,7 +948,6 @@ def main():
     print "first last has %d trips" % total_endpoint_pairs
     print "there are %d unique first/last pairs" % len(g.first_last2trip_ids.keys())
 
-    """
     fourBad = (109,553,416,194,558,629,179,216)
     fiveBad = (702,203,20,570,491)
     sixBad = (353,105,476,455,166+482,5+482,84+482)

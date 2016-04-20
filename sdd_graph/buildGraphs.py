@@ -893,7 +893,6 @@ def main():
     midpoint = int(sys.argv[3])
     #full_fn = open('csvGPS.txt','r')
     full_fn = open('cab_trips.txt','r')
-    orig_fn = open('firstLast.txt','r')
 
     """full SF coords
     min_lat = 37.72

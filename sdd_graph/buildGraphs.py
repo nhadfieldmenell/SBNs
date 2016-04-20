@@ -563,6 +563,7 @@ class Path(object):
             #if first_lasts[best_index] == [28,5]:
             #    print "a to b: %d" % self.trip_id
             self.graph.first_last2trip_ids[str(first_lasts[best_index])].append(self.trip_id)
+            print "doing this"
 
         return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index],partials[best_index]
 

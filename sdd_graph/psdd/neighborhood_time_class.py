@@ -42,7 +42,7 @@ def draw_grid(model,m,n,edge2index):
                 sys.stdout.write(' ')
         sys.stdout.write('\n')
 
-def filter_bad(copy,in_fn,bad_fn):
+def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
     """Create a dataset from the file that consists of only models that are consistent with the sdd
     If there is a file that already contains the indices of the bad paths, then don't recompute.
     If there is no such file, find the bad paths and store their indices in the file with name bad_fn.
@@ -223,7 +223,7 @@ def main():
 
     psdd_parameters = copy.theta_count()
 
-    filter_bad(copy,'../datasets/first_last-6-6-4-28-0.txt','bad_paths/taxi-6-6-4-28-0.txt')
+    filter_bad(copy,'../datasets/first_last-6-6-4-28-0.txt','bad_paths/taxi-6-6-4-28-0.txt',rows,cols,edge2index)
 
     return
 

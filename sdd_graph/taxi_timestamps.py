@@ -150,7 +150,7 @@ def classify_trips(trip_id2time):
 
         trip_id2time_class[trip_id] = trip_class
 
-        print "(%d %d:%d): %d" % (day, hour, minute, time_class)
+        print "(%d %d:%d): %d" % (day, hour, minute, trip_class)
 
 
     with open('trip_id2class.pickle','wb') as output:

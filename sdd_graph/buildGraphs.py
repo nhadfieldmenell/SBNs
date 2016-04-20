@@ -726,7 +726,7 @@ def taxi_epochs(g,rows,cols,start,end,trip_id2line_num):
         for last in (end,end-1,end+cols,end+cols-1):
             for trip_id in first_last2trip_ids[(first,last)]:
                 time_class = trip_id2class[trip_id]
-                line_num = g.trip_id2line_num[trip_id]
+                line_num = trip_id2line_num[trip_id]
                 p = Path(trip_id,g,line_num=line_num)
 
                 out_string = str(p.edges)[1:-1]

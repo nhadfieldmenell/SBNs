@@ -79,14 +79,15 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
     good_models = {}
     bad_printed = 0
     times_printed = 0
+    goods_printed = 0
 
     if not file_exists: 
         cur_time = time.time()
         for i in range(len(full_tuple)):
             prev_time = cur_time
             cur_time = time.time()
-            if times_printed < 100:
-                print "time to evaluate model %d: %f" % (i-1,cur_time-prev_time)
+            #if times_printed < 100:
+            #    print "time to evaluate model %d: %f" % (i-1,cur_time-prev_time)
             model = full_tuple[i]
             if str(model) in good_models:
                 total_good += 1
@@ -101,8 +102,8 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
             if probability == 0:
                 if bad_printed < 25:
                     bad_printed += 1
-                    print "Bad model:"
-                    draw_grid(model,rows,cols,edge2index)
+                    #print "Bad model:"
+                    #draw_grid(model,rows,cols,edge2index)
                 bad_models[str(model)] = True
                 unique_bad += 1
                 total_bad += 1
@@ -110,6 +111,10 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
                 continue
 
             else:
+                if good_printed < 25:
+                    good_printed += 1
+                    print "Good model:"
+                    draw_grid(model,rows,cols,edge2index)
                 good_models[str(model)] = True
                 unique_good += 1
                 total_good += 1
@@ -220,7 +225,7 @@ def main():
 
     data_fn = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)
     bad_fn = 'bad_paths/fixed_bad-%d-%d-%d-%d.txt' % (rows,cols,start,end)
-    dataset = filter_bad(copy,data_fn,bad_fn,rows,cols,edge2index)
+    training = filter_bad(copy,data_fn,bad_fn,rows,cols,edge2index)
 
     start = time.time()
     copy.learn(training,psi=psi,scale=scale,show_progress=True)

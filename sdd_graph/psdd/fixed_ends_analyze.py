@@ -316,13 +316,13 @@ def prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
                         zeros.append(i)
                     if data[i] == 1:
                         ones.append(i)
-                #print "start edge: %d, end edge: %d, mid edges: %d %d" % (start_a[0],end_a[0],mid_a[0],mid_a[1])
-                #print "ones: %s" % str(ones)
-                #print "zeros: %s" % str(zeros)
+                print "start edge: %d, end edge: %d, mid edges: %d %d" % (start_a[0],end_a[0],mid_a[0],mid_a[1])
+                print "ones: %s" % str(ones)
+                print "zeros: %s" % str(zeros)
                 data = tuple(data)
                 evidence = DataSet.evidence(data)
                 probability = copy.probability(evidence)
-                #print "prob: %f" % probability
+                print "prob: %f" % probability
                 total_prob += probability
                 
     return total_prob 

@@ -56,6 +56,7 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
     full_file.close()
 
     full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
+    full_tuple = map(tuple,full_ints)
 
     bad_lines = None
     bad_paths = {}
@@ -83,12 +84,12 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
 
     if not file_exists: 
         cur_time = time.time()
-        for i in range(len(full_ints)):
+        for i in range(len(full_tuple)):
             prev_time = cur_time
             cur_time = time.time()
             if times_printed < 100:
                 print "time to evaluate model %d: %f" % (i-1,cur_time-prev_time)
-            model = full_ints[i]
+            model = full_tuple[i]
             if str(model) in good_models:
                 total_good += 1
                 data.append(model)
@@ -128,8 +129,8 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
         return full_dataset
 
     else:
-        for i in range(len(full_ints)):
-            model = full_ints[i]
+        for i in range(len(full_tuple)):
+            model = full_tuple[i]
             if i in bad_paths:
                 bad_models[str(model)] = True
                 unique_bad += 1

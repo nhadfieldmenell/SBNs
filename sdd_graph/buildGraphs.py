@@ -709,7 +709,7 @@ def create_all(graph,first_last_fn):
     #return paths
         
 
-def taxi_epochs(g,rows,cols,start,end,trip_id2line_num):
+def taxi_epochs_times(g,rows,cols,start,end,trip_id2line_num):
     trip_id2class = pickle.load(open('pickles/trip_id2class.pickle','rb'))
     fl_fn = 'pickles/first_last2trip_ids-%d-%d.pickle' % (rows,cols)
     first_last2trip_ids = pickle.load(open(fl_fn,'rb'))
@@ -729,10 +729,27 @@ def taxi_epochs(g,rows,cols,start,end,trip_id2line_num):
                 p = Path(trip_id,g,line_num=line_num)
 
                 out_string = str(p.edges)[1:-1]
-                gutfiles[time_class].write("%s\n" % out_string)
+                outfiles[time_class].write("%s\n" % out_string)
 
     for outfile in outfiles:
         outfile.close()
+
+def taxi_epoch_no_times(g,rows,cols,start,end,trip_id2line_num):
+    fl_fn = 'pickles/first_last2trip_ids-%d-%d.pickle' % (rows,cols)
+    first_last2trip_ids = pickle.load(open(fl_fn,'rb'))
+    out_fn = 'datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)
+    outfile = open(out_fn,'w')
+
+    for first in (start,start-1,start+cols,start+cols-1):
+        for last in (end,end-1,end+cols,end+cols-1):
+            for trip_id in first_last2trip_ids[(first,last)]:
+                line_num = trip_id2line_num[trip_id]
+                p = Path(trip_id,g,line_num=line_num)
+
+                out_string = str(p.edges)[1:-1]
+                outfile.write("%s\n" % out_string)
+
+    outfile.close()
 
 def single_epoch(g,rows,cols,midpoint):
     """Create a single epoch of data.
@@ -940,9 +957,6 @@ def main():
     file_exists = os.path.isfile(first_last_fn)
     if not file_exists:
         create_all(g,first_last_fn)
-    #print g.best_node_score
-    #print g.best_node
-    #print g.node_to_coords(g.best_node)
   
     """
     total_endpoint_pairs = 0
@@ -965,8 +979,7 @@ def main():
     #print_some(g,fiveBad)
 
     #single_epoch(g,rows,cols,midpoint)
-    taxi_epochs(g,rows,cols,start,end,trip_id2line_num)
-    
+    taxi_epoch_no_times(g,rows,cols,start,end,trip_id2line_num)
 
     
 if __name__ == '__main__':

@@ -428,15 +428,16 @@ def main():
     copy.marginals()
 
 
-    
+    tot = 0.0 
     mid = 3
-    print normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+    tot += normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
 
     mid = 5 
-    print normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+    tot += normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
     mid = 10 
-    print normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+    tot +=  normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
 
+    print tot
 
     return
     total_prob = 0.0

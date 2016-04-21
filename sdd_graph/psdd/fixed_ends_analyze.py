@@ -430,7 +430,7 @@ def main():
 
 
     for i in range(1,37):
-        probability_i = normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+        probability_i = normalized_prob_mid(rows,cols,start,end,i,num_edges,edge2index,copy)
         print "prob of passing through %d: %f" % (i,probability_i)
 
     return

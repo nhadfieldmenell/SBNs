@@ -306,7 +306,7 @@ def prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
                     data[one] = 1
                 ones = []
                 zeros = []
-                for i in data:
+                for i in range(len(data)):
                     if data[i] == 0:
                         zeros.append(i)
                     if data[i] == 1:

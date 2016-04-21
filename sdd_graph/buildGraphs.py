@@ -710,8 +710,8 @@ def create_all(graph,first_last_fn):
         
 
 def taxi_epochs(g,rows,cols,start,end,trip_id2line_num):
-    trip_id2class = pickle.load(open('trip_id2class.pickle','rb'))
-    fl_fn = 'first_last2trip_ids-%d-%d.pickle' % (rows,cols)
+    trip_id2class = pickle.load(open('pickles/trip_id2class.pickle','rb'))
+    fl_fn = 'pickles/first_last2trip_ids-%d-%d.pickle' % (rows,cols)
     first_last2trip_ids = pickle.load(open(fl_fn,'rb'))
     print first_last2trip_ids[(7,49)]
     outfiles = []
@@ -907,7 +907,7 @@ def main():
     #midpoint = int(sys.argv[3])
     #full_fn = open('csvGPS.txt','r')
     full_fn = open('cab_trips.txt','r')
-    trip_id2line_num = pickle.load(open('trip_id2line_num.pickle','rb'))
+    trip_id2line_num = pickle.load(open('pickles/trip_id2line_num.pickle','rb'))
 
     """full SF coords
     min_lat = 37.72
@@ -936,7 +936,7 @@ def main():
     #print g.coords_to_node(coords[0],coords[1])
     #return
 
-    first_last_fn = 'first_last2trip_ids-%d-%d.pickle' % (rows,cols)
+    first_last_fn = 'pickles/first_last2trip_ids-%d-%d.pickle' % (rows,cols)
     file_exists = os.path.isfile(first_last_fn)
     if not file_exists:
         create_all(g,first_last_fn)

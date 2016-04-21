@@ -295,6 +295,11 @@ def prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
                 start_a = start_asgnmts[start_i]
                 end_a = end_asgnmts[end_i]
                 mid_a = mid_asgnmts[mid_i]
+                if start_a[1].count(mid_a[0]) != 0 or end_a[1].count(mid_a[0]) != 0:
+                    continue
+                if start_a[1].count(mid_a[1]) != 0 or end_a[1].count(mid_a[1]) != 0:
+                    continue
+                        
                 data = [-1 for i in range(num_edges)]
                 for one in mid_a:
                     data[one] = 1

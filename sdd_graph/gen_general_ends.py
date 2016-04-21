@@ -7,6 +7,7 @@ import sdd
 import test_grids_minato as minato
 
 def all_paths(dimension,dim):
+    print "here"
     from graphillion import GraphSet
     import graphillion.tutorial as tl
     start,goal = 1,(dimension[0]+1)*(dimension[1]+1)

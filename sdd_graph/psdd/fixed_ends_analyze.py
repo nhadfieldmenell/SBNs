@@ -253,7 +253,7 @@ def mid_point(rows,cols,node,edge2index):
 
     for i in range(len(valid_edges)):
         for j in range(i+1,len(valid_edges)):
-            assignments.append([valid_edges[i],valid_edges[j])
+            assignments.append([valid_edges[i],valid_edges[j]])
 
     return assignments
 

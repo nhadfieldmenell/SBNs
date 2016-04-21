@@ -392,13 +392,10 @@ def main():
     edge_tuple_filename = '../graphs/edge-to-tuple-%d-%d.pickle' % (rows,cols)
     edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
-    empty_data = [-1 for i in range(num_edges)]
-    empty_data = tuple(empty_data)
-    empty_evidence = DataSet.evidence(empty_data)
 
-    fn_prefix = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
-    vtree_filename = '%s.vtree' % fn_prefix
-    sdd_filename = '%s.sdd' % fn_prefix 
+    fn_prefix_fixed = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
+    vtree_filename_fixed = '%s.vtree' % fn_prefix_fixed
+    sdd_filename_fixed = '%s.sdd' % fn_prefix_fixed
 
     psi,scale = 2.0,None # learning hyper-parameters
     N,M = 2**10,2**10 # size of training/testing dataset
@@ -412,40 +409,41 @@ def main():
 
     print "== reading vtree/sdd"
 
-    vtree = Vtree.read(vtree_filename)
-    manager = SddManager(vtree)
-    sdd = SddNode.read(sdd_filename,manager)
-    pmanager = PSddManager(vtree)
-    copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
-    pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
+    vtree_fixed = Vtree.read(vtree_filename_fixed)
+    manager_fixed = SddManager(vtree_fixed)
+    sdd_fixed = SddNode.read(sdd_filename_fixed,manager_fixed)
+    pmanager_fixed = PSddManager(vtree_fixed)
+    copy_fixed = pmanager_fixed.copy_and_normalize_sdd(sdd_fixed,vtree_fixed)
+    pmanager_fixed.make_unique_true_sdds(copy_fixed,make_true=False) #AC: set or not set?
 
-    psdd_parameters = copy.theta_count()
+    psdd_parameters_fixed = copy_fixed.theta_count()
 
-    data_fn = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)
-    bad_fn = 'bad_paths/fixed_bad-%d-%d-%d-%d.txt' % (rows,cols,start,end)
-    training = filter_bad(copy,data_fn,bad_fn,rows,cols,edge2index)
+    data_fn_fixed = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)
+    bad_fn_fixed = 'bad_paths/fixed_bad-%d-%d-%d-%d.txt' % (rows,cols,start,end)
+    training_fixed = filter_bad(copy_fixed,data_fn_fixed,bad_fn_fixed,rows,cols,edge2index)
 
     start_time = time.time()
-    copy.learn(training,psi=psi,scale=scale,show_progress=True)
+    copy.learn(training_fixed,psi=psi,scale=scale,show_progress=True)
     print "== TRAINING =="
     print "    training time: %.3fs" % (time.time()-start_time)
-    ll = copy.log_likelihood_alt(training)
-    lprior = copy.log_prior(psi=psi,scale=scale)
-    print "   training: %d unique, %d instances" % (len(training),training.N)
-    print "   log likelihood: %.8f" % (ll/training.N)
-    print "   log prior: %.8f" % (lprior/training.N)
-    print "   log posterior: %.8f" % ((ll+lprior)/training.N)
-    print "   log likelihood unnormalized: %.8f" % ll
-    print "   log prior unnormalized: %.8f" % lprior
-    print "   log posterior unnormalized: %.8f" % (ll+lprior)
-    print "   log prior over parameters: %.8f" % (lprior/psdd_parameters)
+    ll_fixed = copy_fixed.log_likelihood_alt(training_fixed)
+    lprior_fixed = copy_fixed.log_prior(psi=psi,scale=scale)
+    print "   training: %d unique, %d instances" % (len(training_fixed),training_fixed.N)
+    print "   log likelihood: %.8f" % (ll_fixed/training_fixed.N)
+    print "   log prior: %.8f" % (lprior_fixed/training_fixed.N)
+    print "   log posterior: %.8f" % ((ll_fixed+lprior_fixed)/training_fixed.N)
+    print "   log likelihood unnormalized: %.8f" % ll_fixed
+    print "   log prior unnormalized: %.8f" % lprior_fixed
+    print "   log posterior unnormalized: %.8f" % (ll_fixed+lprior_fixed)
+    print "   log prior over parameters: %.8f" % (lprior_fixed/psdd_parameters_fixed)
 
-    print "  zero parameters: %d (should be zero)" % copy.zero_count()
-    copy.marginals()
+    print "  zero parameters: %d (should be zero)" % copy_fixed.zero_count()
+    copy_fixed.marginals()
 
 
 
-    visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy)
+    print "FIXED ENDPOINT PROBABILITIES"
+    visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy_fixed)
 
     return
     for i in range(1,37):

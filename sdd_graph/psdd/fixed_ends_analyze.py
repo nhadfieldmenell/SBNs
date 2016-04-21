@@ -232,6 +232,31 @@ def end_path(rows,cols,node,edge2index):
 
     return assignments
 
+def mid_point(rows,cols,node,edge2index):
+    """Find all the variable assignments representing a path passing through node
+    
+    These are all valid pairs of 2 edges connected to the node.
+
+    Return
+        A list of lists of length 2.
+        Each sublist is 2 edges taken.
+
+    DO A SANITY CHECK THAT SETTING EXTRA EDGES TO 0 DOES NOTHIG TO PROBABILITY
+    """
+    assignments = []
+    up,down,left,right = out_edges(rows,cols,node,edge2index)
+
+    valid_edges = []
+    for i in up,down,left,right:
+        if i != -1:
+            valid_edges.append(i)
+
+    for i in range(len(valid_edges)):
+        for j in range(i+1,len(valid_edges)):
+            assignments.append([valid_edges[i],valid_edges[j])
+
+    return assignments
+
 
 
 
@@ -249,7 +274,7 @@ def main():
     empty_data = tuple(empty_data)
     empty_evidence = DataSet.evidence(empty_data)
 
-    print end_path(rows,cols,start,edge2index)
+    print mid_point(rows,cols,start,edge2index)
     return
 
     fn_prefix = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)

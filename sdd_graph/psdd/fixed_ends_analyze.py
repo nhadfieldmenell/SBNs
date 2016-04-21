@@ -237,7 +237,7 @@ def main():
     empty_data = tuple(empty_data)
     empty_evidence = DataSet.evidence(empty_data)
 
-    print out_edges(rows,cols,11,edge2index)
+    print out_edges(rows,cols,start,edge2index)
 
     fn_prefix = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
     vtree_filename = '%s.vtree' % fn_prefix

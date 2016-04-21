@@ -296,14 +296,14 @@ def prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
                 end_a = end_asgnmts[end_i]
                 mid_a = mid_asgnmts[mid_i]
                 data = [-1 for i in range(num_edges)]
+                for one in mid_a:
+                    data[one] = 1
                 data[start_a[0]] = 1
                 data[end_a[0]] = 1
                 for zero in start_a[1]:
                     data[zero] = 0
                 for zero in end_a[1]:
                     data[zero] = 0
-                for one in mid_a:
-                    data[one] = 1
                 ones = []
                 zeros = []
                 for i in range(len(data)):

@@ -276,12 +276,56 @@ def mid_point(rows,cols,node,edge2index):
 
     return assignments
 
-def prob_start_end(rows,cols,start,end,num_edges,edge2index,copy):
+def prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
+    """Probability that a path starts at start and ends at end and passes through mid.
+    
+    This value is NOT normalized by the probability that a path starts at star and ends at end.
 
-    print "prob start end"
-    print rows
-    print cols
-    print start
+    Return that probability as a float.
+    """
+
+    start_asgnmts = end_point(rows,cols,start,edge2index)
+    end_asgnmts = end_point(rows,cols,end,edge2index)
+    mid_asgnmts = mid_point(rows,cols,mid,edge2index)
+
+    total_prob = 0.0
+    for start_i in range(len(start_asgnmts)):
+        for end_i in range(len(end_asgnmts)):
+            for mid_i in range(len(mid_asgnmts)):
+                start_a = start_asgnmts[start_i]
+                end_a = end_asgnmts[end_i]
+                mid_a = mid_asgnmts[mid_i]
+                data = [-1 for i in range(num_edges)]
+                data[start_a[0]] = 1
+                data[end_a[0]] = 1
+                for zero in start_a[1]:
+                    data[zero] = 0
+                for zero in end_a[1]:
+                    data[zero] = 0
+                for one in mid_a:
+                    data[one] = 1
+                data = tuple(data)
+                evidence = DataSet.evidence(data)
+                probability = copy.probability(evidence)
+                total_prob += probability
+                
+    return probability
+
+def normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
+    """Probability that a path starts at start, ends at end, and passes through mid, normalized.
+    Normalizing factor is probability that the path starts at start and ends at end.
+    Return normalized probability.
+    """
+    mid_prob = prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+    start_end_prob = prob_start_end(rows,cols,start,end,num_edges,edge2index,copy)
+    return mid_prob/start_end_prob
+
+def prob_start_end(rows,cols,start,end,num_edges,edge2index,copy):
+    """Probability that a path starts at start and ends at end.
+
+    Reutrn that probability as a float.
+    """
+
     start_asgnmts = end_point(rows,cols,start,edge2index)
     end_asgnmts = end_point(rows,cols,end,edge2index)
 
@@ -365,6 +409,16 @@ def main():
     print "  zero parameters: %d (should be zero)" % copy.zero_count()
     copy.marginals()
 
+
+    mid = 1
+    print normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+
+    mid = 18 
+    print normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+
+    mid = 19 
+    print normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+    return
     total_prob = 0.0
     s_neighbors = (start,start-1,start+cols,start+cols-1) 
     e_neighbors = (end,end-1,end+cols)#,end+cols-1) 

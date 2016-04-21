@@ -207,13 +207,13 @@ def out_edges(rows,cols,node,edge2index):
     return up,down,left,right
 
 
-def end_path(rows,cols,node,edge2index):
+def end_point(rows,cols,node,edge2index):
     """Find all the variables that should be set to represent a path ending at node.
 
     There are at most 4 sets of variable assignments to do this.
         Each one has 1 edge set to true and the other (1-3) edges set to false.
 
-    Return a liste
+    Return a list
         Elements of the top-level list are len 2 lists
             First element of second level list is the edge to be set to true
             Second element of second level is list of edges to be set to false
@@ -257,8 +257,29 @@ def mid_point(rows,cols,node,edge2index):
 
     return assignments
 
+def prob_start_end(rows,cols,start,end,num_edges,edge2index,copy):
 
+    start_asgnmts = end_point(rows,cols,start,edge2index)
+    end_asgnmts = end_point(rows,cols,end,edge2index)
 
+    total_prob = 0.0
+    for start_i in range(len(start_asgnmts)):
+        for end_i in range(len(end_asgnmts)):
+            start_a = start_asgnmts[start_i]
+            end_a = end_asgnmts[end_i]
+            data = [-1 for i in range(num_edges)]
+            data[start_a[0]] = 1
+            data[end_a[0]] = 1
+            for zero in start_a[1]:
+                data[zero] = 0
+            for zero in end_a[1]:
+                data[zero] = 0
+            data = tuple(data)
+            evidence = DataSet.evidence(data)
+            probability = copy.probability(evidence)
+            total_prob += probability
+
+    return total_prob
 
 def main():
     rows = int(sys.argv[1])
@@ -273,9 +294,6 @@ def main():
     empty_data = [-1 for i in range(num_edges)]
     empty_data = tuple(empty_data)
     empty_evidence = DataSet.evidence(empty_data)
-
-    print mid_point(rows,cols,start,edge2index)
-    return
 
     fn_prefix = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
     vtree_filename = '%s.vtree' % fn_prefix
@@ -323,6 +341,9 @@ def main():
 
     print "  zero parameters: %d (should be zero)" % copy.zero_count()
     copy.marginals()
+
+    print prob_start_end(rows,cols,start,end,num_edges,edge2index,copy)
+
     return
 
 

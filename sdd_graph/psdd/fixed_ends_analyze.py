@@ -207,6 +207,25 @@ def out_edges(rows,cols,node,edge2index):
     return up,down,left,right
 
 
+def neighbor_nodes(rows,cols,node):
+    """Find all the nodes that neighbor a node.
+
+    Return:
+        A list of all the node indexes that neighbor the given node.
+    """
+
+    neighbors = []
+    if node > cols:
+        neighbors.append(node-cols)
+    if node <= cols*(rows-1):
+        neighbors.append(node+cols)
+    if node % cols != 1:
+        neighbors.append(node-1)
+    if node % cols != 0:
+        neighbors.append(node+1)
+
+    return neighbors
+
 def end_point(rows,cols,node,edge2index):
     """Find all the variables that should be set to represent a path ending at node.
 
@@ -346,8 +365,14 @@ def main():
     print "  zero parameters: %d (should be zero)" % copy.zero_count()
     copy.marginals()
 
-    print prob_start_end(rows,cols,start,end,num_edges,edge2index,copy)
+    total_prob = 0.0
+    s_neighbors = neighbor_nodes(rows,cols,start)
+    e_neighbors = neighbor_nodes(rows,cols,end)
+    for s_n in s_neighbors:
+        for e_n in e_neighbors
+            total_prob += prob_start_end(rows,cols,s_n,e_n,num_edges,edge2index,copy)
 
+    print total_prob
     return
 
 

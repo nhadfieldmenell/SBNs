@@ -317,6 +317,7 @@ def prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
                 data = tuple(data)
                 evidence = DataSet.evidence(data)
                 probability = copy.probability(evidence)
+                print "prob: %f" % probability
                 total_prob += probability
                 
     return probability

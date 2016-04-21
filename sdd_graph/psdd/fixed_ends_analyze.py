@@ -429,12 +429,14 @@ def main():
 
 
     tot = 0.0 
-    mid = 3
+    mid = 17
     tot += normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
 
-    mid = 5 
+    mid = 24
     tot += normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
-    mid = 10 
+    mid = 22 
+    tot +=  normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+    mid = 29 
     tot +=  normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
 
     print tot

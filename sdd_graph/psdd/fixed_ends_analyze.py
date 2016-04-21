@@ -436,7 +436,7 @@ def main():
     return
     #tot = 0.0 
     mid = 17
-    tot += 
+    tot +=  normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
 
     mid = 24
     tot += normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)

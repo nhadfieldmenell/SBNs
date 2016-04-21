@@ -79,7 +79,7 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
     good_models = {}
     bad_printed = 0
     times_printed = 0
-    goods_printed = 0
+    good_printed = 0
 
     if not file_exists: 
         cur_time = time.time()

@@ -423,7 +423,7 @@ def main():
     training_fixed = filter_bad(copy_fixed,data_fn_fixed,bad_fn_fixed,rows,cols,edge2index)
 
     start_time = time.time()
-    copy.learn(training_fixed,psi=psi,scale=scale,show_progress=True)
+    copy_fixed.learn(training_fixed,psi=psi,scale=scale,show_progress=True)
     print "== TRAINING =="
     print "    training time: %.3fs" % (time.time()-start_time)
     ll_fixed = copy_fixed.log_likelihood_alt(training_fixed)

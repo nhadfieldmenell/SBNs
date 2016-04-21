@@ -366,8 +366,8 @@ def main():
     copy.marginals()
 
     total_prob = 0.0
-    s_neighbors = (start,start-1,start-cols,start-cols-1) 
-    e_neighbors = (end,end-1,end-cols,end-cols-1) 
+    s_neighbors = (start,start-1,start+cols,start+cols-1) 
+    e_neighbors = (end,end-1,end+cols,end+cols-1) 
     for s_n in s_neighbors:
         for e_n in e_neighbors:
             total_prob += prob_start_end(rows,cols,s_n,e_n,num_edges,edge2index,copy)

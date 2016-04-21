@@ -369,7 +369,7 @@ def main():
     s_neighbors = neighbor_nodes(rows,cols,start)
     e_neighbors = neighbor_nodes(rows,cols,end)
     for s_n in s_neighbors:
-        for e_n in e_neighbors
+        for e_n in e_neighbors:
             total_prob += prob_start_end(rows,cols,s_n,e_n,num_edges,edge2index,copy)
 
     print total_prob

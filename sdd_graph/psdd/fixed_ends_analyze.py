@@ -316,13 +316,13 @@ def prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
                         zeros.append(i)
                     if data[i] == 1:
                         ones.append(i)
-                print "start edge: %d, end edge: %d, mid edges: %d %d" % (start_a[0],end_a[0],mid_a[0],mid_a[1])
-                print "ones: %s" % str(ones)
-                print "zeros: %s" % str(zeros)
+                #print "start edge: %d, end edge: %d, mid edges: %d %d" % (start_a[0],end_a[0],mid_a[0],mid_a[1])
+                #print "ones: %s" % str(ones)
+                #print "zeros: %s" % str(zeros)
                 data = tuple(data)
                 evidence = DataSet.evidence(data)
                 probability = copy.probability(evidence)
-                print "prob: %f" % probability
+                #print "prob: %f" % probability
                 total_prob += probability
                 
     return total_prob 
@@ -428,9 +428,15 @@ def main():
     copy.marginals()
 
 
-    tot = 0.0 
+
+    for i in range(1,37):
+        probability_i = normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+        print "prob of passing through %d: %f" % (i,probability_i)
+
+    return
+    #tot = 0.0 
     mid = 17
-    tot += normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+    tot += 
 
     mid = 24
     tot += normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
@@ -439,7 +445,7 @@ def main():
     mid = 29 
     tot +=  normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
 
-    print tot
+    #print tot
 
     return
     total_prob = 0.0

@@ -366,6 +366,22 @@ def prob_start_end(rows,cols,start,end,num_edges,edge2index,copy):
 
     return total_prob
 
+def visualize_mid_probs(rows,cols,start,end,mid,num_edges,edge2index,copy):
+    probs = []
+    for i in range(rows):
+        for j in range(cols):
+            mid = i*cols + j + 1
+            if mid == start:
+                sys.stdout.write("start   ")
+                continue
+            if mid == end:
+                sys.stdout.write(" end    ")
+                continue
+            prob_mid = normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+            sys.stdout.write("%.3f   " % prob_mid)
+        sys.stdout.write("\n\n")
+
+
 def main():
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
@@ -429,6 +445,9 @@ def main():
 
 
 
+    visualize_mid_probs(rows,cols,start,end,mid,num_edges,edge2index,copy)
+
+    return
     for i in range(1,37):
         probability_i = normalized_prob_mid(rows,cols,start,end,i,num_edges,edge2index,copy)
         print "prob of passing through %d: %f" % (i,probability_i)

@@ -410,18 +410,16 @@ def main():
     copy.marginals()
 
 
-    mid = 1
+    
+    mid = 3
     print normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
 
-    mid = 18 
+    mid = 5 
+    print normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+    mid = 10 
     print normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
 
-    mid = 19 
-    print normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
-    mid = 16 
-    print normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
-    mid = 11 
-    print normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+
     return
     total_prob = 0.0
     s_neighbors = (start,start-1,start+cols,start+cols-1) 

@@ -220,7 +220,7 @@ def end_path(rows,cols,node,edge2index):
     """
     assignments = []
 
-    up,down,left,right = out_edges(rows,cols,start,edge2index)
+    up,down,left,right = out_edges(rows,cols,node,edge2index)
 
     for pos_edge in up,down,left,right:
         if pos_edge != -1:

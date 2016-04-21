@@ -259,6 +259,10 @@ def mid_point(rows,cols,node,edge2index):
 
 def prob_start_end(rows,cols,start,end,num_edges,edge2index,copy):
 
+    print "prob start end"
+    print rows
+    print cols
+    print start
     start_asgnmts = end_point(rows,cols,start,edge2index)
     end_asgnmts = end_point(rows,cols,end,edge2index)
 

@@ -123,8 +123,7 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
             bad_file.write("%d\n" % i)
         bad_file.close()
 
-        counts = [1 for j in range(len(full_ints))]
-        full_dataset = DataSet.to_dict(data,counts)
+        full_dataset = DataSet.to_dict(data)
 
         return full_dataset
 
@@ -149,9 +148,7 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
                     data.append(model)
 
         print "total bad: %d, unique bad: %d, total good: %d, unique good: %d" % (total_bad,unique_bad, total_good, unique_good)
-        counts = [1 for j in range(len(full_ints))]
-        print counts
-        full_dataset = DataSet.to_dict(data,counts)
+        full_dataset = DataSet.to_dict(data)
 
         print "num bad paths: %d" % len(bad_paths)
         return full_dataset

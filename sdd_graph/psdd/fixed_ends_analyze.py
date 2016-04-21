@@ -49,8 +49,6 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
     '../datasets/first_last-%d-%d-%d-%d-%d' % (rows,cols,start,end,run)
     """
 
-
-
     full_file = open(in_fn, "r")
     full_lines = full_file.readlines()
     full_file.close()

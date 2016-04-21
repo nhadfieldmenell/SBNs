@@ -193,7 +193,7 @@ def main():
 
     
 
-    fn_prefix = '../graphs/start_end-%d-%d-%d-%d' % (rows,cols,start,end)
+    fn_prefix = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
     vtree_filename = '%s.vtree' % fn_prefix
     sdd_filename = '%s.sdd' % fn_prefix 
 
@@ -218,8 +218,27 @@ def main():
 
     psdd_parameters = copy.theta_count()
 
-    filter_bad(copy,'../datasets/first_last-6-6-4-28-0.txt','bad_paths/taxi-6-6-4-28-0.txt',rows,cols,edge2index)
+    data_fn = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)
+    bad_fn = 'bad_paths/fixed_bad-%d-%d-%d-%d.txt' % (rows,cols,start,end)
+    dataset = filter_bad(copy,data_fn,bad_fn,rows,cols,edge2index)
 
+    start = time.time()
+    copy.learn(training,psi=psi,scale=scale,show_progress=True)
+    print "== TRAINING =="
+    print "    training time: %.3fs" % (time.time()-start)
+    ll = copy.log_likelihood_alt(training)
+    lprior = copy.log_prior(psi=psi,scale=scale)
+    print "   training: %d unique, %d instances" % (len(training),training.N)
+    print "   log likelihood: %.8f" % (ll/training.N)
+    print "   log prior: %.8f" % (lprior/training.N)
+    print "   log posterior: %.8f" % ((ll+lprior)/training.N)
+    print "   log likelihood unnormalized: %.8f" % ll
+    print "   log prior unnormalized: %.8f" % lprior
+    print "   log posterior unnormalized: %.8f" % (ll+lprior)
+    print "   log prior over parameters: %.8f" % (lprior/psdd_parameters)
+
+    print "  zero parameters: %d (should be zero)" % copy.zero_count()
+    copy.marginals()
     return
 
 

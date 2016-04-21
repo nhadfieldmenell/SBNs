@@ -729,7 +729,7 @@ def taxi_epochs(g,rows,cols,start,end,trip_id2line_num):
                 p = Path(trip_id,g,line_num=line_num)
 
                 out_string = str(p.edges)[1:-1]
-                outfiles[time_class].write("%s\n" % out_string)
+                gutfiles[time_class].write("%s\n" % out_string)
 
     for outfile in outfiles:
         outfile.close()

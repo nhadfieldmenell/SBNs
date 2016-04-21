@@ -148,8 +148,9 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
                     total_good += 1
                     data.append(model)
 
-        print "total bad: %d, total good: %d" % (len(bad_paths), total_good)
+        print "total bad: %d, unique bad: %d, total good: %d, unique good: %d" % (total_bad,unique_bad, total_good, unique_good)
         counts = [1 for j in range(len(full_ints))]
+        print counts
         full_dataset = DataSet.to_dict(data,counts)
 
         print "num bad paths: %d" % len(bad_paths)

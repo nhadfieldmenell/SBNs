@@ -182,6 +182,47 @@ def node_to_tuple(node_num,cols):
     col = (node_num-1) % cols
     return (row,col)
 
+def out_edges(rows,cols,node,edge2index):
+    """Find all the edes that pass out of a node.
+
+    Return:
+        up: edge index passing out of the top of the node (-1 if in top row)
+        down: edge index passing out of bottom (-1 if bottom row)
+        left: edge index passing out of left (-1 if left col)
+        right: edge index passing out of right (-1 if right col)
+    """
+    up = -1
+    down = -1
+    left = -1
+    right = -1
+    if node > cols:
+        up = edge2index[(node-cols,node)]
+    if node <= cols*(rows-1):
+        down = edge2index[(node,node+cols)]
+    if node % cols != 1:
+        left = edge2index[(node-1,node)]
+    if node % cols != 0:
+        right = edge2index[(node,node+1)]
+
+    return up,down,left,right
+
+
+def end_path(rows,cols,node,edge2index):
+    """Find all the variables that should be set to represent a path ending at node.
+
+    There are at most 4 sets of variable assignments to do this.
+        Each one has 1 edge set to true and the other (1-3) edges set to false.
+
+    Return a liste
+        Elements of the top-level list are len 2 lists
+            First element of second level list is the edge to be set to true
+            Second element of second level is list of edges to be set to false
+    """
+    assignments = []
+
+
+
+
 def main():
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
@@ -196,7 +237,7 @@ def main():
     empty_data = tuple(empty_data)
     empty_evidence = DataSet.evidence(empty_data)
 
-    
+    print out_edges(rows,cols,11,edge2index)
 
     fn_prefix = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
     vtree_filename = '%s.vtree' % fn_prefix
@@ -247,6 +288,7 @@ def main():
     return
 
 
+    """This stuff is for seeing the effects of time on paths"""
     psdds = []
     for class_num in range(6):
         pmanager = PSddManager(vtree)

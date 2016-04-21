@@ -220,6 +220,18 @@ def end_path(rows,cols,node,edge2index):
     """
     assignments = []
 
+    up,down,left,right = out_edges(rows,cols,start,edge2index)
+
+    for pos_edge in up,down,left,right:
+        if pos_edge != -1:
+            asn = [pos_edge,[]]
+            for neg_edge in up,down,left,right:
+                if neg_edge != pos_edge and neg_edge != -1:
+                    asn[1].append(neg_edge)
+            assignments.append(asn)
+
+    return assignments
+
 
 
 
@@ -237,7 +249,8 @@ def main():
     empty_data = tuple(empty_data)
     empty_evidence = DataSet.evidence(empty_data)
 
-    print out_edges(rows,cols,start,edge2index)
+    print end_path(rows,cols,start,edge2index)
+    return
 
     fn_prefix = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
     vtree_filename = '%s.vtree' % fn_prefix

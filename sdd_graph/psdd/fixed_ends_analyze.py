@@ -334,8 +334,8 @@ def normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
     """
     mid_prob = prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
     start_end_prob = prob_start_end(rows,cols,start,end,num_edges,edge2index,copy)
-    print "start end prob %d: %f" % (mid,start_end_prob)
-    print "mid prob %d: %f" % (mid,mid_prob)
+    #print "start end prob %d: %f" % (mid,start_end_prob)
+    #print "mid prob %d: %f" % (mid,mid_prob)
     return mid_prob/start_end_prob
 
 def prob_start_end(rows,cols,start,end,num_edges,edge2index,copy):

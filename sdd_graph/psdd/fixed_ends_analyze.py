@@ -366,7 +366,7 @@ def prob_start_end(rows,cols,start,end,num_edges,edge2index,copy):
 
     return total_prob
 
-def visualize_mid_probs(rows,cols,start,end,mid,num_edges,edge2index,copy):
+def visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy):
     probs = []
     for i in range(rows):
         for j in range(cols):
@@ -445,7 +445,7 @@ def main():
 
 
 
-    visualize_mid_probs(rows,cols,start,end,mid,num_edges,edge2index,copy)
+    visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy)
 
     return
     for i in range(1,37):

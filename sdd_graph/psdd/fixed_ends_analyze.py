@@ -328,10 +328,10 @@ def main():
     bad_fn = 'bad_paths/fixed_bad-%d-%d-%d-%d.txt' % (rows,cols,start,end)
     training = filter_bad(copy,data_fn,bad_fn,rows,cols,edge2index)
 
-    start = time.time()
+    start_time = time.time()
     copy.learn(training,psi=psi,scale=scale,show_progress=True)
     print "== TRAINING =="
-    print "    training time: %.3fs" % (time.time()-start)
+    print "    training time: %.3fs" % (time.time()-start_time)
     ll = copy.log_likelihood_alt(training)
     lprior = copy.log_prior(psi=psi,scale=scale)
     print "   training: %d unique, %d instances" % (len(training),training.N)

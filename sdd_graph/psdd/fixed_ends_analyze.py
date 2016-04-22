@@ -382,7 +382,7 @@ def visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy):
         sys.stdout.write("\n\n")
 
 def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn):
-    vtree_filename_fixed = '%s.vtree' % fn_prefix
+    vtree_filename = '%s.vtree' % fn_prefix
     sdd_filename = '%s.sdd' % fn_prefix
 
     psi,scale = 2.0,None # learning hyper-parameters
@@ -399,7 +399,7 @@ def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn):
 
     vtree = Vtree.read(vtree_filename)
     manager = SddManager(vtree)
-    sdd = SddNode.read(sdd_filename_fixed,manager)
+    sdd = SddNode.read(sdd_filename,manager)
     pmanager = PSddManager(vtree)
     copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
     pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?

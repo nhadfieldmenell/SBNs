@@ -381,6 +381,52 @@ def visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy):
             sys.stdout.write("%.3f   " % prob_mid)
         sys.stdout.write("\n\n")
 
+def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn):
+    vtree_filename_fixed = '%s.vtree' % fn_prefix
+    sdd_filename = '%s.sdd' % fn_prefix
+
+    psi,scale = 2.0,None # learning hyper-parameters
+    N,M = 2**10,2**10 # size of training/testing dataset
+    em_max_iters = 10 # maximum # of iterations for EM
+    em_threshold = 1e-4 # convergence threshold
+    seed = 1 # seed for simulating datasets
+
+    ########################################
+    # READ INPUT
+    ########################################
+
+    print "== reading vtree/sdd"
+
+    vtree = Vtree.read(vtree_filename)
+    manager = SddManager(vtree)
+    sdd = SddNode.read(sdd_filename_fixed,manager)
+    pmanager = PSddManager(vtree)
+    copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
+    pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
+
+    psdd_parameters = copy.theta_count()
+
+    training = filter_bad(copy,data_fn,bad_fn,rows,cols,edge2index)
+
+    start_time = time.time()
+    copy.learn(training,psi=psi,scale=scale,show_progress=True)
+    print "== TRAINING =="
+    print "    training time: %.3fs" % (time.time()-start_time)
+    ll = copy_fixed.log_likelihood_alt(training)
+    lprior = copy_fixed.log_prior(psi=psi,scale=scale)
+    print "   training: %d unique, %d instances" % (len(training),training.N)
+    print "   log likelihood: %.8f" % (ll/training.N)
+    print "   log prior: %.8f" % (lprior/training.N)
+    print "   log posterior: %.8f" % ((ll+lprior)/training.N)
+    print "   log likelihood unnormalized: %.8f" % ll
+    print "   log prior unnormalized: %.8f" % lprior
+    print "   log posterior unnormalized: %.8f" % (ll+lprior)
+    print "   log prior over parameters: %.8f" % (lprior/psdd_parameters)
+
+    print "  zero parameters: %d (should be zero)" % copy.zero_count()
+    copy.marginals()
+
+    visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy)
 
 def main():
     rows = int(sys.argv[1])
@@ -393,6 +439,15 @@ def main():
     edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
 
+    fn_prefix_fixed = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
+    data_fn_fixed = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)
+    bad_fn_fixed = 'bad_paths/fixed_bad-%d-%d-%d-%d.txt' % (rows,cols,start,end)
+
+    print "FIXED ENDPOINT PROBABILITIES"
+    perform_analysis(rows,cols,start,end,fn_prefix_fixed,data_fn_fixed,bad_fn_fixed)
+
+
+    return
     fn_prefix_fixed = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
     vtree_filename_fixed = '%s.vtree' % fn_prefix_fixed
     sdd_filename_fixed = '%s.sdd' % fn_prefix_fixed

@@ -381,7 +381,7 @@ def visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy):
             sys.stdout.write("%.3f   " % prob_mid)
         sys.stdout.write("\n\n")
 
-def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index):
+def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges):
     vtree_filename = '%s.vtree' % fn_prefix
     sdd_filename = '%s.sdd' % fn_prefix
 
@@ -444,7 +444,7 @@ def main():
     bad_fn_fixed = 'bad_paths/fixed_bad-%d-%d-%d-%d.txt' % (rows,cols,start,end)
 
     print "FIXED ENDPOINT PROBABILITIES"
-    perform_analysis(rows,cols,start,end,fn_prefix_fixed,data_fn_fixed,bad_fn_fixed,edge2index)
+    perform_analysis(rows,cols,start,end,fn_prefix_fixed,data_fn_fixed,bad_fn_fixed,edge2index,num_edges)
 
 
     return

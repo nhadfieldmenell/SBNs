@@ -412,8 +412,8 @@ def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index):
     copy.learn(training,psi=psi,scale=scale,show_progress=True)
     print "== TRAINING =="
     print "    training time: %.3fs" % (time.time()-start_time)
-    ll = copy_fixed.log_likelihood_alt(training)
-    lprior = copy_fixed.log_prior(psi=psi,scale=scale)
+    ll = copy.log_likelihood_alt(training)
+    lprior = copy.log_prior(psi=psi,scale=scale)
     print "   training: %d unique, %d instances" % (len(training),training.N)
     print "   log likelihood: %.8f" % (ll/training.N)
     print "   log prior: %.8f" % (lprior/training.N)

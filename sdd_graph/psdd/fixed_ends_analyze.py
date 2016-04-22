@@ -381,7 +381,7 @@ def visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy):
             sys.stdout.write("%.3f   " % prob_mid)
         sys.stdout.write("\n\n")
 
-def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges):
+def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges,trial_name):
     vtree_filename = '%s.vtree' % fn_prefix
     sdd_filename = '%s.sdd' % fn_prefix
 
@@ -426,6 +426,7 @@ def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num
     print "  zero parameters: %d (should be zero)" % copy.zero_count()
     copy.marginals()
 
+    print "%s PROBABILITIES" % trial_name
     visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy)
 
 def main():
@@ -443,8 +444,13 @@ def main():
     data_fn_fixed = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)
     bad_fn_fixed = 'bad_paths/fixed_bad-%d-%d-%d-%d.txt' % (rows,cols,start,end)
 
-    print "FIXED ENDPOINT PROBABILITIES"
-    perform_analysis(rows,cols,start,end,fn_prefix_fixed,data_fn_fixed,bad_fn_fixed,edge2index,num_edges)
+    fn_prefix_general = '../graphs/general_ends-%d-%d' % (rows,cols)
+    data_fn_general = '../datasets/general_ends-%d-%d.txt' % (rows,cols)
+    bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
+ 
+
+    perform_analysis(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges,"GENERAL ENDPOINT")
+    perform_analysis(rows,cols,start,end,fn_prefix_fixed,data_fn_fixed,bad_fn_fixed,edge2index,num_edges,"FIXED ENDPOINT")
 
 
     return

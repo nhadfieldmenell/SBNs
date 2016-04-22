@@ -734,6 +734,17 @@ def taxi_epochs_times(g,rows,cols,start,end,trip_id2line_num):
     for outfile in outfiles:
         outfile.close()
 
+def taxi_general_no_times(g,rows,cols,trip_id2line_num):
+    out_fn = 'datasets/general_ends-%d-%d.txt' % (rows,cols)
+    outfile = open(out_fn,'w')
+
+    for trip_id in trip_id2line_num.keys():
+        p = Path(trip_id,g,line_num=trip_id2line_num[trip_id])
+        out_string = str(p.edges)[1:-1]
+        outfile.write("%s\n" % out_string)
+
+    outfile.close()
+
 def taxi_epoch_no_times(g,rows,cols,start,end,trip_id2line_num):
     fl_fn = 'pickles/first_last2trip_ids-%d-%d.pickle' % (rows,cols)
     first_last2trip_ids = pickle.load(open(fl_fn,'rb'))
@@ -968,18 +979,12 @@ def main():
     print "graph has %d trips" % g.num_trips
     print "first last has %d trips" % total_endpoint_pairs
     print "there are %d unique first/last pairs" % len(g.first_last2trip_ids.keys())
-
-    fourBad = (109,553,416,194,558,629,179,216)
-    fiveBad = (702,203,20,570,491)
-    sixBad = (353,105,476,455,166+482,5+482,84+482)
-    sevenBad = (291,229,243,363,345)
-    tenBad = (133,256,10,278,203,166,221,177,191,115,297,281,78,89,180)
     """
 
-    #print_some(g,fiveBad)
 
     #single_epoch(g,rows,cols,midpoint)
-    taxi_epoch_no_times(g,rows,cols,start,end,trip_id2line_num)
+    #taxi_epoch_no_times(g,rows,cols,start,end,trip_id2line_num)
+    taxi_general_no_times(g,rows,cols,trip_id2line_num)
 
     
 if __name__ == '__main__':

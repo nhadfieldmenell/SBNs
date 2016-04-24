@@ -17,6 +17,12 @@ import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
 
+class analyzer(object):
+    def __init__(self,rows,cols,edge2index):
+        self.rows = rows
+        self.cols = cols
+        self.edge2index = edge2index
+
 def draw_grid(model,m,n,edge2index):
     for i in xrange(m):
         for j in xrange(n):
@@ -453,63 +459,10 @@ def main():
     perform_analysis(rows,cols,start,end,fn_prefix_fixed,data_fn_fixed,bad_fn_fixed,edge2index,num_edges,"FIXED ENDPOINT")
 
 
-    return
-    fn_prefix_fixed = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
-    vtree_filename_fixed = '%s.vtree' % fn_prefix_fixed
-    sdd_filename_fixed = '%s.sdd' % fn_prefix_fixed
-
-    psi,scale = 2.0,None # learning hyper-parameters
-    N,M = 2**10,2**10 # size of training/testing dataset
-    em_max_iters = 10 # maximum # of iterations for EM
-    em_threshold = 1e-4 # convergence threshold
-    seed = 1 # seed for simulating datasets
-
-    ########################################
-    # READ INPUT
-    ########################################
-
-    print "== reading vtree/sdd"
-
-    vtree_fixed = Vtree.read(vtree_filename_fixed)
-    manager_fixed = SddManager(vtree_fixed)
-    sdd_fixed = SddNode.read(sdd_filename_fixed,manager_fixed)
-    pmanager_fixed = PSddManager(vtree_fixed)
-    copy_fixed = pmanager_fixed.copy_and_normalize_sdd(sdd_fixed,vtree_fixed)
-    pmanager_fixed.make_unique_true_sdds(copy_fixed,make_true=False) #AC: set or not set?
-
-    psdd_parameters_fixed = copy_fixed.theta_count()
-
-    data_fn_fixed = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)
-    bad_fn_fixed = 'bad_paths/fixed_bad-%d-%d-%d-%d.txt' % (rows,cols,start,end)
-    training_fixed = filter_bad(copy_fixed,data_fn_fixed,bad_fn_fixed,rows,cols,edge2index)
-
-    start_time = time.time()
-    copy_fixed.learn(training_fixed,psi=psi,scale=scale,show_progress=True)
-    print "== TRAINING =="
-    print "    training time: %.3fs" % (time.time()-start_time)
-    ll_fixed = copy_fixed.log_likelihood_alt(training_fixed)
-    lprior_fixed = copy_fixed.log_prior(psi=psi,scale=scale)
-    print "   training: %d unique, %d instances" % (len(training_fixed),training_fixed.N)
-    print "   log likelihood: %.8f" % (ll_fixed/training_fixed.N)
-    print "   log prior: %.8f" % (lprior_fixed/training_fixed.N)
-    print "   log posterior: %.8f" % ((ll_fixed+lprior_fixed)/training_fixed.N)
-    print "   log likelihood unnormalized: %.8f" % ll_fixed
-    print "   log prior unnormalized: %.8f" % lprior_fixed
-    print "   log posterior unnormalized: %.8f" % (ll_fixed+lprior_fixed)
-    print "   log prior over parameters: %.8f" % (lprior_fixed/psdd_parameters_fixed)
-
-    print "  zero parameters: %d (should be zero)" % copy_fixed.zero_count()
-    copy_fixed.marginals()
 
 
 
-    print "FIXED ENDPOINT PROBABILITIES"
-    visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy_fixed)
 
-    return
-    for i in range(1,37):
-        probability_i = normalized_prob_mid(rows,cols,start,end,i,num_edges,edge2index,copy)
-        print "prob of passing through %d: %f" % (i,probability_i)
 
     return
     #tot = 0.0 

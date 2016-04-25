@@ -65,7 +65,7 @@ class PathManager(object):
                 best_prob = total_prob
                 best_i = s_i
 
-        print "most likely start edge: %d" start_asgnmts[best_i][0]
+        print "most likely start edge: %d" % start_asgnmts[best_i][0]
 
 
 

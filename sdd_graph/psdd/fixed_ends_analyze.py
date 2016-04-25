@@ -160,6 +160,8 @@ class PathManager(object):
         return assignments
 
     def start_set(self,start,end):
+        start_neighbors = self.neighbor_nodes(start)
+
 
         return 0
 
@@ -240,7 +242,7 @@ class PathManager(object):
             for end_i in range(len(end_asgnmts)):
                 start_a = start_asgnmts[start_i]
                 end_a = end_asgnmts[end_i]
-                data = [-1 for i in range(num_edges)]
+                data = [-1 for i in range(self.num_edges)]
                 data[start_a[0]] = 1
                 data[end_a[0]] = 1
                 for zero in start_a[1]:

@@ -32,23 +32,15 @@ class PathManager(object):
             for j in xrange(n):
                 sys.stdout.write('.')
                 if j < n-1:
-                    """
-                    edge = ((i,j),(i,j+1))
-                    index = g.edge_to_index[edge] + 1
-                    """
                     edge = (i*m+j+1,i*m+j+2)
                     index = self.edge2index[edge]
-                    sys.stdout.write('-' if model[index] else ' ')
+                    sys.stdout.write('-' if model[index] == 1 else ' ')
             sys.stdout.write('\n')
             if i < m-1:
                 for j in xrange(n):
-                    """
-                    edge = ((i,j),(i+1,j))
-                    index = g.edge_to_index[edge] + 1
-                    """
                     edge = (i*m+j+1,i*m+m+j+1)
                     index = self.edge2index[edge]
-                    sys.stdout.write('|' if model[index] else ' ')
+                    sys.stdout.write('|' if model[index] == 1 else ' ')
                     sys.stdout.write(' ')
             sys.stdout.write('\n')
 
@@ -86,6 +78,10 @@ class PathManager(object):
 
         return up,down,left,right
 
+
+    def draw_all_paths(self):
+        for path in self.paths:
+            self.draw_grid(path.model)
 
     def neighbor_nodes(self,node):
         """Find all the nodes that neighbor a node.
@@ -160,10 +156,27 @@ class PathManager(object):
         return assignments
 
     def start_set(self,start,end):
-        start_neighbors = self.neighbor_nodes(start)
+        start_asgnmts = self.end_point(start)
+        end_asgnmts = self.end_point(end)
 
-
-        return 0
+        for i in range(len(start_asgnmts)):
+            for j in range(len(end_asgnmts)):
+                bad_path = False
+                p = Path(self)
+                s_a = start_asgnmts[i]
+                e_a = end_asgnmts[j]
+                p.add_edge(s_a[0])
+                p.add_edge(e_a[1])
+                for neg_edge in s_a[1]:
+                    if p.negate_edge(neg_edge) == -1:
+                        bad_path = True
+                        break
+                for neg_edge in e_a[1]:
+                    if p.negate_edge(neg_edge) == -1:
+                        bad_path = True
+                        break
+                if bad_path == False:
+                    self.paths.append(p)
 
 
     def prob_start_end_mid(self,start,end,mid):
@@ -278,6 +291,22 @@ class Path(object):
         self.model = model
         if model == None:
             self.model = [-1 for i in self.num_edges]
+
+    def negate_edge(self,edge_num):
+        """Change the model to reflect negating an edge.
+
+        Set model[edge_num] to 0 if legal to do so (edge hasn't been set to 1 yet).
+
+        Returns:
+            If legal move: 1
+            If illegal move: -1
+        """
+        if self.model[edge_num] == 1:
+            return -1
+        else:
+            self.model[edge_num] = 0
+            return 1
+
 
     def add_edge(self,edge_num):
         """Change the model to reflect adding an edge.
@@ -488,10 +517,10 @@ def main():
     edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
 
-    #man = PathManager(rows,cols,edge2index)
-    #man.draw_grid(man.paths[0].model)
-
-    #return
+    man = PathManager(rows,cols,edge2index)
+    man.start_set(start,end)
+    man.draw_all_paths()
+    return
 
     fn_prefix_fixed = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
     data_fn_fixed = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)

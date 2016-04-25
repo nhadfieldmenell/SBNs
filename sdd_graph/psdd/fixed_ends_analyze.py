@@ -166,7 +166,7 @@ class PathManager(object):
                 s_a = start_asgnmts[i]
                 e_a = end_asgnmts[j]
                 p.add_edge(s_a[0])
-                p.add_edge(e_a[1])
+                p.add_edge(e_a[0])
                 for neg_edge in s_a[1]:
                     if p.negate_edge(neg_edge) == -1:
                         bad_path = True

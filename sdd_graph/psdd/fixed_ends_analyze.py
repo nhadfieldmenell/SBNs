@@ -59,7 +59,7 @@ class PathManager(object):
 
 
         
-class path(object):
+class Path(object):
     """An object to hold and manipulate variable instantiations for a psdd.
     """
     def __init__(self,manager,model=None):
@@ -485,6 +485,7 @@ def main():
     man.add_path((1,0,1,0,0,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0))
     man.draw_grid(man.paths[0])
 
+    return
 
     fn_prefix_fixed = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
     data_fn_fixed = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)

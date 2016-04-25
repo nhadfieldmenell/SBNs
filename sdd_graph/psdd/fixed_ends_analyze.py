@@ -17,7 +17,7 @@ import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
 class PathManager(object):
-    def __init__(self,rows,cols,edge2index,copy):
+    def __init__(self,rows,cols,edge2index,copy=None):
         self.rows = rows
         self.cols = cols
         self.num_edges = (rows-1) * cols + (cols-1) * rows

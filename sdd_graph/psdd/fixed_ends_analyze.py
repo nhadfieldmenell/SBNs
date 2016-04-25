@@ -160,6 +160,7 @@ class PathManager(object):
         return assignments
 
     def start_set(self,start,end):
+
         return 0
 
 
@@ -187,7 +188,7 @@ class PathManager(object):
                     if start_a[1].count(mid_a[1]) != 0 or end_a[1].count(mid_a[1]) != 0:
                         continue
                             
-                    data = [-1 for i in range(num_edges)]
+                    data = [-1 for i in range(self.num_edges)]
                     for one in mid_a:
                         data[one] = 1
                     data[start_a[0]] = 1

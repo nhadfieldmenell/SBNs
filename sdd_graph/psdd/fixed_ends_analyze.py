@@ -291,7 +291,7 @@ class Path(object):
         self.manager = manager
         self.model = model
         if model == None:
-            self.model = [-1 for i in self.manager.num_edges]
+            self.model = [-1 for i in range(self.manager.num_edges)]
 
     def negate_edge(self,edge_num):
         """Change the model to reflect negating an edge.

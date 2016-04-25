@@ -44,6 +44,33 @@ class PathManager(object):
                     sys.stdout.write(' ')
             sys.stdout.write('\n')
 
+    def most_likely_path(self,start,end):
+        """Find the most likely path to be taken between start and end"""
+        start_asgnmts = self.end_point(start)
+        end_asgnmts = self.end_point(end)
+
+        best_prob = 0.0
+        best_i = 0
+        for s_i in range(len(start_asgnmts)):
+            total_prob = 0.0
+            s_a = start_asgnmts[s_i]
+            for e_i in range(len(end_asgnmts)):
+                e_a = end_asgnmts[e_i]
+                p = Path(self)
+                p.add_and_neg_edges([e_a[0]],e_a[1])
+                p.add_and_neg_edges([s_a[0]],s_a[1])
+                path_prob = self.copy.probability(p.model_tuple())
+                total_prob += path_prob
+            if total_prob > best_prob:
+                best_prob = total_prob
+                best_i = s_i
+
+        print "most likely start edge: %d" start_asgnmts[best_i][0]
+
+
+
+                
+
     def tuple_to_node(self,point):
         """Given a node represented as a tuple return corresponding node index"""
         return self.cols*point[0] + point[1] + 1
@@ -293,6 +320,23 @@ class Path(object):
         self.model = model
         if model == None:
             self.model = [-1 for i in range(self.manager.num_edges)]
+
+    def model_tuple(self):
+        return tuple(self.model)
+
+    def add_and_neg_edges(self,to_add,to_neg):
+        """add all the edges in to_add and negate all the edges in to_neg.
+        If any operation is invalid, return -1.
+        Otherwise return 1.
+        """
+
+        for i in to_add:
+            if self.add_edge(i) == -1:
+                return -1
+        for j in to_neg:
+            if self.negate_edge(j) == -1:
+                return -1
+        return 1
 
     def negate_edge(self,edge_num):
         """Change the model to reflect negating an edge.

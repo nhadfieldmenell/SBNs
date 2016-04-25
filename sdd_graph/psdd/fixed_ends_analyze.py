@@ -424,11 +424,6 @@ def enumerate_mpe(copy,num_enumerate,evidence,num_edges,edge2index,rows,cols):
         draw_grid(model_array,rows,cols,edge2index)
         if count == num_enumerate: break
 
-
-
-
-
-
 def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges,trial_name):
     vtree_filename = '%s.vtree' % fn_prefix
     sdd_filename = '%s.sdd' % fn_prefix
@@ -474,8 +469,10 @@ def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num
     print "  zero parameters: %d (should be zero)" % copy.zero_count()
     copy.marginals()
 
+    path_man = PathManager(rows,cols,edge2index,copy)
+
     print "%s PROBABILITIES" % trial_name
-    visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy)
+    path_man.visualize_mid_probs(start,end)
 
 def main():
     rows = int(sys.argv[1])
@@ -488,10 +485,10 @@ def main():
     edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
 
-    man = PathManager(rows,cols,edge2index)
-    man.draw_grid(man.paths[0].model)
+    #man = PathManager(rows,cols,edge2index)
+    #man.draw_grid(man.paths[0].model)
 
-    return
+    #return
 
     fn_prefix_fixed = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
     data_fn_fixed = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)

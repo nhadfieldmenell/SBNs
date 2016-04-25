@@ -36,7 +36,7 @@ class PathManager(object):
                     index = g.edge_to_index[edge] + 1
                     """
                     edge = (i*m+j+1,i*m+j+2)
-                    index = edge2index[edge]
+                    index = self.edge2index[edge]
                     sys.stdout.write('-' if model[index] else ' ')
             sys.stdout.write('\n')
             if i < m-1:
@@ -46,7 +46,7 @@ class PathManager(object):
                     index = g.edge_to_index[edge] + 1
                     """
                     edge = (i*m+j+1,i*m+m+j+1)
-                    index = edge2index[edge]
+                    index = self.edge2index[edge]
                     sys.stdout.write('|' if model[index] else ' ')
                     sys.stdout.write(' ')
             sys.stdout.write('\n')

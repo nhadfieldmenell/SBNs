@@ -163,7 +163,7 @@ class PathManager(object):
         return 0
 
 
-    def prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
+    def prob_start_end_mid(self,start,end,mid):
         """Probability that a path starts at start and ends at end and passes through mid.
         
         This value is NOT normalized by the probability that a path starts at star and ends at end.
@@ -171,9 +171,9 @@ class PathManager(object):
         Return that probability as a float.
         """
 
-        start_asgnmts = end_point(rows,cols,start,edge2index)
-        end_asgnmts = end_point(rows,cols,end,edge2index)
-        mid_asgnmts = mid_point(rows,cols,mid,edge2index)
+        start_asgnmts = self.end_point(start)
+        end_asgnmts = self.end_point(end)
+        mid_asgnmts = self.mid_point(mid)
 
         total_prob = 0.0
         for start_i in range(len(start_asgnmts)):
@@ -208,31 +208,31 @@ class PathManager(object):
                     #print "zeros: %s" % str(zeros)
                     data = tuple(data)
                     evidence = DataSet.evidence(data)
-                    probability = copy.probability(evidence)
+                    probability = self.copy.probability(evidence)
                     #print "prob: %f" % probability
                     total_prob += probability
                     
         return total_prob 
 
-    def normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
+    def normalized_prob_mid(self,start,end,mid):
         """Probability that a path starts at start, ends at end, and passes through mid, normalized.
         Normalizing factor is probability that the path starts at start and ends at end.
         Return normalized probability.
         """
-        mid_prob = prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
-        start_end_prob = prob_start_end(rows,cols,start,end,num_edges,edge2index,copy)
+        mid_prob = self.prob_start_end_mid(start,end,mid)
+        start_end_prob = self.prob_start_end(start,end)
         #print "start end prob %d: %f" % (mid,start_end_prob)
         #print "mid prob %d: %f" % (mid,mid_prob)
         return mid_prob/start_end_prob
 
-    def prob_start_end(rows,cols,start,end,num_edges,edge2index,copy):
+    def prob_start_end(self,start,end):
         """Probability that a path starts at start and ends at end.
 
         Reutrn that probability as a float.
         """
 
-        start_asgnmts = end_point(rows,cols,start,edge2index)
-        end_asgnmts = end_point(rows,cols,end,edge2index)
+        start_asgnmts = self.end_point(start)
+        end_asgnmts = self.end_point(end)
 
         total_prob = 0.0
         for start_i in range(len(start_asgnmts)):
@@ -248,23 +248,23 @@ class PathManager(object):
                     data[zero] = 0
                 data = tuple(data)
                 evidence = DataSet.evidence(data)
-                probability = copy.probability(evidence)
+                probability = self.copy.probability(evidence)
                 total_prob += probability
 
         return total_prob
 
-    def visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy):
+    def visualize_mid_probs(self,start,end):
         probs = []
-        for i in range(rows):
-            for j in range(cols):
-                mid = i*cols + j + 1
+        for i in range(self.rows):
+            for j in range(self.cols):
+                mid = i*self.cols + j + 1
                 if mid == start:
                     sys.stdout.write("start   ")
                     continue
                 if mid == end:
                     sys.stdout.write(" end    ")
                     continue
-                prob_mid = normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+                prob_mid = slef.normalized_prob_mid(start,end,mid)
                 sys.stdout.write("%.3f   " % prob_mid)
             sys.stdout.write("\n\n")
         

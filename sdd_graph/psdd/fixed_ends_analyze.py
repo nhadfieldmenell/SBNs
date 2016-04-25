@@ -482,7 +482,7 @@ def main():
     num_edges = (rows-1)*cols + (cols-1)*rows
 
     man = PathManager(rows,cols,edge2index)
-    man.add_path((1,0,1,0,0,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0))
+    man.add_path([1,0,1,0,0,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0])
     man.draw_grid(man.paths[0])
 
     return

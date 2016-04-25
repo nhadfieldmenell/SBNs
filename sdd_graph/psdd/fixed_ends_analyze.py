@@ -17,12 +17,13 @@ import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
 class PathManager(object):
-    def __init__(self,rows,cols,edge2index):
+    def __init__(self,rows,cols,edge2index,copy):
         self.rows = rows
         self.cols = cols
         self.num_edges = (rows-1) * cols + (cols-1) * rows
         self.edge2index = edge2index
         self.paths = []
+        self.copy = copy
 
     def draw_grid(self,model):
         m = self.rows
@@ -51,13 +52,221 @@ class PathManager(object):
                     sys.stdout.write(' ')
             sys.stdout.write('\n')
 
+    def tuple_to_node(self,point):
+        """Given a node represented as a tuple return corresponding node index"""
+        return self.cols*point[0] + point[1] + 1
+
+    def node_to_tuple(self,node_num):
+        """Given a node index, return corresponding node tuple"""
+        row = (node_num-1) / self.cols
+        col = (node_num-1) % self.cols
+        return (row,col)
+
+    def out_edges(self,node):
+        """Find all the edes that pass out of a node.
+
+        Return:
+            up: edge index passing out of the top of the node (-1 if in top row)
+            down: edge index passing out of bottom (-1 if bottom row)
+            left: edge index passing out of left (-1 if left col)
+            right: edge index passing out of right (-1 if right col)
+        """
+        up = -1
+        down = -1
+        left = -1
+        right = -1
+        if node > self.cols:
+            up = self.edge2index[(node-self.cols,node)]
+        if node <= self.cols*(self.rows-1):
+            down = self.edge2index[(node,node+self.cols)]
+        if node % self.cols != 1:
+            left = self.edge2index[(node-1,node)]
+        if node % self.cols != 0:
+            right = self.edge2index[(node,node+1)]
+
+        return up,down,left,right
+
+
+    def neighbor_nodes(self,node):
+        """Find all the nodes that neighbor a node.
+
+        Return:
+            A list of all the node indexes that neighbor the given node.
+        """
+
+        neighbors = []
+        if node > self.cols:
+            neighbors.append(node-self.cols)
+        if node <= self.cols*(self.rows-1):
+            neighbors.append(node+self.cols)
+        if node % self.cols != 1:
+            neighbors.append(node-1)
+        if node % self.cols != 0:
+            neighbors.append(node+1)
+
+        return neighbors
+
     def add_path(self,model):
         self.paths.append(Path(self,model))
+
+    def end_point(self,node):
+        """Find all the variables that should be set to represent a path ending at node.
+
+        There are at most 4 sets of variable assignments to do this.
+            Each one has 1 edge set to true and the other (1-3) edges set to false.
+
+        Return a list
+            Elements of the top-level list are len 2 lists
+                First element of second level list is the edge to be set to true
+                Second element of second level is list of edges to be set to false
+        """
+        assignments = []
+
+        up,down,left,right = self.out_edges(node)
+
+        for pos_edge in up,down,left,right:
+            if pos_edge != -1:
+                asn = [pos_edge,[]]
+                for neg_edge in up,down,left,right:
+                    if neg_edge != pos_edge and neg_edge != -1:
+                        asn[1].append(neg_edge)
+                assignments.append(asn)
+
+        return assignments
+
+    def mid_point(self,node):
+        """Find all the variable assignments representing a path passing through node
+        
+        These are all valid pairs of 2 edges connected to the node.
+
+        Return
+            A list of lists of length 2.
+            Each sublist is 2 edges taken.
+
+        DO A SANITY CHECK THAT SETTING EXTRA EDGES TO 0 DOES NOTHIG TO PROBABILITY
+        """
+        assignments = []
+        up,down,left,right = self.out_edges(node)
+
+        valid_edges = []
+        for i in up,down,left,right:
+            if i != -1:
+                valid_edges.append(i)
+
+        for i in range(len(valid_edges)):
+            for j in range(i+1,len(valid_edges)):
+                assignments.append([valid_edges[i],valid_edges[j]])
+
+        return assignments
 
     def start_set(self,start,end):
         return 0
 
 
+    def prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
+        """Probability that a path starts at start and ends at end and passes through mid.
+        
+        This value is NOT normalized by the probability that a path starts at star and ends at end.
+
+        Return that probability as a float.
+        """
+
+        start_asgnmts = end_point(rows,cols,start,edge2index)
+        end_asgnmts = end_point(rows,cols,end,edge2index)
+        mid_asgnmts = mid_point(rows,cols,mid,edge2index)
+
+        total_prob = 0.0
+        for start_i in range(len(start_asgnmts)):
+            for end_i in range(len(end_asgnmts)):
+                for mid_i in range(len(mid_asgnmts)):
+                    start_a = start_asgnmts[start_i]
+                    end_a = end_asgnmts[end_i]
+                    mid_a = mid_asgnmts[mid_i]
+                    if start_a[1].count(mid_a[0]) != 0 or end_a[1].count(mid_a[0]) != 0:
+                        continue
+                    if start_a[1].count(mid_a[1]) != 0 or end_a[1].count(mid_a[1]) != 0:
+                        continue
+                            
+                    data = [-1 for i in range(num_edges)]
+                    for one in mid_a:
+                        data[one] = 1
+                    data[start_a[0]] = 1
+                    data[end_a[0]] = 1
+                    for zero in start_a[1]:
+                        data[zero] = 0
+                    for zero in end_a[1]:
+                        data[zero] = 0
+                    ones = []
+                    zeros = []
+                    for i in range(len(data)):
+                        if data[i] == 0:
+                            zeros.append(i)
+                        if data[i] == 1:
+                            ones.append(i)
+                    #print "start edge: %d, end edge: %d, mid edges: %d %d" % (start_a[0],end_a[0],mid_a[0],mid_a[1])
+                    #print "ones: %s" % str(ones)
+                    #print "zeros: %s" % str(zeros)
+                    data = tuple(data)
+                    evidence = DataSet.evidence(data)
+                    probability = copy.probability(evidence)
+                    #print "prob: %f" % probability
+                    total_prob += probability
+                    
+        return total_prob 
+
+    def normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
+        """Probability that a path starts at start, ends at end, and passes through mid, normalized.
+        Normalizing factor is probability that the path starts at start and ends at end.
+        Return normalized probability.
+        """
+        mid_prob = prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+        start_end_prob = prob_start_end(rows,cols,start,end,num_edges,edge2index,copy)
+        #print "start end prob %d: %f" % (mid,start_end_prob)
+        #print "mid prob %d: %f" % (mid,mid_prob)
+        return mid_prob/start_end_prob
+
+    def prob_start_end(rows,cols,start,end,num_edges,edge2index,copy):
+        """Probability that a path starts at start and ends at end.
+
+        Reutrn that probability as a float.
+        """
+
+        start_asgnmts = end_point(rows,cols,start,edge2index)
+        end_asgnmts = end_point(rows,cols,end,edge2index)
+
+        total_prob = 0.0
+        for start_i in range(len(start_asgnmts)):
+            for end_i in range(len(end_asgnmts)):
+                start_a = start_asgnmts[start_i]
+                end_a = end_asgnmts[end_i]
+                data = [-1 for i in range(num_edges)]
+                data[start_a[0]] = 1
+                data[end_a[0]] = 1
+                for zero in start_a[1]:
+                    data[zero] = 0
+                for zero in end_a[1]:
+                    data[zero] = 0
+                data = tuple(data)
+                evidence = DataSet.evidence(data)
+                probability = copy.probability(evidence)
+                total_prob += probability
+
+        return total_prob
+
+    def visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy):
+        probs = []
+        for i in range(rows):
+            for j in range(cols):
+                mid = i*cols + j + 1
+                if mid == start:
+                    sys.stdout.write("start   ")
+                    continue
+                if mid == end:
+                    sys.stdout.write(" end    ")
+                    continue
+                prob_mid = normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
+                sys.stdout.write("%.3f   " % prob_mid)
+            sys.stdout.write("\n\n")
         
 class Path(object):
     """An object to hold and manipulate variable instantiations for a psdd.
@@ -215,212 +424,10 @@ def enumerate_mpe(copy,num_enumerate,evidence,num_edges,edge2index,rows,cols):
         draw_grid(model_array,rows,cols,edge2index)
         if count == num_enumerate: break
 
-def tuple_to_node(point,cols):
-    return cols*point[0] + point[1] + 1
-
-def node_to_tuple(node_num,cols):
-    row = (node_num-1) / cols
-    col = (node_num-1) % cols
-    return (row,col)
-
-def out_edges(rows,cols,node,edge2index):
-    """Find all the edes that pass out of a node.
-
-    Return:
-        up: edge index passing out of the top of the node (-1 if in top row)
-        down: edge index passing out of bottom (-1 if bottom row)
-        left: edge index passing out of left (-1 if left col)
-        right: edge index passing out of right (-1 if right col)
-    """
-    up = -1
-    down = -1
-    left = -1
-    right = -1
-    if node > cols:
-        up = edge2index[(node-cols,node)]
-    if node <= cols*(rows-1):
-        down = edge2index[(node,node+cols)]
-    if node % cols != 1:
-        left = edge2index[(node-1,node)]
-    if node % cols != 0:
-        right = edge2index[(node,node+1)]
-
-    return up,down,left,right
 
 
-def neighbor_nodes(rows,cols,node):
-    """Find all the nodes that neighbor a node.
 
-    Return:
-        A list of all the node indexes that neighbor the given node.
-    """
 
-    neighbors = []
-    if node > cols:
-        neighbors.append(node-cols)
-    if node <= cols*(rows-1):
-        neighbors.append(node+cols)
-    if node % cols != 1:
-        neighbors.append(node-1)
-    if node % cols != 0:
-        neighbors.append(node+1)
-
-    return neighbors
-
-def end_point(rows,cols,node,edge2index):
-    """Find all the variables that should be set to represent a path ending at node.
-
-    There are at most 4 sets of variable assignments to do this.
-        Each one has 1 edge set to true and the other (1-3) edges set to false.
-
-    Return a list
-        Elements of the top-level list are len 2 lists
-            First element of second level list is the edge to be set to true
-            Second element of second level is list of edges to be set to false
-    """
-    assignments = []
-
-    up,down,left,right = out_edges(rows,cols,node,edge2index)
-
-    for pos_edge in up,down,left,right:
-        if pos_edge != -1:
-            asn = [pos_edge,[]]
-            for neg_edge in up,down,left,right:
-                if neg_edge != pos_edge and neg_edge != -1:
-                    asn[1].append(neg_edge)
-            assignments.append(asn)
-
-    return assignments
-
-def mid_point(rows,cols,node,edge2index):
-    """Find all the variable assignments representing a path passing through node
-    
-    These are all valid pairs of 2 edges connected to the node.
-
-    Return
-        A list of lists of length 2.
-        Each sublist is 2 edges taken.
-
-    DO A SANITY CHECK THAT SETTING EXTRA EDGES TO 0 DOES NOTHIG TO PROBABILITY
-    """
-    assignments = []
-    up,down,left,right = out_edges(rows,cols,node,edge2index)
-
-    valid_edges = []
-    for i in up,down,left,right:
-        if i != -1:
-            valid_edges.append(i)
-
-    for i in range(len(valid_edges)):
-        for j in range(i+1,len(valid_edges)):
-            assignments.append([valid_edges[i],valid_edges[j]])
-
-    return assignments
-
-def prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
-    """Probability that a path starts at start and ends at end and passes through mid.
-    
-    This value is NOT normalized by the probability that a path starts at star and ends at end.
-
-    Return that probability as a float.
-    """
-
-    start_asgnmts = end_point(rows,cols,start,edge2index)
-    end_asgnmts = end_point(rows,cols,end,edge2index)
-    mid_asgnmts = mid_point(rows,cols,mid,edge2index)
-
-    total_prob = 0.0
-    for start_i in range(len(start_asgnmts)):
-        for end_i in range(len(end_asgnmts)):
-            for mid_i in range(len(mid_asgnmts)):
-                start_a = start_asgnmts[start_i]
-                end_a = end_asgnmts[end_i]
-                mid_a = mid_asgnmts[mid_i]
-                if start_a[1].count(mid_a[0]) != 0 or end_a[1].count(mid_a[0]) != 0:
-                    continue
-                if start_a[1].count(mid_a[1]) != 0 or end_a[1].count(mid_a[1]) != 0:
-                    continue
-                        
-                data = [-1 for i in range(num_edges)]
-                for one in mid_a:
-                    data[one] = 1
-                data[start_a[0]] = 1
-                data[end_a[0]] = 1
-                for zero in start_a[1]:
-                    data[zero] = 0
-                for zero in end_a[1]:
-                    data[zero] = 0
-                ones = []
-                zeros = []
-                for i in range(len(data)):
-                    if data[i] == 0:
-                        zeros.append(i)
-                    if data[i] == 1:
-                        ones.append(i)
-                #print "start edge: %d, end edge: %d, mid edges: %d %d" % (start_a[0],end_a[0],mid_a[0],mid_a[1])
-                #print "ones: %s" % str(ones)
-                #print "zeros: %s" % str(zeros)
-                data = tuple(data)
-                evidence = DataSet.evidence(data)
-                probability = copy.probability(evidence)
-                #print "prob: %f" % probability
-                total_prob += probability
-                
-    return total_prob 
-
-def normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy):
-    """Probability that a path starts at start, ends at end, and passes through mid, normalized.
-    Normalizing factor is probability that the path starts at start and ends at end.
-    Return normalized probability.
-    """
-    mid_prob = prob_start_end_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
-    start_end_prob = prob_start_end(rows,cols,start,end,num_edges,edge2index,copy)
-    #print "start end prob %d: %f" % (mid,start_end_prob)
-    #print "mid prob %d: %f" % (mid,mid_prob)
-    return mid_prob/start_end_prob
-
-def prob_start_end(rows,cols,start,end,num_edges,edge2index,copy):
-    """Probability that a path starts at start and ends at end.
-
-    Reutrn that probability as a float.
-    """
-
-    start_asgnmts = end_point(rows,cols,start,edge2index)
-    end_asgnmts = end_point(rows,cols,end,edge2index)
-
-    total_prob = 0.0
-    for start_i in range(len(start_asgnmts)):
-        for end_i in range(len(end_asgnmts)):
-            start_a = start_asgnmts[start_i]
-            end_a = end_asgnmts[end_i]
-            data = [-1 for i in range(num_edges)]
-            data[start_a[0]] = 1
-            data[end_a[0]] = 1
-            for zero in start_a[1]:
-                data[zero] = 0
-            for zero in end_a[1]:
-                data[zero] = 0
-            data = tuple(data)
-            evidence = DataSet.evidence(data)
-            probability = copy.probability(evidence)
-            total_prob += probability
-
-    return total_prob
-
-def visualize_mid_probs(rows,cols,start,end,num_edges,edge2index,copy):
-    probs = []
-    for i in range(rows):
-        for j in range(cols):
-            mid = i*cols + j + 1
-            if mid == start:
-                sys.stdout.write("start   ")
-                continue
-            if mid == end:
-                sys.stdout.write(" end    ")
-                continue
-            prob_mid = normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
-            sys.stdout.write("%.3f   " % prob_mid)
-        sys.stdout.write("\n\n")
 
 def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges,trial_name):
     vtree_filename = '%s.vtree' % fn_prefix
@@ -482,7 +489,6 @@ def main():
     num_edges = (rows-1)*cols + (cols-1)*rows
 
     man = PathManager(rows,cols,edge2index)
-    man.add_path([1,0,1,0,0,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0])
     man.draw_grid(man.paths[0].model)
 
     return
@@ -504,20 +510,6 @@ def main():
 
 
 
-
-    return
-    #tot = 0.0 
-    mid = 17
-    tot +=  normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
-
-    mid = 24
-    tot += normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
-    mid = 22 
-    tot +=  normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
-    mid = 29 
-    tot +=  normalized_prob_mid(rows,cols,start,end,mid,num_edges,edge2index,copy)
-
-    #print tot
 
     return
     total_prob = 0.0

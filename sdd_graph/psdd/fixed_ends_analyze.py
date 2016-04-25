@@ -623,7 +623,7 @@ def main():
     data_fn_general = '../datasets/general_ends-%d-%d.txt' % (rows,cols)
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
-    copy = generate_copy(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges)
+    copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)
     man = PathManager(rows,cols,edge2index,copy)
     man.most_likely_path(start,end)
 

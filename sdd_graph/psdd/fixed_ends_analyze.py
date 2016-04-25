@@ -288,9 +288,10 @@ class Path(object):
     """An object to hold and manipulate variable instantiations for a psdd.
     """
     def __init__(self,manager,model=None):
+        self.manager = manager
         self.model = model
         if model == None:
-            self.model = [-1 for i in self.num_edges]
+            self.model = [-1 for i in self.manager.num_edges]
 
     def negate_edge(self,edge_num):
         """Change the model to reflect negating an edge.

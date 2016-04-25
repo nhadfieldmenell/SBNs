@@ -82,6 +82,7 @@ class PathManager(object):
     def draw_all_paths(self):
         for path in self.paths:
             self.draw_grid(path.model)
+            print ""
 
     def neighbor_nodes(self,node):
         """Find all the nodes that neighbor a node.

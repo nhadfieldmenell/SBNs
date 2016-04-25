@@ -502,6 +502,53 @@ def enumerate_mpe(copy,num_enumerate,evidence,num_edges,edge2index,rows,cols):
         draw_grid(model_array,rows,cols,edge2index)
         if count == num_enumerate: break
 
+
+def generate_copy(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges):
+    vtree_filename = '%s.vtree' % fn_prefix
+    sdd_filename = '%s.sdd' % fn_prefix
+
+    psi,scale = 2.0,None # learning hyper-parameters
+    N,M = 2**10,2**10 # size of training/testing dataset
+    em_max_iters = 10 # maximum # of iterations for EM
+    em_threshold = 1e-4 # convergence threshold
+    seed = 1 # seed for simulating datasets
+
+    ########################################
+    # READ INPUT
+    ########################################
+
+    print "== reading vtree/sdd"
+
+    vtree = Vtree.read(vtree_filename)
+    manager = SddManager(vtree)
+    sdd = SddNode.read(sdd_filename,manager)
+    pmanager = PSddManager(vtree)
+    copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
+    pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
+
+    psdd_parameters = copy.theta_count()
+
+    training = filter_bad(copy,data_fn,bad_fn,rows,cols,edge2index)
+
+    start_time = time.time()
+    copy.learn(training,psi=psi,scale=scale,show_progress=True)
+    print "== TRAINING =="
+    print "    training time: %.3fs" % (time.time()-start_time)
+    ll = copy.log_likelihood_alt(training)
+    lprior = copy.log_prior(psi=psi,scale=scale)
+    print "   training: %d unique, %d instances" % (len(training),training.N)
+    print "   log likelihood: %.8f" % (ll/training.N)
+    print "   log prior: %.8f" % (lprior/training.N)
+    print "   log posterior: %.8f" % ((ll+lprior)/training.N)
+    print "   log likelihood unnormalized: %.8f" % ll
+    print "   log prior unnormalized: %.8f" % lprior
+    print "   log posterior unnormalized: %.8f" % (ll+lprior)
+    print "   log prior over parameters: %.8f" % (lprior/psdd_parameters)
+
+    print "  zero parameters: %d (should be zero)" % copy.zero_count()
+    copy.marginals()
+    return copy
+
 def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges,trial_name):
     vtree_filename = '%s.vtree' % fn_prefix
     sdd_filename = '%s.sdd' % fn_prefix
@@ -563,10 +610,10 @@ def main():
     edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
 
-    man = PathManager(rows,cols,edge2index)
-    man.start_set(start,end)
-    man.draw_all_paths()
-    return
+    #man = PathManager(rows,cols,edge2index)
+    #man.start_set(start,end)
+    #man.draw_all_paths()
+    #return
 
     fn_prefix_fixed = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
     data_fn_fixed = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)
@@ -576,6 +623,14 @@ def main():
     data_fn_general = '../datasets/general_ends-%d-%d.txt' % (rows,cols)
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
+    copy = generate_copy(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges)
+    man = PathManager(rows,cols,edge2index,copy)
+    man.most_likely_path(start,end)
+
+    
+
+
+    return
 
     perform_analysis(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges,"GENERAL ENDPOINT")
     perform_analysis(rows,cols,start,end,fn_prefix_fixed,data_fn_fixed,bad_fn_fixed,edge2index,num_edges,"FIXED ENDPOINT")

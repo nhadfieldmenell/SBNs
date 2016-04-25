@@ -483,7 +483,7 @@ def main():
 
     man = PathManager(rows,cols,edge2index)
     man.add_path([1,0,1,0,0,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0])
-    man.draw_grid(man.paths[0])
+    man.draw_grid(man.paths[0].model)
 
     return
 

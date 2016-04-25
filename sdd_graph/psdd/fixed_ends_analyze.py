@@ -16,37 +16,72 @@ from pypsdd import *
 import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
-
-class analyzer(object):
+class PathManager(object):
     def __init__(self,rows,cols,edge2index):
         self.rows = rows
         self.cols = cols
+        self.num_edges = (rows-1) * cols + (cols-1) * rows
         self.edge2index = edge2index
+        self.paths = []
 
-def draw_grid(model,m,n,edge2index):
-    for i in xrange(m):
-        for j in xrange(n):
-            sys.stdout.write('.')
-            if j < n-1:
-                """
-                edge = ((i,j),(i,j+1))
-                index = g.edge_to_index[edge] + 1
-                """
-                edge = (i*m+j+1,i*m+j+2)
-                index = edge2index[edge]
-                sys.stdout.write('-' if model[index] else ' ')
-        sys.stdout.write('\n')
-        if i < m-1:
+    def draw_grid(self,model):
+        m = self.rows
+        n = self.cols
+        for i in xrange(m):
             for j in xrange(n):
-                """
-                edge = ((i,j),(i+1,j))
-                index = g.edge_to_index[edge] + 1
-                """
-                edge = (i*m+j+1,i*m+m+j+1)
-                index = edge2index[edge]
-                sys.stdout.write('|' if model[index] else ' ')
-                sys.stdout.write(' ')
-        sys.stdout.write('\n')
+                sys.stdout.write('.')
+                if j < n-1:
+                    """
+                    edge = ((i,j),(i,j+1))
+                    index = g.edge_to_index[edge] + 1
+                    """
+                    edge = (i*m+j+1,i*m+j+2)
+                    index = edge2index[edge]
+                    sys.stdout.write('-' if model[index] else ' ')
+            sys.stdout.write('\n')
+            if i < m-1:
+                for j in xrange(n):
+                    """
+                    edge = ((i,j),(i+1,j))
+                    index = g.edge_to_index[edge] + 1
+                    """
+                    edge = (i*m+j+1,i*m+m+j+1)
+                    index = edge2index[edge]
+                    sys.stdout.write('|' if model[index] else ' ')
+                    sys.stdout.write(' ')
+            sys.stdout.write('\n')
+
+    def add_path(self,model):
+        self.paths.append(Path(self,model))
+
+    def start_set(self,start,end):
+        return 0
+
+
+        
+class path(object):
+    """An object to hold and manipulate variable instantiations for a psdd.
+    """
+    def __init__(self,manager,model=None):
+        self.model = model
+        if model == None:
+            self.model = [-1 for i in self.num_edges]
+
+    def add_edge(self,edge_num):
+        """Change the model to reflect adding an edge.
+
+        Set model[edge_num] to 1 if legal to do so (edge hasn't been set to 0 yet).
+
+        Returns:
+            If legal move: 1
+            If illegal move: -1
+        """
+        if self.model[edge_num] == 0:
+            return -1
+        else:
+            self.model[edge_num] = 1
+            return 1
+
 
 def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
     """Create a dataset from the file that consists of only models that are consistent with the sdd
@@ -445,6 +480,11 @@ def main():
     edge_tuple_filename = '../graphs/edge-to-tuple-%d-%d.pickle' % (rows,cols)
     edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
+
+    man = PathManager(rows,cols,edge2index)
+    man.add_path((1,0,1,0,0,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0))
+    man.draw_grid(man.paths[0])
+
 
     fn_prefix_fixed = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
     data_fn_fixed = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)

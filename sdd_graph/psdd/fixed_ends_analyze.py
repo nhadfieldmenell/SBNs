@@ -264,7 +264,7 @@ class PathManager(object):
                 if mid == end:
                     sys.stdout.write(" end    ")
                     continue
-                prob_mid = slef.normalized_prob_mid(start,end,mid)
+                prob_mid = self.normalized_prob_mid(start,end,mid)
                 sys.stdout.write("%.3f   " % prob_mid)
             sys.stdout.write("\n\n")
         

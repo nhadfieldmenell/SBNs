@@ -81,7 +81,7 @@ class PathManager(object):
 
     def most_likely_path(self,start,end):
         """Find the most likely path to be taken between start and end"""
-        instan = [-1 for i in range(
+        instan = [-1 for i in range(self.num_edges)]
 
         pos_edge,neg_edges = self.most_likely_start(start,end)
 

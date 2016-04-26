@@ -45,13 +45,18 @@ class PathManager(object):
                     sys.stdout.write(' ')
             sys.stdout.write('\n')
 
-    def draw_edge_probs(self,model,edge_num2prob):
+    def draw_edge_probs(self,model,edge_num2prob,start,end):
         m = self.rows
         n = self.cols
         for i in xrange(m):
             sys.stdout.write("  ")
             for j in xrange(n):
-                sys.stdout.write('o')
+                if i*n + j + 1 == start:
+                    sys.stdout.write('s')
+                elif i*n + j + 1 == end:
+                    sys.stdout.write('e')
+                else:
+                    sys.stdout.write('o')
                 if j < n-1:
                     edge = (i*m+j+1,i*m+j+2)
                     index = self.edge2index[edge]

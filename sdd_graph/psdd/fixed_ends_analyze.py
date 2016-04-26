@@ -618,7 +618,7 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
                 if good_printed < 25:
                     good_printed += 1
                     print "Good model:"
-                    draw_grid(model,rows,cols,edge2index)
+                    #draw_grid(model,rows,cols,edge2index)
                 good_models[str(model)] = True
                 unique_good += 1
                 total_good += 1

@@ -155,7 +155,7 @@ class PathManager(object):
         possible_edges = []
         for neighbor in neighbors:
            if neighbor != prev_node:
-               possible_edges.append(self.edge2index(min(neighbor,node),max(neighbor,node)))
+               possible_edges.append(self.edge2index[(min(neighbor,node),max(neighbor,node))])
         
         partial_prob = self.partial_prob(cur_path,end)
         edge_num2prob = {}
@@ -183,6 +183,7 @@ class PathManager(object):
                 best_prob = total_prob
                 best_i = s_i
 
+        print ""
         self.draw_edge_probs(cur_path,edge_num2prob)
         return possible_edges[best_i]
 

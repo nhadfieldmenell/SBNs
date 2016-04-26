@@ -171,7 +171,6 @@ class PathManager(object):
             edge = possible_edges[s_i]
             for e_i in range(len(end_asgnmts)):
                 e_a = end_asgnmts[e_i]
-                print e_a
                 p = Path(self,cur_path[:])
                 if p.add_and_neg_edges([e_a[0]],e_a[1]) == -1:
                     continue
@@ -225,6 +224,7 @@ class PathManager(object):
             if path.add_edge(next_edge) == -1:
                 print "INVALID ADDING EDGE %d" % next_edge
 
+        self.draw_edge_probs(path.model[:],{},start,end)
 
         
 

@@ -65,11 +65,11 @@ class PathManager(object):
                     edge = (i*m+j+1,i*m+m+j+1)
                     index = self.edge2index[edge]
                     if model[index] == 1:
-                        sys.stdout.write('|     ')
+                        sys.stdout.write('|      ')
                     elif index in edge_num2prob.keys():
-                        sys.stdout.write('%s  ' % ('%.3f' % edge_num2prob[index])[1:])
+                        sys.stdout.write('%s   ' % ('%.3f' % edge_num2prob[index])[1:])
                     else:
-                        sys.stdout.write('      ')
+                        sys.stdout.write('       ')
             sys.stdout.write('\n')
 
     def most_likely_start(self,start,end):

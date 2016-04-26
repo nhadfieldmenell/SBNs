@@ -190,6 +190,7 @@ class PathManager(object):
 
 
         print ""
+        print ""
         self.draw_edge_probs(cur_path,edge_num2prob,start,end)
         return possible_edges[best_i]
 

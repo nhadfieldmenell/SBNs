@@ -152,6 +152,8 @@ class PathManager(object):
         neighbors = self.neighbor_nodes(node)
         end_asgnmts = self.end_point(end)
 
+        print cur_path
+
         possible_edges = []
         for neighbor in neighbors:
            if neighbor != prev_node:
@@ -182,6 +184,8 @@ class PathManager(object):
             if total_prob > best_prob:
                 best_prob = total_prob
                 best_i = s_i
+
+        print cur_path
 
         print ""
         self.draw_edge_probs(cur_path,edge_num2prob)

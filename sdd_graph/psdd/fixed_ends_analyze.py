@@ -128,7 +128,7 @@ class PathManager(object):
         total_prob = 0.0
         end_asgnmts = self.end_point(end)
         for end_asgnmt in end_asgnmts:
-            path = Path(self,partial)
+            path = Path(self,partial[:])
             path.add_and_neg_edges([end_asgnmt[0]],end_asgnmt[1])
             evidence = DataSet.evidence(path.model_tuple())
             path_prob = self.copy.probability(evidence)
@@ -159,7 +159,7 @@ class PathManager(object):
            if neighbor != prev_node:
                possible_edges.append(self.edge2index[(min(neighbor,node),max(neighbor,node))])
         
-        partial_prob = self.partial_prob(cur_path,end)
+        partial_prob = self.partial_prob(cur_path[:],end)
         edge_num2prob = {}
         best_prob = 0.0
         best_i = 0

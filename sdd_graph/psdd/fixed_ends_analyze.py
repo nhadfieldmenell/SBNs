@@ -44,6 +44,34 @@ class PathManager(object):
                     sys.stdout.write(' ')
             sys.stdout.write('\n')
 
+    def draw_edge_probs(self,model,edge_num2prob):
+        m = self.rows
+        n = self.cols
+        for i in xrange(m):
+            for j in xrange(n):
+                sys.stdout.write('.')
+                if j < n-1:
+                    edge = (i*m+j+1,i*m+j+2)
+                    index = self.edge2index[edge]
+                    if model[index] == 1:
+                        sys.stdout.write(' ---- ')
+                    elif index in edge_num2prob.keys():
+                        sys.stdout.write(' %s ' % ('%.3f' % edge_num2prob[index])[1:])
+                    else:
+                        sys.stdout.write('      ')
+            sys.stdout.write('\n')
+            if i < m-1:
+                for j in xrange(n):
+                    edge = (i*m+j+1,i*m+m+j+1)
+                    index = self.edge2index[edge]
+                    if model[index] == 1:
+                        sys.stdout.write('|     ')
+                    elif index in edge_num2prob.keys():
+                        sys.stdout.write('%s  ' % ('%.3f' % edge_num2prob[index])[1:])
+                    else:
+                        sys.stdout.write('      ')
+            sys.stdout.write('\n')
+
     def most_likely_start(self,start,end):
         """Find the most likely start edge given the start node and end node.
 
@@ -54,13 +82,17 @@ class PathManager(object):
         start_asgnmts = self.end_point(start)
         end_asgnmts = self.end_point(end)
 
+        the_path = Path(self)
+
         start_end_prob = self.prob_start_end(start,end)
 
+        edge_num2prob = {}
         best_prob = 0.0
         best_i = 0
         for s_i in range(len(start_asgnmts)):
             total_prob = 0.0
             s_a = start_asgnmts[s_i]
+            s_edge = s_a[0]
             for e_i in range(len(end_asgnmts)):
                 e_a = end_asgnmts[e_i]
                 p = Path(self)
@@ -69,15 +101,18 @@ class PathManager(object):
                 #print p.model_tuple()
                 evidence = DataSet.evidence(p.model_tuple())
                 path_prob = self.copy.probability(evidence)
-                p.ones_and_zeros()
-                print "path probability normalized: %.6f" % (path_prob/start_end_prob)
+                #p.ones_and_zeros()
+                #print "path probability normalized: %.6f" % (path_prob/start_end_prob)
                 total_prob += path_prob
-            print "total prob: %.6f" % total_prob
-            print "Probability of taking edge %d: %.6f" % (start_asgnmts[s_i][0],total_prob/start_end_prob)
+            normalized_prob = total_prob/start_end_prob
+            edge_num2prob[s_edge] normalized_prob
+            #print "total prob: %.6f" % total_prob
+            #print "Probability of taking edge %d: %.6f" % (start_asgnmts[s_i][0],total_prob/start_end_prob)
             if total_prob > best_prob:
                 best_prob = total_prob
                 best_i = s_i
 
+        self.draw_edge_probs(the_path.model,edge_num2prob)
         print "most likely start edge: %d" % start_asgnmts[best_i][0]
         return start_asgnmts[best_i]
 

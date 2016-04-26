@@ -169,6 +169,7 @@ class PathManager(object):
         for s_i in range(len(possible_edges)):
             total_prob = 0.0
             edge = possible_edges[s_i]
+            print "Adding edge %d" % edge
             for e_i in range(len(end_asgnmts)):
                 e_a = end_asgnmts[e_i]
                 print e_a
@@ -180,6 +181,7 @@ class PathManager(object):
                 
                 evidence = DataSet.evidence(p.model_tuple())
                 path_prob = self.copy.probability(evidence)
+                print "path prob: %f" % path_prob
                 total_prob += path_prob
             normalized_prob = total_prob/partial_prob
             edge_num2prob[edge] = normalized_prob

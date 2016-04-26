@@ -802,6 +802,7 @@ def main():
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
     man.most_likely_path(start,end)
+    man.visualize_mid_probs(start,end)
 
     
 

@@ -163,6 +163,7 @@ class PathManager(object):
                possible_edges.append(self.edge2index[(min(neighbor,node),max(neighbor,node))])
         
         partial_prob = self.partial_prob(cur_path[:],end)
+        print "partial_prob %f" % partial_prob
         edge_num2prob = {}
         best_prob = 0.0
         best_i = 0
@@ -176,13 +177,16 @@ class PathManager(object):
                 p = Path(self,cur_path[:])
                 if p.add_and_neg_edges([e_a[0]],e_a[1]) == -1:
                     print "INVALID"
+                    continue
                 if p.add_edge(edge) == -1:
                     print "INVALID"
+                    continue
                 
                 evidence = DataSet.evidence(p.model_tuple())
                 path_prob = self.copy.probability(evidence)
                 print "path prob: %f" % path_prob
                 total_prob += path_prob
+                print "total prob: %f" % total_prob
             normalized_prob = total_prob/partial_prob
             edge_num2prob[edge] = normalized_prob
             #print "total prob: %.6f" % total_prob

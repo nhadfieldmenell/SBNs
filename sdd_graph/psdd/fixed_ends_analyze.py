@@ -67,6 +67,7 @@ class PathManager(object):
                 p.add_and_neg_edges([e_a[0]],e_a[1])
                 p.add_and_neg_edges([s_a[0]],s_a[1])
                 path_prob = self.copy.probability(p.model_tuple())
+                print p.model_tuple()
                 total_prob += path_prob
             print "total prob: %.6f" % total_prob
             print "Probability of taking edge %d: %.6f" % (start_asgnmts[s_i][0],total_prob/start_end_prob)

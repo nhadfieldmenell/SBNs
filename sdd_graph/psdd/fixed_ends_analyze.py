@@ -66,8 +66,9 @@ class PathManager(object):
                 p = Path(self)
                 p.add_and_neg_edges([e_a[0]],e_a[1])
                 p.add_and_neg_edges([s_a[0]],s_a[1])
-                print p.model_tuple()
-                path_prob = self.copy.probability(p.model_tuple())
+                #print p.model_tuple()
+                evidence = DataSet.evidence(p.model_tuple())
+                path_prob = self.copy.probability(evidence)
                 p.ones_and_zeros()
                 print "path probability normalized: %.6f" % (path_prob/start_end_prob)
                 total_prob += path_prob

@@ -221,6 +221,8 @@ class PathManager(object):
                 cur_node = incident_nodes[1]
             else:
                 cur_node = incident_nodes[0]
+            if path.add_edge(next_edge) == -1:
+                print "INVALID ADDING EDGE %d" % next_edge
 
 
         

@@ -44,10 +44,17 @@ class PathManager(object):
                     sys.stdout.write(' ')
             sys.stdout.write('\n')
 
-    def most_likely_path(self,start,end):
-        """Find the most likely path to be taken between start and end"""
+    def most_likely_start(self,start,end):
+        """Find the most likely start edge given the start node and end node.
+
+        Return:
+            edge to be set to true
+            list of edges to be set to false
+        """
         start_asgnmts = self.end_point(start)
         end_asgnmts = self.end_point(end)
+
+        start_end_prob = self.prob_start_end(start,end)
 
         best_prob = 0.0
         best_i = 0
@@ -61,11 +68,20 @@ class PathManager(object):
                 p.add_and_neg_edges([s_a[0]],s_a[1])
                 path_prob = self.copy.probability(p.model_tuple())
                 total_prob += path_prob
+            print "Probability of taking edge %d: %.6f" % total_prob,start_end_prob
             if total_prob > best_prob:
                 best_prob = total_prob
                 best_i = s_i
 
         print "most likely start edge: %d" % start_asgnmts[best_i][0]
+        return start_asgnmts[best_i]
+
+
+
+
+    def most_likely_path(self,start,end):
+        """Find the most likely path to be taken between start and end"""
+        pos_edge,neg_edges = self.most_likely_start(start,end)
 
 
 

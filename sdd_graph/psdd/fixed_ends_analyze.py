@@ -56,7 +56,7 @@ class PathManager(object):
                 elif i*n + j + 1 == end:
                     sys.stdout.write('e')
                 else:
-                    sys.stdout.write('o')
+                    sys.stdout.write('.')
                 if j < n-1:
                     edge = (i*m+j+1,i*m+j+2)
                     index = self.edge2index[edge]

@@ -776,6 +776,92 @@ def perform_analysis(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num
     print "%s PROBABILITIES" % trial_name
     path_man.visualize_mid_probs(start,end)
 
+def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
+    """Find the kl divergence for psdds trained on data taken from different time classes.
+
+    Only run after determining the bad instances for the grid size.
+    trip_id2class is 1-indexed while data lines and bad paths are 0-indexed
+    """
+    trip_id2class = pickle.load(open('../pickles/trip_id2class.pickle','rb'))
+    with open(bad_fn,'r') as infile:
+        bads = map(int,infile.readlines())
+    bad_i = 0
+
+    full_file = open(data_fn, "r")
+    full_lines = full_file.readlines()
+    full_file.close()
+
+    full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
+    full_tuples = map(tuple,full_ints)
+
+    class_sets = []
+    for i in range(6):
+        class_sets.append([])
+
+    for i in range(len(full_tuples)):
+        if i == bads[bad_i]:
+            bad_i += 1
+            continue
+        class_sets[trip_id2class[i+1]].append(full_tuples[i])
+
+    class_sets = map(lambda x: DataSet.to_dict(x),class_sets)
+    
+    vtree_filename = '%s.vtree' % fn_prefix
+    sdd_filename = '%s.sdd' % fn_prefix
+
+    psi,scale = 2.0,None # learning hyper-parameters
+    N,M = 2**10,2**10 # size of training/testing dataset
+    em_max_iters = 10 # maximum # of iterations for EM
+    em_threshold = 1e-4 # convergence threshold
+    seed = 1 # seed for simulating datasets
+
+    ########################################
+    # READ INPUT
+    ########################################
+
+    print "== reading vtree/sdd"
+
+    vtree = Vtree.read(vtree_filename)
+    manager = SddManager(vtree)
+    sdd = SddNode.read(sdd_filename,manager)
+
+    psdds = []
+    for class_num in range(6):
+        pmanager = PSddManager(vtree)
+        copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
+        pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
+        psdd_parameters = copy.theta_count()
+
+        training = class_sets[class_num]
+
+        start = time.time()
+        copy.learn(training,psi=psi,scale=scale,show_progress=True)
+        print "== TRAINING =="
+        print "    training time: %.3fs" % (time.time()-start)
+        ll = copy.log_likelihood_alt(training)
+        lprior = copy.log_prior(psi=psi,scale=scale)
+        print "   training: %d unique, %d instances" % (len(training),training.N)
+        print "   log likelihood: %.8f" % (ll/training.N)
+        print "   log prior: %.8f" % (lprior/training.N)
+        print "   log posterior: %.8f" % ((ll+lprior)/training.N)
+        print "   log likelihood unnormalized: %.8f" % ll
+        print "   log prior unnormalized: %.8f" % lprior
+        print "   log posterior unnormalized: %.8f" % (ll+lprior)
+        print "   log prior over parameters: %.8f" % (lprior/psdd_parameters)
+
+        print "  zero parameters: %d (should be zero)" % copy.zero_count()
+        copy.marginals()
+
+        psdds.append(copy)
+
+    for i in range(6):
+        for j in range(i+1,6):
+            kl_divergence = psdd.kl(psdds[i],psdds[j])
+            print "kl (%d,%d): %d" % (i,j,kl_divergence)
+    
+
+
+
 def main():
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
@@ -800,6 +886,10 @@ def main():
     data_fn_general = '../datasets/general_ends-%d-%d.txt' % (rows,cols)
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
+    find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
+    return
+
+
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
     man.most_likely_path(start,end)
@@ -831,41 +921,6 @@ def main():
     return
 
 
-    """This stuff is for seeing the effects of time on paths"""
-    psdds = []
-    for class_num in range(6):
-        pmanager = PSddManager(vtree)
-        copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
-        pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
-        psdd_parameters = copy.theta_count()
-
-        fn = '../datasets/start_end-%d-%d-%d-%d-%d.txt' % (rows,cols,start,end,class_num)
-        training = DataSet.read(fn)
-
-        start = time.time()
-        copy.learn(training,psi=psi,scale=scale,show_progress=True)
-        print "== TRAINING =="
-        print "    training time: %.3fs" % (time.time()-start)
-        ll = copy.log_likelihood_alt(training)
-        lprior = copy.log_prior(psi=psi,scale=scale)
-        print "   training: %d unique, %d instances" % (len(training),training.N)
-        print "   log likelihood: %.8f" % (ll/training.N)
-        print "   log prior: %.8f" % (lprior/training.N)
-        print "   log posterior: %.8f" % ((ll+lprior)/training.N)
-        print "   log likelihood unnormalized: %.8f" % ll
-        print "   log prior unnormalized: %.8f" % lprior
-        print "   log posterior unnormalized: %.8f" % (ll+lprior)
-        print "   log prior over parameters: %.8f" % (lprior/psdd_parameters)
-
-        print "  zero parameters: %d (should be zero)" % copy.zero_count()
-        copy.marginals()
-
-        psdds.append(copy)
-
-    for i in range(6):
-        for j in range(i+1,6):
-            kl_divergence = psdd.kl(psdds[i],psdds[j])
-            print "kl (%d,%d): %d" % (i,j,kl_divergence)
 
 if __name__ == '__main__':
     main()

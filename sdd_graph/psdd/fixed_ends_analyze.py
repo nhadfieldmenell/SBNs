@@ -51,7 +51,7 @@ class PathManager(object):
         for i in xrange(m):
             sys.stdout.write("  ")
             for j in xrange(n):
-                sys.stdout.write('.')
+                sys.stdout.write('o')
                 if j < n-1:
                     edge = (i*m+j+1,i*m+j+2)
                     index = self.edge2index[edge]

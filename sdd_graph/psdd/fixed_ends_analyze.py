@@ -67,7 +67,7 @@ class PathManager(object):
                 p.add_and_neg_edges([e_a[0]],e_a[1])
                 p.add_and_neg_edges([s_a[0]],s_a[1])
                 path_prob = self.copy.probability(p.model_tuple())
-                print p.model_tuple()
+                p.ones_and_zeros()
                 total_prob += path_prob
             print "total prob: %.6f" % total_prob
             print "Probability of taking edge %d: %.6f" % (start_asgnmts[s_i][0],total_prob/start_end_prob)
@@ -351,6 +351,18 @@ class Path(object):
 
     def model_tuple(self):
         return tuple(self.model)
+
+    def ones_and_zeros(self):
+        ones = []
+        zeros = []
+        for i in range(self.manager.num_edges):
+            if self.model[i] == 0:
+                zeros.append(i)
+            elif self.model[i] == 1:
+                ones.append(i)
+
+        print "zeros: %s" % str(zeros)
+        print "ones: %s" % str(ones)
 
     def add_and_neg_edges(self,to_add,to_neg):
         """add all the edges in to_add and negate all the edges in to_neg.

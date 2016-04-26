@@ -68,7 +68,8 @@ class PathManager(object):
                 p.add_and_neg_edges([s_a[0]],s_a[1])
                 path_prob = self.copy.probability(p.model_tuple())
                 total_prob += path_prob
-            print "Probability of taking edge %d: %.6f" % (s_i,total_prob/start_end_prob)
+            print "total prob: %.6f" % total_prob
+            print "Probability of taking edge %d: %.6f" % (start_asgnmts[s_i][0],total_prob/start_end_prob)
             if total_prob > best_prob:
                 best_prob = total_prob
                 best_i = s_i
@@ -81,9 +82,15 @@ class PathManager(object):
 
     def most_likely_path(self,start,end):
         """Find the most likely path to be taken between start and end"""
-        instan = [-1 for i in range(self.num_edges)]
+        path = Path(self)
 
         pos_edge,neg_edges = self.most_likely_start(start,end)
+
+        if path.add_and_neg_edges([pos_edge],neg_edges) == -1:
+            print "INVALID PATH"
+            return -1
+
+        
 
         end_asgnmts = self.end_point(end)
 

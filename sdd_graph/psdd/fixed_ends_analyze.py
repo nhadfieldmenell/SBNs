@@ -176,7 +176,7 @@ class PathManager(object):
                 path_prob = self.copy.probability(evidence)
                 total_prob += path_prob
             normalized_prob = total_prob/partial_prob
-            edge_num2prob[s_edge] = normalized_prob
+            edge_num2prob[edge] = normalized_prob
             #print "total prob: %.6f" % total_prob
             #print "Probability of taking edge %d: %.6f" % (start_asgnmts[s_i][0],total_prob/start_end_prob)
             if total_prob > best_prob:

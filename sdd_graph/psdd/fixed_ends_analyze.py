@@ -149,11 +149,11 @@ class PathManager(object):
 
         Return the edge index to be set to positive.
         """
-       neighbors = self.neighbor_nodes(node)
-       end_asgnmts = self.end_point(end)
+        neighbors = self.neighbor_nodes(node)
+        end_asgnmts = self.end_point(end)
 
-       possible_edges = []
-       for neighbor in neighbors:
+        possible_edges = []
+        for neighbor in neighbors:
            if neighbor != prev_node:
                possible_edges.append(edge2index(min(neighbor,node),max(neighbor,node)))
         

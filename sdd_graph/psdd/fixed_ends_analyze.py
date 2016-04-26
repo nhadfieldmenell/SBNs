@@ -171,6 +171,7 @@ class PathManager(object):
             edge = possible_edges[s_i]
             for e_i in range(len(end_asgnmts)):
                 e_a = end_asgnmts[e_i]
+                print e_a
                 p = Path(self,cur_path[:])
                 if p.add_and_neg_edges([e_a[0]],e_a[1]) == -1:
                     print "INVALID"
@@ -479,9 +480,10 @@ class Path(object):
     """
     def __init__(self,manager,model=None):
         self.manager = manager
-        self.model = model
         if model == None:
             self.model = [-1 for i in range(self.manager.num_edges)]
+        else:
+            self.model = model[:]
 
     def model_tuple(self):
         return tuple(self.model)

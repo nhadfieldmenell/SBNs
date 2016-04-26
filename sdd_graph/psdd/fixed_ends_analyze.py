@@ -183,7 +183,7 @@ class PathManager(object):
                 best_prob = total_prob
                 best_i = s_i
 
-        self.draw_edge_probs([-1 for i in range(self.num_edges)],edge_num2prob)
+        self.draw_edge_probs(cur_path,edge_num2prob)
         return possible_edges[best_i]
 
 

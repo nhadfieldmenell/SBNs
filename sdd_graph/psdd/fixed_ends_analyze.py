@@ -200,7 +200,7 @@ class PathManager(object):
             return -1
 
         prev_node = start
-        incident_nodes = edge_index2tuple[pos_edge]
+        incident_nodes = self.edge_index2tuple[pos_edge]
         if cur_node == incident_nodes[0]:
             cur_node = incident_nodes[1]
         else:

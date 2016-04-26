@@ -17,11 +17,12 @@ import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
 class PathManager(object):
-    def __init__(self,rows,cols,edge2index,copy=None):
+    def __init__(self,rows,cols,edge2index,edge_index2tuple,copy=None):
         self.rows = rows
         self.cols = cols
         self.num_edges = (rows-1) * cols + (cols-1) * rows
         self.edge2index = edge2index
+        self.edge_index2tuple = edge_index2tuple
         self.paths = []
         self.copy = copy
 
@@ -68,7 +69,7 @@ class PathManager(object):
                     if model[index] == 1:
                         sys.stdout.write('  |     ')
                     elif index in edge_num2prob.keys():
-                        sys.stdout.write('%s   ' % ('%.3f' % edge_num2prob[index])[1:])
+                        sys.stdout.write('%s ' % ('%.4f' % edge_num2prob[index])[1:])
                     else:
                         sys.stdout.write('        ')
             sys.stdout.write('\n')
@@ -82,8 +83,6 @@ class PathManager(object):
         """
         start_asgnmts = self.end_point(start)
         end_asgnmts = self.end_point(end)
-
-        the_path = Path(self)
 
         start_end_prob = self.prob_start_end(start,end)
 
@@ -113,22 +112,103 @@ class PathManager(object):
                 best_prob = total_prob
                 best_i = s_i
 
-        self.draw_edge_probs(the_path.model,edge_num2prob)
-        print "most likely start edge: %d" % start_asgnmts[best_i][0]
+
+        self.draw_edge_probs([-1 for i in range(self.num_edges)],edge_num2prob)
         return start_asgnmts[best_i]
 
+
+    def partial_prob(self,partial,end):
+        """Find the probability of a path with the given partial path and an end at node end.
+
+        Sum over all possible ends.
+
+        Return the probability.
+        """
+
+        total_prob = 0.0
+        end_asgnmts = self.end_point(end)
+        for end_asgnmt in end_asgnmts:
+            path = Path(self,partial)
+            path.add_and_neg_edges([end_asgnmt[0]],end_asgnmt[1])
+            evidence = DataSet.evidence(path.model_tuple())
+            path_prob = self.copy.probability(evidence)
+            total_prob += path_prob
+
+        return total_prob
+
+
+
+    def most_likely_next(self,node,prev_node,end,cur_path):
+        """Find the most likely next edge to be taken conditioned on end point and current path.
+
+        Attributes:
+            node: current node
+            prev_node: previous visited node
+            end: end node
+            cur_path: instantiations of -1,0,1 for the path (equivalent to a Path.model)
+
+        Return the edge index to be set to positive.
+        """
+       neighbors = self.neighbor_nodes(node)
+       end_asgnmts = self.end_point(end)
+
+       possible_edges = []
+       for neighbor in neighbors:
+           if neighbor != prev_node:
+               possible_edges.append(edge2index(min(neighbor,node),max(neighbor,node)))
+        
+        partial_prob = self.partial_prob(cur_path,end)
+        edge_num2prob = {}
+        best_prob = 0.0
+        best_i = 0
+        for s_i in range(len(possible_edges)):
+            total_prob = 0.0
+            edge = possible_edges[s_i]
+            for e_i in range(len(end_asgnmts)):
+                e_a = end_asgnmts[e_i]
+                p = Path(self,cur_path)
+                if p.add_and_neg_edges([e_a[0]],e_a[1]) == -1:
+                    print "INVALID"
+                if p.add_edge(edge) == -1:
+                    print "INVALID"
+                
+                evidence = DataSet.evidence(p.model_tuple())
+                path_prob = self.copy.probability(evidence)
+                total_prob += path_prob
+            normalized_prob = total_prob/partial_prob
+            edge_num2prob[s_edge] = normalized_prob
+            #print "total prob: %.6f" % total_prob
+            #print "Probability of taking edge %d: %.6f" % (start_asgnmts[s_i][0],total_prob/start_end_prob)
+            if total_prob > best_prob:
+                best_prob = total_prob
+                best_i = s_i
+
+        self.draw_edge_probs([-1 for i in range(self.num_edges)],edge_num2prob)
+        return possible_edges[best_i]
 
 
 
     def most_likely_path(self,start,end):
         """Find the most likely path to be taken between start and end"""
         path = Path(self)
+        cur_node = start
 
         pos_edge,neg_edges = self.most_likely_start(start,end)
 
         if path.add_and_neg_edges([pos_edge],neg_edges) == -1:
             print "INVALID PATH"
             return -1
+
+        prev_node = start
+        incident_nodes = edge_index2tuple[pos_edge]
+        if cur_node == incident_nodes[0]:
+            cur_node = incident_nodes[1]
+        else:
+            cur_node = incident_nodes[0]
+
+        print self.most_likely_next(cur_node,prev_node,end,path.model)
+        while cur_node != end:
+            return
 
         
 
@@ -703,7 +783,7 @@ def main():
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)
-    man = PathManager(rows,cols,edge2index,copy)
+    man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
     man.most_likely_path(start,end)
 
     

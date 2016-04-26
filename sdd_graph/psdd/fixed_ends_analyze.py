@@ -118,7 +118,7 @@ class PathManager(object):
                 best_i = s_i
 
 
-        self.draw_edge_probs([-1 for i in range(self.num_edges)],edge_num2prob)
+        self.draw_edge_probs([-1 for i in range(self.num_edges)],edge_num2prob,start,end)
         return start_asgnmts[best_i]
 
 
@@ -143,7 +143,7 @@ class PathManager(object):
 
 
 
-    def most_likely_next(self,node,prev_node,end,cur_path):
+    def most_likely_next(self,node,prev_node,start,end,cur_path):
         """Find the most likely next edge to be taken conditioned on end point and current path.
 
         Attributes:
@@ -193,7 +193,7 @@ class PathManager(object):
         print cur_path
 
         print ""
-        self.draw_edge_probs(cur_path,edge_num2prob)
+        self.draw_edge_probs(cur_path,edge_num2prob,start,end)
         return possible_edges[best_i]
 
 
@@ -216,9 +216,9 @@ class PathManager(object):
         else:
             cur_node = incident_nodes[0]
 
-        path.ones_and_zeros()
-        print self.most_likely_next(cur_node,prev_node,end,path.model[:])
+        print self.most_likely_next(cur_node,prev_node,start,end,path.model[:])
         while cur_node != end:
+
             return
 
         

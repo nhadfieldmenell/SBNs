@@ -157,8 +157,6 @@ class PathManager(object):
         neighbors = self.neighbor_nodes(node)
         end_asgnmts = self.end_point(end)
 
-        print cur_path
-
         possible_edges = []
         for neighbor in neighbors:
            if neighbor != prev_node:
@@ -190,7 +188,6 @@ class PathManager(object):
                 best_prob = total_prob
                 best_i = s_i
 
-        print cur_path
 
         print ""
         self.draw_edge_probs(cur_path,edge_num2prob,start,end)
@@ -216,10 +213,15 @@ class PathManager(object):
         else:
             cur_node = incident_nodes[0]
 
-        print self.most_likely_next(cur_node,prev_node,start,end,path.model[:])
         while cur_node != end:
+            next_edge = self.most_likely_next(cur_node,prev_node,start,end,path.model[:])
+            prev_node = cur_node
+            incident_nodes = self.edge_index2tuple[next_edge]
+            if cur_node == incident_nodes[0]:
+                cur_node = incident_nodes[1]
+            else:
+                cur_node = incident_nodes[0]
 
-            return
 
         
 

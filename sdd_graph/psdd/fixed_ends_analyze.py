@@ -166,7 +166,7 @@ class PathManager(object):
             edge = possible_edges[s_i]
             for e_i in range(len(end_asgnmts)):
                 e_a = end_asgnmts[e_i]
-                p = Path(self,cur_path)
+                p = Path(self,cur_path[:])
                 if p.add_and_neg_edges([e_a[0]],e_a[1]) == -1:
                     print "INVALID"
                 if p.add_edge(edge) == -1:
@@ -207,7 +207,7 @@ class PathManager(object):
         else:
             cur_node = incident_nodes[0]
 
-        print self.most_likely_next(cur_node,prev_node,end,path.model)
+        print self.most_likely_next(cur_node,prev_node,end,path.model[:])
         while cur_node != end:
             return
 

@@ -801,8 +801,6 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
 
     for i in range(len(full_tuples)):
         if i == bads[bad_i]:
-            print bad_i
-            print bads[bad_i]
             bad_i += 1
             continue
         class_sets[trip_id2class[i+1]].append(full_tuples[i])
@@ -855,11 +853,13 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
         print "  zero parameters: %d (should be zero)" % copy.zero_count()
         copy.marginals()
 
+        print "\nCLASS %d HAS %d UNIQUE AND %d TOTAL INSTANCES\n" % (len(training),training.N)
+
         psdds.append(copy)
 
     for i in range(6):
         for j in range(i+1,6):
-            kl_divergence = psdd.kl(psdds[i],psdds[j])
+            kl_divergence = PSddNode.kl(psdds[i],psdds[j])
             print "kl (%d,%d): %d" % (i,j,kl_divergence)
     
 

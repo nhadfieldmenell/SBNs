@@ -121,6 +121,27 @@ class PathManager(object):
         self.draw_edge_probs([-1 for i in range(self.num_edges)],edge_num2prob,start,end)
         return start_asgnmts[best_i]
 
+    def mpe(self,evidence):
+        """Find the most likely total assignment based on the partial evidence.
+
+        Return the probability and the full variable assignment.
+        """
+        print "== MPE =="
+        count = 0
+        mpe = []
+        for val,model in self.copy.enumerate(evidence):
+            if count == 0: mpe = model
+            count += 1
+            val = val/self.copy.theta_sum
+            check_val = self.copy.probability(evidence=model)
+            print "%.6e (%.6e): %s" % (val,check_val,str(model))
+            model_array = []
+            for k in range(self.num_edges):
+                model_array.append(model[k+1])
+            self.draw_grid(model_array)
+            return val,model_array
+
+
 
     def partial_prob(self,partial,end):
         """Find the probability of a path with the given partial path and an end at node end.
@@ -196,7 +217,35 @@ class PathManager(object):
 
 
 
-    def most_likely_path(self,start,end):
+    def best_all_at_once(self,start,end):
+        end_asgnmts = self.end_point(end)
+        start_asgnmts = self.end_point(start)
+
+
+        best_model = None
+        best_prob = 0.0
+        for s_a in start_asgnmts:
+            for e_a in end_asgnmts:
+                inst = [-1 for i in range(self.num_edges)]
+                inst[s_a[0]] = 1
+                inst[e_a[0]] = 1
+                for neg_edge in s_a[1]:
+                    inst[neg_edge] = 0
+                for neg_edge in e_a[1]:
+                    inst[neg_edge] = 0
+                evidence = DataSet.evidence(inst)
+                val,model = self.mpe(evidence)
+                if val > best_prob:
+                    best_prob = val
+                    best_model = model
+
+        self.draw_grid(best_model)
+        return best_model
+
+        
+
+
+    def best_step_by_step(self,start,end):
         """Find the most likely path to be taken between start and end"""
         path = Path(self)
         cur_node = start
@@ -227,10 +276,7 @@ class PathManager(object):
 
         self.draw_edge_probs(path.model[:],{},start,end)
 
-        
-
-        end_asgnmts = self.end_point(end)
-
+        return path.model[:]
 
 
                 
@@ -891,13 +937,15 @@ def main():
     data_fn_general = '../datasets/general_ends-%d-%d.txt' % (rows,cols)
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
-    find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
-    return
+    #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
 
 
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
-    man.most_likely_path(start,end)
+    man.best_all_at_once(start,end)
+    man.best_step_by_step(start,end)
+
+    return
     man.visualize_mid_probs(start,end)
 
     

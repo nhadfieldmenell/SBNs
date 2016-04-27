@@ -853,7 +853,7 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
         print "  zero parameters: %d (should be zero)" % copy.zero_count()
         copy.marginals()
 
-        print "\nCLASS %d HAS %d UNIQUE AND %d TOTAL INSTANCES\n" % (len(training),training.N)
+        print "\nCLASS %d HAS %d UNIQUE AND %d TOTAL INSTANCES\n" % (class_num,len(training),training.N)
 
         psdds.append(copy)
 

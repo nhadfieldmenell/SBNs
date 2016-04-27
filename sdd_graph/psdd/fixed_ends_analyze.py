@@ -801,6 +801,7 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
     for i in range(len(full_tuples)):
         if i == bads[bad_i]:
             bad_i += 1
+            print bad_i
             continue
         class_sets[trip_id2class[i+1]].append(full_tuples[i])
 

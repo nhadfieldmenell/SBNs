@@ -784,7 +784,7 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
     """
     trip_id2class = pickle.load(open('../pickles/trip_id2class.pickle','rb'))
     with open(bad_fn,'r') as infile:
-        bads = map(int,infile.readlines())
+        bads = map(int,infile.readlines()).sort()
     bad_i = 0
 
     full_file = open(data_fn, "r")

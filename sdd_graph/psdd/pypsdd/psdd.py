@@ -10,6 +10,59 @@ from Queue import PriorityQueue as pq
 from sdd import SddNode
 from data import DataSet
 
+
+class EnumerateModel:
+    counter = 0
+
+    def __init__(self,element=None,pnext=None,snext=None):
+        if element is not None:
+            self.prime,self.sub = element
+            self.pit,self.sit = self.prime.enumerate(),self.sub.enumerate()
+            self.pval,self.pinst = self.pit.next()
+            self.sval,self.sinst = self.sit.next()
+        elif pnext is not None:
+            self.pval,self.pinst,model = pnext
+            self.prime,self.sub = model.prime,model.sub
+            self.pit,self.sit = model.pit,self.sub.enumerate()
+            self.sval,self.sinst = self.sit.next()
+        elif snext is not None:
+            self.sval,self.sinst,model = snext
+            self.prime,self.sub = model.prime,model.sub
+            self.pit,self.sit = None,model.sit
+            self.pval,self.pinst = model.pval,model.pinst
+
+        self.id = EnumerateModel.counter
+        EnumerateModel.counter += 1
+
+        self.val = (self.pval/self.prime.theta_sum)*(self.sval/self.sub.theta_sum)
+        self.inst = self.pinst.copy()
+        self.inst.update(self.sinst)
+
+    def val_inst(self):
+        return (self.val,self.inst)
+
+    def pnext(self):
+        if self.pit is None: return None
+        try:
+            pval,pinst = self.pit.next()
+        except StopIteration:
+            return None
+        pnext = (pval,pinst,self)
+        return EnumerateModel(pnext=pnext)
+
+    def snext(self):
+        try:
+            sval,sinst = self.sit.next()
+        except StopIteration:
+            return None
+        snext = (sval,sinst,self)
+        return EnumerateModel(snext=snext)
+
+    def __cmp__(self,other):
+        val = -cmp(self.val,other.val)
+        if val == 0: val = cmp(self.id,other.id)
+        return val
+
 class PSddNode(SddNode):
 
 ########################################
@@ -81,6 +134,99 @@ class PSddNode(SddNode):
                     sub.theta_sum += decision_count
 
         for node in self.array: node.data = None
+
+
+########################################
+# ENUMERATE A PSDD
+########################################
+
+    def enumerate(self):
+        for val,model in self._enumerate():
+            yield val,model
+        self.clear_data()
+
+    def _enumerate(self):
+        if self.is_decomposition():
+            return self._enumerate_decomposition()
+        else:
+            return self._enumerate_terminal()
+
+    def _enumerate_update_queue(self,theta,eit,queue):
+        try:
+            val,inst = eit.next()
+        except StopIteration:
+            return
+        item = (-theta*val,inst,theta,eit)
+        queue.put(item)
+
+    def _enumerate_decomposition(self):
+        # set up cache for elements
+        if self.data is None:
+            self.data = {}
+            for element in self.elements:
+                self.data[element] = {}
+
+        queue = pq()
+        for element in self.elements:
+            theta = self.theta[element]
+            cache = self.data[element]
+            eit = self._enumerate_element(element,cache)
+            self._enumerate_update_queue(theta,eit,queue)
+
+        while not queue.empty():
+            val,inst,theta,eit = queue.get()
+            self._enumerate_update_queue(theta,eit,queue)
+            yield (-val,inst)
+
+    def _enumerate_element(self,element,cache):
+        p,s = element
+        if s.is_false_sdd: return
+
+        last = 0
+
+        if not last in cache:
+            queue = pq()
+            model = EnumerateModel(element=element)
+            queue.put(model)
+            cache[last] = queue
+
+        while True:
+            item = cache[last]
+
+            if type(item) is tuple:
+                last += 1
+                yield item
+            else: # type is priority queue
+                queue = item
+                if queue.empty(): break
+                model = queue.get()
+                val,inst = model.val_inst()
+                cache[last] = val,inst
+
+                pnext = model.pnext()
+                if pnext is not None: queue.put(pnext)
+                snext = model.snext()
+                if snext is not None: queue.put(snext)
+
+                last += 1
+                cache[last] = queue
+                yield val,inst
+
+    def _enumerate_terminal(self):
+        var = self.vtree.var
+        if self.is_false():
+            pass
+        elif self.is_true():
+            vals = [0,1] if self.theta[0] >= self.theta[1] else [1,0]
+            for val in vals:
+                yield (self.theta[val],{var:val})
+        elif self.is_literal():
+            lit = self.literal
+            val = 0 if lit < 0 else 1
+            yield (self.theta[val],{var:val})
+
+	
+		
 
 ########################################
 # RANDOM PARAMETERIZATION
@@ -483,6 +629,7 @@ class PSddNode(SddNode):
         self.initialize_parameters(psi=psi,scale=scale)
         instance_count = len(dataset)
         for i,(instance,count) in enumerate(dataset):
+
             if show_progress:
                 if instance_count >= 10 and i % (instance_count/10) == 0:
                     print "%2.0f%% done" % (100*i/instance_count)

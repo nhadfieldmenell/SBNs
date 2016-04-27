@@ -861,7 +861,7 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
 
     for i in range(6):
         for j in range(i+1,6):
-            kl_divergence = PSddNode.kl(psdds[i],psdds[j])
+            kl_divergence = PSddNode.kl_psdds(psdds[i],pmanagers[i],psdds[j],pmanagers[j])
             print "kl (%d,%d): %d" % (i,j,kl_divergence)
     
 

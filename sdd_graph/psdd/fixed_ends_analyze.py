@@ -827,6 +827,7 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
     sdd = SddNode.read(sdd_filename,manager)
 
     psdds = []
+    pmanagers = []
     for class_num in range(6):
         pmanager = PSddManager(vtree)
         copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
@@ -856,6 +857,7 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
         print "\nCLASS %d HAS %d UNIQUE AND %d TOTAL INSTANCES\n" % (class_num,len(training),training.N)
 
         psdds.append(copy)
+        pmanagers.append(pmanager)
 
     for i in range(6):
         for j in range(i+1,6):

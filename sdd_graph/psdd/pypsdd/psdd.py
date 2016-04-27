@@ -10,63 +10,6 @@ from Queue import PriorityQueue as pq
 from sdd import SddNode
 from data import DataSet
 
-
-class EnumerateModel:
-    counter = 0
-
-    def __init__(self,evidence=None,element=None,pnext=None,snext=None):
-        if evidence is not None:
-            self.evidence = evidence
-
-        if element is not None:
-            self.prime,self.sub = element
-            self.pit = self.prime.enumerate(evidence)
-            self.sit = self.sub.enumerate(evidence)
-            self.pval,self.pinst = self.pit.next()
-            self.sval,self.sinst = self.sit.next()
-        elif pnext is not None:
-            self.pval,self.pinst,model = pnext
-            self.prime,self.sub = model.prime,model.sub
-            self.pit,self.sit = model.pit,self.sub.enumerate(evidence)
-            self.sval,self.sinst = self.sit.next()
-        elif snext is not None:
-            self.sval,self.sinst,model = snext
-            self.prime,self.sub = model.prime,model.sub
-            self.pit,self.sit = None,model.sit
-            self.pval,self.pinst = model.pval,model.pinst
-
-        self.id = EnumerateModel.counter
-        EnumerateModel.counter += 1
-
-        self.val = (self.pval/self.prime.theta_sum)*(self.sval/self.sub.theta_sum)
-        self.inst = self.pinst.copy()
-        self.inst.update(self.sinst)
-
-    def val_inst(self):
-        return (self.val,self.inst)
-
-    def pnext(self):
-        if self.pit is None: return None
-        try:
-            pval,pinst = self.pit.next()
-        except StopIteration:
-            return None
-        pnext = (pval,pinst,self)
-        return EnumerateModel(evidence=self.evidence,pnext=pnext)
-
-    def snext(self):
-        try:
-            sval,sinst = self.sit.next()
-        except StopIteration:
-            return None
-        snext = (sval,sinst,self)
-        return EnumerateModel(evidence=self.evidence,snext=snext)
-
-    def __cmp__(self,other):
-        val = -cmp(self.val,other.val)
-        if val == 0: val = cmp(self.id,other.id)
-        return val
-
 class PSddNode(SddNode):
 
 ########################################
@@ -108,180 +51,6 @@ class PSddNode(SddNode):
                 else:
                     self.theta[element] = count
                     self.theta_sum += count
-
-########################################
-# ENUMERATE A PSDD
-########################################
-
-    def enumerate(self,evidence):
-        for val,model in self._enumerate(evidence):
-            yield val,model
-        self.clear_data()
-
-    def _enumerate(self,evidence):
-        if self.is_decomposition():
-            return self._enumerate_decomposition(evidence)
-        else:
-            return self._enumerate_terminal(evidence)
-
-    def _enumerate_update_queue(self,theta,eit,queue):
-        try:
-            val,inst = eit.next()
-        except StopIteration:
-            return
-        item = (-theta*val,inst,theta,eit)
-        queue.put(item)
-
-    def _enumerate_decomposition(self,evidence):
-        # set up cache for elements
-        if self.data is None:
-            self.data = {}
-            for element in self.elements:
-                self.data[element] = {}
-
-        queue = pq()
-        for element in self.elements:
-            theta = self.theta[element]
-            cache = self.data[element]
-            eit = self._enumerate_element(element,evidence,cache)
-            self._enumerate_update_queue(theta,eit,queue)
-
-        while not queue.empty():
-            val,inst,theta,eit = queue.get()
-            self._enumerate_update_queue(theta,eit,queue)
-            yield (-val,inst)
-
-    def _enumerate_element(self,element,evidence,cache):
-        p,s = element
-        if s.is_false_sdd: return
-
-        last = 0
-
-        if not last in cache:
-            queue = pq()
-            model = EnumerateModel(evidence=evidence,element=element)
-            queue.put(model)
-            cache[last] = queue
-
-        while True:
-            item = cache[last]
-
-            if type(item) is tuple:
-                last += 1
-                yield item
-            else: # type is priority queue
-                queue = item
-                if queue.empty(): break
-                model = queue.get()
-                val,inst = model.val_inst()
-                cache[last] = val,inst
-
-                pnext = model.pnext()
-                if pnext is not None: queue.put(pnext)
-                snext = model.snext()
-                if snext is not None: queue.put(snext)
-
-                last += 1
-                cache[last] = queue
-                yield val,inst
-
-    def _enumerate_terminal(self,evidence):
-        var = self.vtree.var
-        if self.is_false():
-            pass
-        elif var in evidence:
-            val = evidence[var]
-            if self.is_true():
-                yield (self.theta[val],{var:val})
-            elif self.is_literal():
-                lit_val = 0 if self.literal < 0 else 1
-                if val == lit_val:
-                    yield (self.theta[val],{var:val})
-        elif self.is_true():
-            vals = [0,1] if self.theta[0] >= self.theta[1] else [1,0]
-            for val in vals:
-                yield (self.theta[val],{var:val})
-        elif self.is_literal():
-            lit = self.literal
-            val = 0 if lit < 0 else 1
-            yield (self.theta[val],{var:val})
-
-    @staticmethod
-    def kl(pr1,pr2):
-        kl = 0.0
-        for p1,p2 in zip(pr1,pr2):
-            if p1 == 0.0: continue
-            kl += p1 * math.log(p1/p2)
-        if kl < 0.0: kl = 0.0
-        return kl
-
-    """kl divergence between current and backup parameters
-    assumes backup_theta and marginals has been called"""
-    def kl_psdd(self):
-        self.linearize()
-        kl = 0.0
-        for node in self.array:
-            if node.pr_node == 0.0: continue
-            if node.is_false():
-                pass
-            elif node.vtree.is_leaf():
-                pr1 = [ p/node.theta_sum for p in node.theta ]
-                pr2 = [ p/node.backup_theta_sum for p in node.backup_theta ]
-                kl += node.pr_node * PSddNode.kl(pr1,pr2)
-            else: # decomposition
-                pr1 = [ node.theta[element]/node.theta_sum for
-                        element in node.elements ]
-                pr2 = [ node.backup_theta[element]/node.backup_theta_sum for
-                        element in node.elements ]
-                kl += node.pr_node * PSddNode.kl(pr1,pr2)
-        return kl
-
-    def mpe(self,evidence={},clear_data=True):
-        self.linearize()
-        for node in self.array:
-            if node.is_false() or node.is_false_sdd:
-                mpe_val = 0
-                mpe_ind = None
-            elif node.vtree.is_leaf():
-                if node.vtree.var in evidence:
-                    val = evidence[node.vtree.var]
-                    mpe_val = node.theta[val]
-                    mpe_ind = val
-                else:
-                    mpe_val = max(node.theta)
-                    mpe_ind = node.theta.index(mpe_val)
-            else: # node.is_decomposition()
-                if node.theta_sum == 0.0: continue
-                mpe_val = 0.0
-                mpe_ind = None
-                for element in node.elements:
-                    prime,sub = element
-                    if sub.is_false_sdd: continue
-                    theta = node.theta[element]
-                    pval = prime.data[0]/prime.theta_sum
-                    sval = sub.data[0]/sub.theta_sum
-                    val = pval*sval*theta
-                    if val > mpe_val:
-                        mpe_val = val
-                        mpe_ind = element
-            node.data = (mpe_val,mpe_ind)
-
-        mpe_inst = dict(evidence)
-        queue = deque()
-        queue.append( node )
-        while queue:
-            node = queue.popleft()
-            if node.vtree.is_leaf():
-                var,val = node.vtree.var,node.data[1]
-                mpe_inst[var] = val
-            else:
-                prime,sub = node.data[1]
-                queue.append( prime )
-                queue.append( sub )
-
-        if clear_data:
-            for node in self.array: node.data = None
-        return mpe_val,mpe_inst
 
     def uniform_weights(self,scale=1.0):
         """uniform prior over SDD models"""
@@ -530,6 +299,72 @@ class PSddNode(SddNode):
         for node in self.array:
             node.pr_context = 0.0
             node.pr_node = 0.0
+
+########################################
+# KL-DIVERGENCE
+########################################
+
+    def copy_thetas(self,pmanager,other_psdd,other_pmanager):
+        """copies the parameters of the other psdd to self psdd"""
+
+        # create map from psdd nodes to other psdd nodes
+        node_map = other_pmanager.create_node_map(self,pmanager)
+        if other_psdd != node_map[self]:
+            print "error: psdds don't match"
+            raise Exception
+
+        # copy other psdd parameters to self psdd
+        self.linearize()
+        for node in self.array:
+            if node.is_false() or node.is_false_sdd: continue
+            other_node = node_map[node]
+            if node.vtree.is_leaf():
+                node.theta = list(other_node.theta)
+            elif node.is_decomposition():
+                new_theta = dict()
+                for element in node.elements:
+                    other_element = (node_map[element[0]],node_map[element[1]])
+                    new_theta[element] = other_node.theta[other_element]
+                node.theta = new_theta
+            node.theta_sum = other_node.theta_sum
+
+    @staticmethod
+    def kl(pr1,pr2):
+        kl = 0.0
+        for p1,p2 in zip(pr1,pr2):
+            if p1 == 0.0: continue
+            kl += p1 * math.log(p1/p2)
+        if kl < 0.0: kl = 0.0
+        return kl
+
+    """kl divergence between current and backup parameters
+    assumes backup_theta and marginals has been called"""
+    def kl_psdd(self):
+        self.linearize()
+        kl = 0.0
+        for node in self.array:
+            if node.pr_node == 0.0: continue
+            if node.is_false():
+                pass
+            elif node.vtree.is_leaf():
+                pr1 = [ p/node.theta_sum for p in node.theta ]
+                pr2 = [ p/node.backup_theta_sum for p in node.backup_theta ]
+                kl += node.pr_node * PSddNode.kl(pr1,pr2)
+            else: # decomposition
+                pr1 = [ node.theta[element]/node.theta_sum for
+                        element in node.elements ]
+                pr2 = [ node.backup_theta[element]/node.backup_theta_sum for
+                        element in node.elements ]
+                kl += node.pr_node * PSddNode.kl(pr1,pr2)
+        return kl
+
+    @staticmethod
+    def kl_psdds(psdd_1,pmanager_1,psdd_2,pmanager_2):
+        psdd_1.marginals()
+        psdd_1.backup_thetas()
+        psdd_1.copy_thetas(pmanager_1,psdd_2,pmanager_2)
+        psdd_1.swap_thetas()
+        return psdd_1.kl_psdd()
 
 ########################################
 # SIMULATE A PSDD

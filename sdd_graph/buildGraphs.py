@@ -982,10 +982,10 @@ def main():
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
 
-    all_at_once_prefix = "../paths/all_%d_%d_%d_%d" % (rows,cols,start,end)
+    all_at_once_prefix = "psdd/paths/all_%d_%d_%d_%d" % (rows,cols,start,end)
     all_at_once_in = "%s.pickle" % all_at_once_prefix
     all_at_once_out = "%s_coords.txt" % all_at_once_prefix
-    step_by_step_prefix = "../paths/all_%d_%d_%d_%d" % (rows,cols,start,end)
+    step_by_step_prefix = "psdd/paths/all_%d_%d_%d_%d" % (rows,cols,start,end)
     step_by_step_in = "%s.pickle" % step_by_step_prefix
     step_by_step_out = "%s_coords.txt" % step_by_step_prefix
     g.node_path_to_coords(step_by_step_in,step_by_step_out)

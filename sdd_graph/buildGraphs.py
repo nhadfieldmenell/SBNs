@@ -68,6 +68,7 @@ class Graph(object):
                 coords[edge_tup[1]] = True
         with open(out_fn,'w') as outfile:
             for coord in coords.keys():
+                print coord
                 outfile.write(str(self.coords_to_gps(coord)))
 
 

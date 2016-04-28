@@ -957,7 +957,6 @@ def main():
     man.best_all_at_once(start,end)
     man.best_step_by_step(start,end)
 
-    return
     man.visualize_mid_probs(start,end)
 
     

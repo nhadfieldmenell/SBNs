@@ -63,7 +63,10 @@ class PathManager(object):
                     if model[index] == 1:
                         sys.stdout.write(' ----- ')
                     elif index in edge_num2prob.keys():
-                        sys.stdout.write(' %s ' % ('%.4f' % edge_num2prob[index])[1:])
+                        if edge_num2prob[index] > 0.999:
+                            sys.stdout.write("   1   ")
+                        else:
+                            sys.stdout.write(' %s ' % ('%.4f' % edge_num2prob[index])[1:])
                     else:
                         sys.stdout.write('       ')
             sys.stdout.write('\n')
@@ -74,7 +77,10 @@ class PathManager(object):
                     if model[index] == 1:
                         sys.stdout.write('  |     ')
                     elif index in edge_num2prob.keys():
-                        sys.stdout.write('%s   ' % ('%.4f' % edge_num2prob[index])[1:])
+                        if edge_num2prob[index] > 0.999:
+                            sys.stdout.write("  1     ")
+                        else:
+                            sys.stdout.write('%s   ' % ('%.4f' % edge_num2prob[index])[1:])
                     else:
                         sys.stdout.write('        ')
             sys.stdout.write('\n')

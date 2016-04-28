@@ -68,7 +68,11 @@ class Graph(object):
                 nodes[node_tup[1]] = True
         with open(out_fn,'w') as outfile:
             for node in nodes.keys():
-                outfile.write("%s\n" % str(self.coords_to_gps(self.node_to_coords(node)))[1:-1])
+                print node
+                coords = self.node_to_coords(node)
+                print coords
+                print ""
+                outfile.write("%s\n" % str(self.coords_to_gps(coords))[1:-1])
 
 
 

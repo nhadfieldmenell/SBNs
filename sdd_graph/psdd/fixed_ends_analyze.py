@@ -967,6 +967,7 @@ def main():
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
 
 
+    print "Starting"
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
     all_prediction = man.best_all_at_once(start,end)

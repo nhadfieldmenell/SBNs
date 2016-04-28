@@ -274,6 +274,7 @@ class PathManager(object):
             if path.add_edge(next_edge) == -1:
                 print "INVALID ADDING EDGE %d" % next_edge
 
+        print "\n"
         self.draw_edge_probs(path.model[:],{},start,end)
 
         return path.model[:]

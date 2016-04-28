@@ -60,16 +60,15 @@ class Graph(object):
         For each node traversed in the path, output the center point of that node.
         """
         edges = pickle.load(open(edge_fn,'rb'))
-        coords = {}
+        nodes = {}
         for i in range(len(edges)):
             if edges[i] == 1:
-                edge_tup = self.edge_index2tuple[i]
-                coords[edge_tup[0]] = True
-                coords[edge_tup[1]] = True
+                node_tup = self.edge_index2tuple[i]
+                nodes[node_tup[0]] = True
+                nodes[node_tup[1]] = True
         with open(out_fn,'w') as outfile:
-            for coord in coords.keys():
-                print coord
-                outfile.write(str(self.coords_to_gps(coord)))
+            for node in nodes.keys():
+                outfile.write(str(self.coords_to_gps(self.node_to_coords(node))))
 
 
 

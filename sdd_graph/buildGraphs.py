@@ -985,6 +985,14 @@ def main():
     """
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
+    test_lat,test_lon = 37.793364, -122.409793 
+    coords = g.gps_to_coords(test_lat,test_lon)
+    print g.coords_to_node(coords[0],coords[1])
+    test_lat,test_lon = 37.754396, -122.420007
+    coords = g.gps_to_coords(test_lat,test_lon)
+    print g.coords_to_node(coords[0],coords[1])
+
+    return
 
     all_at_once_prefix = "psdd/paths/all_%d_%d_%d_%d" % (rows,cols,start,end)
     all_at_once_in = "%s.pickle" % all_at_once_prefix
@@ -996,7 +1004,7 @@ def main():
     g.node_path_to_coords(all_at_once_in,all_at_once_out)
     return
 
-    #test_lat,test_lon = 37.757941, -122.435157 
+    #test_lat,test_lon = 37.793364, -122.409793 
     #coords = g.gps_to_coords(test_lat,test_lon)
     #print g.coords_to_node(coords[0],coords[1])
     #return

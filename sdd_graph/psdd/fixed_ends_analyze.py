@@ -972,7 +972,7 @@ def main():
     all_prediction = man.best_all_at_once(start,end)
     step_prediction = man.best_step_by_step(start,end)
 
-    man.save_paths(setp_prediction,all_prediction,start,end)
+    man.save_paths(step_prediction,all_prediction,start,end)
     print all_prediction
     print step_prediction
     man.visualize_mid_probs(start,end)

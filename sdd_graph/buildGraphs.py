@@ -39,6 +39,8 @@ class Graph(object):
 
         edge_filename = 'graphs/edge-nums-%d-%d.pickle' % (self.rows,self.cols)
         self.edge2index = pickle.load(open(edge_filename,'rb'))
+        edge_tuple_filename = 'graphs/edge-to-tuple-%d-%d.pickle' % (self.rows,self.cols)
+        self.edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
 
         self.lat_step = float((max_lat-min_lat)/rows)
         self.lon_step = float((max_lon-min_lon)/cols)
@@ -52,6 +54,23 @@ class Graph(object):
         self.best_node_score = 0
         self.first_last2trip_ids = defaultdict(list)
         #self.trip_id2lengths,self.avg_length = self.path_lengths()
+
+    def node_path_to_coords(self,edge_fn,out_fn):
+        """Read in a path instantiation from a file and determine the corresponding path in GPS coords.
+        For each node traversed in the path, output the center point of that node.
+        """
+        edges = pickle.load(open(edge_fn,'rb'))
+        coords = {}
+        for i in range(len(edges)):
+            if edges[i] == 1:
+                edge_tup = self.edge_index2tuple[i]
+                coords[edge_tup[0]] = True
+                coords[edge_tup[1]] = True
+        with open(out_fn,'w') as outfile:
+            for coord in coords.keys():
+                outfile.write(str(self.coords_to_gps(coord)))
+
+
 
     def path_lengths(self):
         """Determines the length of each path in the dataset
@@ -315,6 +334,10 @@ class Graph(object):
             node number: (1 indexed)
         """
         return row*self.cols + col + 1
+
+    def coords_to_gps(self,coords):
+        """Return the midpoint (lat,lon) of the node at the specified coordinates"""
+        return ((self.min_lat * (0.5+coords[0])),(self.min_lon * (0.5+coords[1])))
 
     def gps_to_coords(self,lat,lon):
         """Determines the coodinates on the graph corresponding to a given gps point.
@@ -958,6 +981,16 @@ def main():
     """
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
+
+    all_at_once_prefix = "../paths/all_%d_%d_%d_%d" % (rows,cols,start,end)
+    all_at_once_in = "%s.pickle" % all_at_once_prefix
+    all_at_once_out = "%s_coords.txt" % all_at_once_prefix
+    step_by_step_prefix = "../paths/all_%d_%d_%d_%d" % (rows,cols,start,end)
+    step_by_step_in = "%s.pickle" % step_by_step_prefix
+    step_by_step_out = "%s_coords.txt" % step_by_step_prefix
+    g.node_path_to_coords(self,step_by_step_in,step_by_step_out)
+    g.node_path_to_coords(self,all_at_once_in,all_at_once_out)
+    return
 
     #test_lat,test_lon = 37.757941, -122.435157 
     #coords = g.gps_to_coords(test_lat,test_lon)

@@ -68,7 +68,7 @@ class Graph(object):
                 nodes[node_tup[1]] = True
         with open(out_fn,'w') as outfile:
             for node in nodes.keys():
-                outfile.write(str(self.coords_to_gps(self.node_to_coords(node))))
+                outfile.write("%s\n" % str(self.coords_to_gps(self.node_to_coords(node)))[1:-1])
 
 
 
@@ -985,7 +985,7 @@ def main():
     all_at_once_prefix = "psdd/paths/all_%d_%d_%d_%d" % (rows,cols,start,end)
     all_at_once_in = "%s.pickle" % all_at_once_prefix
     all_at_once_out = "%s_coords.txt" % all_at_once_prefix
-    step_by_step_prefix = "psdd/paths/all_%d_%d_%d_%d" % (rows,cols,start,end)
+    step_by_step_prefix = "psdd/paths/step_%d_%d_%d_%d" % (rows,cols,start,end)
     step_by_step_in = "%s.pickle" % step_by_step_prefix
     step_by_step_out = "%s_coords.txt" % step_by_step_prefix
     g.node_path_to_coords(step_by_step_in,step_by_step_out)

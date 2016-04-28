@@ -954,9 +954,11 @@ def main():
 
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
-    man.best_all_at_once(start,end)
-    man.best_step_by_step(start,end)
+    all_prediction = man.best_all_at_once(start,end)
+    step_prediction = man.best_step_by_step(start,end)
 
+    print all_prediction
+    print step_prediction
     man.visualize_mid_probs(start,end)
 
     

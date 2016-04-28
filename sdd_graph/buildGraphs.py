@@ -341,7 +341,7 @@ class Graph(object):
 
     def coords_to_gps(self,coords):
         """Return the midpoint (lat,lon) of the node at the specified coordinates"""
-        return ((self.min_lat * (0.5+coords[0])),(self.min_lon * (0.5+coords[1])))
+        return ((self.min_lat + (self.lat_step * (0.5+coords[0]))),(self.min_lon + (self.lon_step * (0.5+coords[1]))))
 
     def gps_to_coords(self,lat,lon):
         """Determines the coodinates on the graph corresponding to a given gps point.

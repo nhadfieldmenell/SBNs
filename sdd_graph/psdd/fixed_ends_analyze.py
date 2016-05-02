@@ -141,28 +141,6 @@ class PathManager(object):
         self.draw_edge_probs([-1 for i in range(self.num_edges)],edge_num2prob,start,end)
         return start_asgnmts[best_i]
 
-    def mpe(self,evidence):
-        """Find the most likely total assignment based on the partial evidence.
-
-        Return the probability and the full variable assignment.
-        """
-        print "== MPE =="
-        count = 0
-        mpe = []
-        for val,model in self.copy.enumerate(evidence):
-            if count == 0: mpe = model
-            count += 1
-            val = val/self.copy.theta_sum
-            check_val = self.copy.probability(evidence=model)
-            print "%.6e (%.6e): %s" % (val,check_val,str(model))
-            model_array = []
-            for k in range(self.num_edges):
-                model_array.append(model[k+1])
-            self.draw_grid(model_array)
-            return val,model_array
-
-
-
     def partial_prob(self,partial,end):
         """Find the probability of a path with the given partial path and an end at node end.
 
@@ -254,7 +232,7 @@ class PathManager(object):
                 for neg_edge in e_a[1]:
                     inst[neg_edge] = 0
                 evidence = DataSet.evidence(inst)
-                val,model = self.mpe(evidence)
+                val,model = self.copy.mpe(evidence)
                 if val > best_prob:
                     best_prob = val
                     best_model = model
@@ -736,24 +714,6 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
 
         print "num bad paths: %d" % len(bad_paths)
         return full_dataset
-
-            
-def enumerate_mpe(copy,num_enumerate,evidence,num_edges,edge2index,rows,cols):
-    print "== best-m MPE =="
-    count = 0
-    mpe = []
-    for val,model in copy.enumerate(evidence):
-        if count == 0: mpe = model
-        count += 1
-        val = val/copy.theta_sum
-        check_val = copy.probability(evidence=model)
-        print "%.6e (%.6e): %s" % (val,check_val,str(model))
-        model_array = []
-        for k in range(num_edges):
-            model_array.append(model[k+1])
-        draw_grid(model_array,rows,cols,edge2index)
-        if count == num_enumerate: break
-
 
 def generate_copy(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges):
     vtree_filename = '%s.vtree' % fn_prefix

@@ -238,10 +238,10 @@ class PathManager(object):
                     best_model = model
 
         data = tuple(best_model)
-        evidence = DataSet.evidence(data)
-        probability = self.copy.probability(evidence)
-        print "Best found probability: %f" % best_prob
-        print "Probability of best model: %f" % probability
+        #evidence = DataSet.evidence(data)
+        #probability = self.copy.probability(evidence)
+        #print "Best found probability: %f" % best_prob
+        #print "Probability of best model: %f" % probability
         self.draw_grid(best_model)
         return best_model
 

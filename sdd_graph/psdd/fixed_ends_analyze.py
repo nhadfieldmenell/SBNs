@@ -233,16 +233,21 @@ class PathManager(object):
                     inst[neg_edge] = 0
                 evidence = DataSet.evidence(inst)
                 val,model = self.copy.mpe(evidence)
-                print "mpe model: %s" % str(model)
+                mpe_model = [0 for i in range(self.num_edges)]
+                for key in model:
+                    if model[key] == 1:
+                        mpe_model[key-1] = 1
+                self.draw_grid(best_model)
                 if val > best_prob:
                     best_prob = val
-                    best_model = model
+                    best_model = mpe_model
 
         data = tuple(best_model)
         #evidence = DataSet.evidence(data)
         #probability = self.copy.probability(evidence)
         #print "Best found probability: %f" % best_prob
         #print "Probability of best model: %f" % probability
+        print "BEST MPE MODEL"
         self.draw_grid(best_model)
         return best_model
 

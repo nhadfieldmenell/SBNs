@@ -244,12 +244,6 @@ class PathManager(object):
                     best_model = mpe_model
 
         data = tuple(best_model)
-        #evidence = DataSet.evidence(data)
-        #probability = self.copy.probability(evidence)
-        #print "Best found probability: %f" % best_prob
-        #print "Probability of best model: %f" % probability
-        print "\n\nBEST MPE MODEL"
-        self.draw_grid(best_model)
         return best_model
 
         
@@ -950,6 +944,9 @@ def main():
     step_prediction = man.best_step_by_step(start,end)
     print_time_diff(s_time,"step by step prediction")
 
+
+    print "\n\nBEST MPE MODEL"
+    self.draw_grid(all_prediction)
 
     man.save_paths(start,end,step_prediction,all_prediction)
     s_time = time.time()

@@ -907,7 +907,8 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
     
 
 def print_time_diff(start_time,op):
-    print "Time to compute %s: %.6f" % (op,(time.time()-start_time))
+    time_dif = time.time() - start_time
+    print "Time to compute %s: %.6f" % (op,time_dif)
     
 
 

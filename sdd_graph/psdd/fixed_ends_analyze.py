@@ -951,7 +951,7 @@ def main():
 
 
     man.save_paths(start,end,step_prediction,all_prediction)
-    s_time = time.time
+    s_time = time.time()
     man.visualize_mid_probs(start,end)
     print_time_diff(s_time,"traversal probabilities")
 

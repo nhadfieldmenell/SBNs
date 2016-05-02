@@ -233,6 +233,7 @@ class PathManager(object):
                     inst[neg_edge] = 0
                 evidence = DataSet.evidence(inst)
                 val,model = self.copy.mpe(evidence)
+                print "mpe model: %s" % str(model)
                 if val > best_prob:
                     best_prob = val
                     best_model = model

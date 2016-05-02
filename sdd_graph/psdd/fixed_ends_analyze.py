@@ -26,16 +26,18 @@ class PathManager(object):
         self.paths = []
         self.copy = copy
 
-    def save_paths(self,step_by_step,all_at_once,start,end):
+    def save_paths(self,start,end,step_by_step,all_at_once=None):
         """Save path instantiations to files in the paths directory."""
 
         step_fn = "paths/step_%d_%d_%d_%d.pickle" % (self.rows,self.cols,start,end)
-        all_fn = "paths/all_%d_%d_%d_%d.pickle" % (self.rows,self.cols,start,end)
-
         with open(step_fn,'wb') as output:
             pickle.dump(step_by_step,output)
-        with open(all_fn,'wb') as output:
-            pickle.dump(all_at_once,output)
+
+        if all_at_once != None:
+            all_fn = "paths/all_%d_%d_%d_%d.pickle" % (self.rows,self.cols,start,end)
+
+            with open(all_fn,'wb') as output:
+                pickle.dump(all_at_once,output)
 
 
     def draw_grid(self,model):
@@ -970,10 +972,10 @@ def main():
     print "Starting"
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
-    all_prediction = man.best_all_at_once(start,end)
+    #all_prediction = man.best_all_at_once(start,end)
     step_prediction = man.best_step_by_step(start,end)
 
-    man.save_paths(step_prediction,all_prediction,start,end)
+    man.save_paths(start,end,step_prediction)
     man.visualize_mid_probs(start,end)
 
     

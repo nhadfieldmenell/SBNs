@@ -237,7 +237,7 @@ class PathManager(object):
                 for key in model:
                     if model[key] == 1:
                         mpe_model[key-1] = 1
-                self.draw_grid(best_model)
+                self.draw_grid(mpe_model)
                 if val > best_prob:
                     best_prob = val
                     best_model = mpe_model

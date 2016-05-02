@@ -237,6 +237,7 @@ class PathManager(object):
                 for key in model:
                     if model[key] == 1:
                         mpe_model[key-1] = 1
+                print "\n"
                 self.draw_grid(mpe_model)
                 if val > best_prob:
                     best_prob = val
@@ -247,7 +248,7 @@ class PathManager(object):
         #probability = self.copy.probability(evidence)
         #print "Best found probability: %f" % best_prob
         #print "Probability of best model: %f" % probability
-        print "BEST MPE MODEL"
+        print "\n\nBEST MPE MODEL"
         self.draw_grid(best_model)
         return best_model
 

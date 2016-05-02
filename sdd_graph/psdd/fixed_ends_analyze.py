@@ -900,6 +900,9 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
             print "kl (%d,%d): %d" % (i,j,kl_divergence)
     
 
+def print_time_diff(start_time,op):
+    print "Time to compute %s: %.6f" % (op,time.time()-start_time)
+    
 
 
 def main():
@@ -929,14 +932,21 @@ def main():
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
 
 
-    print "Starting"
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
+
+    s_time = time.time()
     all_prediction = man.best_all_at_once(start,end)
+    print_time_diff(s_time,"all at once prediction")
+    s_time = time.time()
     step_prediction = man.best_step_by_step(start,end)
+    print_time_diff(s_time,"step by step prediction")
+
 
     man.save_paths(start,end,step_prediction,all_prediction)
+    s_time = time.time
     man.visualize_mid_probs(start,end)
+    print_time_diff(s_time,"traversal probabilities")
 
     
 

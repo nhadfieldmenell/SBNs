@@ -87,8 +87,8 @@ def main():
             row,col = gps_to_coords(lat,lon,min_lat,max_lat,min_lon,max_lon,lat_step,lon_step)
             node = coords_to_node(cols,row,col)
             node2count[node] += 1
-            node2total_lat += lat
-            node2total_lon += lon
+            node2total_lat[node] += lat
+            node2total_lon[node] += lon
 
     node2avg_gps = {}
     for node in node2count:

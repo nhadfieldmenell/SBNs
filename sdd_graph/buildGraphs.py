@@ -69,7 +69,7 @@ class Graph(object):
         with open(out_fn,'w') as outfile:
             for node in nodes.keys():
                 coords = self.node_to_coords(node)
-                outfile.write("%s\n" % str(self.coords_to_gps(coords))[1:-1])
+                outfile.write("1,%s\n" % str(self.coords_to_gps(coords))[1:-1])
 
 
 

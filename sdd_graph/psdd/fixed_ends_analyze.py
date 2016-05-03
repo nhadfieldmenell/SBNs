@@ -34,6 +34,7 @@ class PathManager(object):
             point: (x,y)
             coords2in: dict mapping (i,j) to True if it is included in the model
         """
+        print "Nearest Neighbor for %s" % str(point)
         row,col = point
         best_dist = self.rows
         step = 0

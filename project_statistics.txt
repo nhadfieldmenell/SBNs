@@ -3,3 +3,6 @@ Apr 29, 2016:
 
 May 2, 2016:
     Time to do model checking for 10x10: 12,000 minutes
+    
+    Time to do step vs all at once for 8x8: 46 minutes
+        Traversal probabilities 43 minutes

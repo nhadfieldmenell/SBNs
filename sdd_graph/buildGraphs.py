@@ -981,7 +981,7 @@ def main():
     max_lon = -122.4
     """
 
-    #g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
+    g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
     #test_lat,test_lon = 37.793364, -122.409793 
     #coords = g.gps_to_coords(test_lat,test_lon)
     #print g.coords_to_node(coords[0],coords[1])

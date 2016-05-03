@@ -987,6 +987,7 @@ def main():
 
     for node in (11,12,19,20,55):
         print "Node %d: %s" % (node,str(g.node_to_coords(node)))
+    return
 
     #test_lat,test_lon = 37.793364, -122.409793 
     #coords = g.gps_to_coords(test_lat,test_lon)

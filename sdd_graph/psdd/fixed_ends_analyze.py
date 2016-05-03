@@ -34,7 +34,6 @@ class PathManager(object):
             point: (x,y)
             coords2in: dict mapping (i,j) to True if it is included in the model
         """
-        print "Nearest Neighbor for %s" % str(point)
         row,col = point
         best_dist = self.rows
         step = 0
@@ -103,7 +102,11 @@ class PathManager(object):
             Hausdorff and sum hausdorff distances
         """
         coords2in1 = self.edge_array_to_coords(edge_path1)
+        for coord in coords2in1:
+            print "Coords in 1: %s" % str(coord)
         coords2in2 = self.edge_array_to_coords(edge_path2)
+        for coord in coords2in2:
+            print "Coords in 2: %s" % str(coord)
         worst1,total1 = self.max_and_total_shortest(coords2in1,coords2in2)
         worst2,total2 = self.max_and_total_shortest(coords2in2,coords2in1)
         worst = max(worst1,worst2)

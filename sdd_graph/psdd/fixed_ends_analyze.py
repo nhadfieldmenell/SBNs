@@ -1011,7 +1011,7 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
 
     haus,sum_haus = man.min_and_sum_hausdorff(edge_path1,edge_path2)
 
-    print "Hausdorff: %d" % haus
+    print "Hausdorff: %f" % haus
     print "Sum Hausdorff: %f" % sum_haus
 
     return

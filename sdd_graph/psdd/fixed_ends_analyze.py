@@ -1006,7 +1006,7 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
 
     for i in (2,8,16):
         edge_path1[i] = 1
-    for i in (6,14,24):
+    for i in (6,14,24,33,43):
         edge_path2[i] = 1
 
     haus,sum_haus = man.min_and_sum_hausdorff(edge_path1,edge_path2)

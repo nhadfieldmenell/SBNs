@@ -8,6 +8,7 @@ import os.path
 import random
 import pickle
 import heapq
+from scipy.spatial import distance
 
 from collections import defaultdict
 from pypsdd import *
@@ -25,6 +26,41 @@ class PathManager(object):
         self.edge_index2tuple = edge_index2tuple
         self.paths = []
         self.copy = copy
+
+    def nearest_neighbor(self,point,coords2in):
+        """Find the euclidean distance of the nearest neighbor to point in the model
+
+        Attributes
+            point: (x,y)
+            coords2in: dict mapping (i,j) to True if it is included in the model
+        """
+        row,col = point
+        best_dist = self.rows
+        step = 0
+        while step < best_dist:
+            for row_i in range(row-step,row+step+1):
+                if row_i < 0 or row_i >= self.rows:
+                    continue
+                for col_i in (col-step,col+step):
+                    if col_i < 0 or col_i >= self.cols:
+                        continue
+                    if (row_i,col_i) in coords2in:
+                        dist = distance.euclidean(point,(row_i,col_i))
+                        if dist < best_dist:
+                            best_dist = dist
+            for col_i in range(col-step+1,col+step):
+                if col_i < 0 or col_i >= self.cols:
+                    continue
+                for row_i in (row-step,row+step):
+                    if row_i < 0 or row_i >= self.rows:
+                        continue
+                    if (row_i,col_i) in coords2in:
+                        dist = distance.euclidean(point,(row_i,col_i))
+                        if dist < best_dist:
+                            best_dist = dist
+        return best_dist
+
+
 
     def save_paths(self,start,end,step_by_step,all_at_once=None):
         """Save path instantiations to files in the paths directory."""
@@ -908,6 +944,19 @@ def print_time_diff(start_time,op):
     print "Time to compute %s: %.6f" % (op,time_dif)
     
 
+def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
+    man = PathManager(rows,cols,edge2index,edge_index2tuple)
+    nodes = [2,3,9,15,21,22,23]
+    coords2in = {}
+    for node in nodes:
+        coords2in[man.node_to_tuple(node)] = True
+    lookup_nodes = [3,4,6,14,21,29,26,31]
+    for node in lookup_nodes:
+        pt = man.node_to_tuple(node)
+        nearest_dist = man.nearest_neighbor(pt,coords2in)
+        print "Nearest neighbor to %d is %.4f" % (node,nearest_dist)
+
+
 
 def main():
     rows = int(sys.argv[1])
@@ -919,6 +968,9 @@ def main():
     edge_tuple_filename = '../graphs/edge-to-tuple-%d-%d.pickle' % (rows,cols)
     edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
+
+    test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple)
+    return
 
     #man = PathManager(rows,cols,edge2index)
     #man.start_set(start,end)

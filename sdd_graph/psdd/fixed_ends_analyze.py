@@ -88,6 +88,14 @@ class PathManager(object):
         return max_shortest,total_shortest
 
 
+    def path_diff_measures(self,edge_path1,edge_path2):
+        haus,sum_haus = self.min_and_sum_hausdorff(edge_path1,edge_path2)
+        DSN = normed_edge_diff(edge_path1,edge_path2)
+        print "Hausdorff: %f" % haus
+        print "Sum Hausdorff: %f" % sum_haus
+        print "Dissimilarity: %f" % DSN
+
+
     def min_and_sum_hausdorff(self,edge_path1,edge_path2):
         """Find the hausdorff and sum hausdorff distance for two edge arrays.
         
@@ -101,14 +109,8 @@ class PathManager(object):
         Returns:
             Hausdorff and sum hausdorff distances
         """
-        print edge_path1
-        print edge_path2
         coords2in1 = self.edge_array_to_coords(edge_path1)
-        for coord in coords2in1:
-            print "Coords in 1: %s" % str(coord)
         coords2in2 = self.edge_array_to_coords(edge_path2)
-        for coord in coords2in2:
-            print "Coords in 2: %s" % str(coord)
         worst1,total1 = self.max_and_total_shortest(coords2in1,coords2in2)
         worst2,total2 = self.max_and_total_shortest(coords2in2,coords2in1)
         worst = max(worst1,worst2)
@@ -992,6 +994,14 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
             kl_divergence = PSddNode.kl_psdds(psdds[i],pmanagers[i],psdds[j],pmanagers[j])
             print "kl (%d,%d): %d" % (i,j,kl_divergence)
     
+def normed_edge_diff(edge_path1,edge_path2):
+    num_diff = 0.0
+    for i in range(len(egee_path1)):
+        if edge_path1[i] == 1 and edge_path2[i] != 1:
+            num_diff += 1
+        elif edge_path2[i] == 1 and edge_path1[i] != 1:
+            num_diff += 1
+    return num_diff/(len(edge_path1) + len(edge_path2))
 
 def print_time_diff(start_time,op):
     time_dif = time.time() - start_time
@@ -1009,6 +1019,8 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
     for i in (6,14,24,33,43):
         edge_path2[i] = 1
 
+    path_diff_measures(self,edge_path1,edge_path2)
+    return
     haus,sum_haus = man.min_and_sum_hausdorff(edge_path1,edge_path2)
 
     print "Hausdorff: %f" % haus

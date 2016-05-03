@@ -74,8 +74,8 @@ class PathManager(object):
         for i in range(self.num_edges):
             if edge_array[i] == 1:
                 node1,node2 = self.edge_index2tuple[i]
-                coords2in[self.node_to_coords(node1)] = True
-                coords2in[self.node_to_coords(node2)] = True
+                coords2in[self.node_to_tuple(node1)] = True
+                coords2in[self.node_to_tuple(node2)] = True
         return coords2in
 
     def max_and_total_shortest(self,coords2in1,coords2in2):

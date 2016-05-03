@@ -996,7 +996,7 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
     
 def normed_edge_diff(edge_path1,edge_path2):
     num_diff = 0.0
-    for i in range(len(egee_path1)):
+    for i in range(len(edge_path1)):
         if edge_path1[i] == 1 and edge_path2[i] != 1:
             num_diff += 1
         elif edge_path2[i] == 1 and edge_path1[i] != 1:

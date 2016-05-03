@@ -69,9 +69,9 @@ class Graph(object):
         node2avg_gps = pickle.load(open('pickles/node2avg_gps_%d_%d.pickle' % (self.rows,self.cols),'rb'))
         with open(out_fn,'w') as outfile:
             for node in nodes.keys():
-                #outfile.write("1,%s\n" % str(node2avg_gps[node])[1:-1])
-                coords = self.node_to_coords(node)
-                outfile.write("1,%s\n" % str(self.coords_to_gps(coords))[1:-1])
+                outfile.write("1,%s\n" % str(node2avg_gps[node])[1:-1])
+                #coords = self.node_to_coords(node)
+                #outfile.write("1,%s\n" % str(self.coords_to_gps(coords))[1:-1])
 
 
 
@@ -339,7 +339,9 @@ class Graph(object):
         return row*self.cols + col + 1
 
     def coords_to_gps(self,coords):
-        """Return the midpoint (lat,lon) of the node at the specified coordinates"""
+        """Return the midpoint (lat,lon) of the node at the specified coordinates
+        THIS CODE IS BROKEN.  THE LONGITUDE CALCULATION IS WRONG
+        """
         return ((self.min_lat + (self.lat_step * (0.5+coords[0]))),(self.min_lon + (self.lon_step * (0.5+coords[1]))))
 
     def gps_to_coords(self,lat,lon):
@@ -984,10 +986,6 @@ def main():
     """
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
-
-    for node in (11,12,19,20,55):
-        print "Node %d: %s" % (node,str(g.node_to_coords(node)))
-    return
 
     #test_lat,test_lon = 37.793364, -122.409793 
     #coords = g.gps_to_coords(test_lat,test_lon)

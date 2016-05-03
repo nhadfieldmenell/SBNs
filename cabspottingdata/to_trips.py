@@ -60,9 +60,15 @@ def create_trip_list(ids):
                     out_file.write("%d,%f,%f,%d\n" % (trip_num,lat,lon,time))
                 prev_occ = occ
 
+def save_ids(ids):
+    with open('taxi_ids.pickle','wb') as output:
+        pickle.dump(ids,output)
+
 
 def main():
     ids = find_ids()
+    save_ids(ids)
+    return
     #convert_all_to_csv(ids)
     create_trip_list(ids)
     return

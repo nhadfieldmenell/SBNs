@@ -90,7 +90,7 @@ class PathManager(object):
 
     def path_diff_measures(self,edge_path1,edge_path2):
         haus,sum_haus = self.min_and_sum_hausdorff(edge_path1,edge_path2)
-        DSN = normed_edge_diff(edge_path1,edge_path2)
+        DSN = edge_DSN(edge_path1,edge_path2)
         print "Hausdorff: %f" % haus
         print "Sum Hausdorff: %f" % sum_haus
         print "Dissimilarity: %f" % DSN
@@ -230,7 +230,7 @@ class PathManager(object):
                 best_i = s_i
 
 
-        #self.draw_edge_probs([-1 for i in range(self.num_edges)],edge_num2prob,start,end)
+        self.draw_edge_probs([-1 for i in range(self.num_edges)],edge_num2prob,start,end)
         return start_asgnmts[best_i]
 
     def partial_prob(self,partial,end):
@@ -302,7 +302,7 @@ class PathManager(object):
 
         print ""
         print ""
-        #self.draw_edge_probs(cur_path,edge_num2prob,start,end)
+        self.draw_edge_probs(cur_path,edge_num2prob,start,end)
         return possible_edges[best_i]
 
 
@@ -374,9 +374,9 @@ class PathManager(object):
         for i in range(len(path.model)):
             if path.model[i] == -1:
                 path.model[i] = 0
-        #self.draw_edge_probs(path.model[:],{},start,end)
-        print "STEP-BY-STEP PREDICTION"
-        self.draw_grid(path.model)
+        self.draw_edge_probs(path.model[:],{},start,end)
+        #print "STEP-BY-STEP PREDICTION"
+        #self.draw_grid(path.model)
 
         return path.model[:]
 
@@ -994,7 +994,7 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
             kl_divergence = PSddNode.kl_psdds(psdds[i],pmanagers[i],psdds[j],pmanagers[j])
             print "kl (%d,%d): %d" % (i,j,kl_divergence)
     
-def normed_edge_diff(edge_path1,edge_path2):
+def edge_DSN(edge_path1,edge_path2):
     num_diff = 0.0
     for i in range(len(edge_path1)):
         if edge_path1[i] == 1 and edge_path2[i] != 1:
@@ -1051,8 +1051,7 @@ def main():
     edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
 
-    test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple)
-    return
+    #test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple)
 
     #man = PathManager(rows,cols,edge2index)
     #man.start_set(start,end)
@@ -1081,40 +1080,19 @@ def main():
     print_time_diff(s_time,"step by step prediction")
 
 
-    print "\nALL-AT-ONCE PREDICTION"
+    print "STEP-BY-STEP PREDICTION"
+    man.draw_grid(step_prediction)
+
+    print "ALL-AT-ONCE PREDICTION"
     man.draw_grid(all_prediction)
+
+    man.path_diff_measures(all_prediction,step_prediction)
 
     man.save_paths(start,end,step_prediction,all_prediction)
     return
     s_time = time.time()
     man.visualize_mid_probs(start,end)
     print_time_diff(s_time,"traversal probabilities")
-
-    
-
-
-    return
-
-    perform_analysis(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges,"GENERAL ENDPOINT")
-    perform_analysis(rows,cols,start,end,fn_prefix_fixed,data_fn_fixed,bad_fn_fixed,edge2index,num_edges,"FIXED ENDPOINT")
-
-
-
-
-
-
-
-    return
-    total_prob = 0.0
-    s_neighbors = (start,start-1,start+cols,start+cols-1) 
-    e_neighbors = (end,end-1,end+cols)#,end+cols-1) 
-    for s_n in s_neighbors:
-        for e_n in e_neighbors:
-            total_prob += prob_start_end(rows,cols,s_n,e_n,num_edges,edge2index,copy)
-
-    print total_prob
-    return
-
 
 
 if __name__ == '__main__':

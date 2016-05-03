@@ -69,9 +69,9 @@ class Graph(object):
         node2avg_gps = pickle.load(open('pickles/node2avg_gps_%d_%d.pickle' % (self.rows,self.cols),'rb'))
         with open(out_fn,'w') as outfile:
             for node in nodes.keys():
-                outfile.write("1,%s\n" % str(node2avg_gps[node])[1:-1])
-                #coords = self.node_to_coords(node)
-                #outfile.write("1,%s\n" % str(self.coords_to_gps(coords))[1:-1])
+                #outfile.write("1,%s\n" % str(node2avg_gps[node])[1:-1])
+                coords = self.node_to_coords(node)
+                outfile.write("1,%s\n" % str(self.coords_to_gps(coords))[1:-1])
 
 
 

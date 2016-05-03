@@ -1001,7 +1001,7 @@ def normed_edge_diff(edge_path1,edge_path2):
             num_diff += 1
         elif edge_path2[i] == 1 and edge_path1[i] != 1:
             num_diff += 1
-    return num_diff/(len(edge_path1) + len(edge_path2))
+    return num_diff/(edge_path1.count(1) + edge_path2.count(1))
 
 def print_time_diff(start_time,op):
     time_dif = time.time() - start_time

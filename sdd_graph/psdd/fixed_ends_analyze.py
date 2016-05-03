@@ -1052,8 +1052,7 @@ def main():
     edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
 
-    test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple)
-    return
+    #test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple)
 
     #man = PathManager(rows,cols,edge2index)
     #man.start_set(start,end)

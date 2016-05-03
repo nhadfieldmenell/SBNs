@@ -66,7 +66,7 @@ class Graph(object):
                 node_tup = self.edge_index2tuple[i]
                 nodes[node_tup[0]] = True
                 nodes[node_tup[1]] = True
-        node2avg_gps = pickle.load(open('pickles/node2avg_gps.pickle','rb'))
+        node2avg_gps = pickle.load(open('pickles/node2avg_gps_%d_%d.pickle' % (self.rows,self.cols),'rb'))
         with open(out_fn,'w') as outfile:
             for node in nodes.keys():
                 outfile.write("1,%s\n" % str(node2avg_gps[node])[1:-1])

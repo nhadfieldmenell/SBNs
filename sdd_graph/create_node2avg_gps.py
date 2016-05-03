@@ -95,7 +95,7 @@ def main():
         node_ct = node2count[node]
         node2avg_gps[node] = (node2total_lat[node]/node_ct,node2total_lon[node]/node_ct)
 
-    with open('pickles/node2avg_gps.pickle','wb') as output:
+    with open('pickles/node2avg_gps_%d_%d.pickle' % (rows,cols),'wb') as output:
         pickle.dump(node2avg_gps,output)
 
 

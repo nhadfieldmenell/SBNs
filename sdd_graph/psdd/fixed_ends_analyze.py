@@ -8,7 +8,6 @@ import os.path
 import random
 import pickle
 import heapq
-from scipy.spatial import distance
 
 from collections import defaultdict
 from pypsdd import *
@@ -45,7 +44,7 @@ class PathManager(object):
                     if col_i < 0 or col_i >= self.cols:
                         continue
                     if (row_i,col_i) in coords2in:
-                        dist = distance.euclidean(point,(row_i,col_i))
+                        dist = euclidean(point,(row_i,col_i))
                         if dist < best_dist:
                             best_dist = dist
             for col_i in range(col-step+1,col+step):
@@ -55,7 +54,7 @@ class PathManager(object):
                     if row_i < 0 or row_i >= self.rows:
                         continue
                     if (row_i,col_i) in coords2in:
-                        dist = distance.euclidean(point,(row_i,col_i))
+                        dist = euclidean(point,(row_i,col_i))
                         if dist < best_dist:
                             best_dist = dist
             step += 1
@@ -694,6 +693,8 @@ class Path(object):
             self.model[edge_num] = 1
             return 1
 
+def euclidean(pt1,pt2):
+    return math.sqrt(math.pow(pt1[0]-pt2[0],2) + math.pow(pt1[1]-pt2[1],2))
 
 def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
     """Create a dataset from the file that consists of only models that are consistent with the sdd
@@ -1051,7 +1052,8 @@ def main():
     edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
 
-    #test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple)
+    test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple)
+    return
 
     #man = PathManager(rows,cols,edge2index)
     #man.start_set(start,end)

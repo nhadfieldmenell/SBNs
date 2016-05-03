@@ -46,7 +46,6 @@ class PathManager(object):
                     if col_i < 0 or col_i >= self.cols:
                         continue
                     if (row_i,col_i) in coords2in:
-                        print "testing %s" % str((row_i,col_i))
                         dist = distance.euclidean(point,(row_i,col_i))
                         if dist < best_dist:
                             best_dist = dist
@@ -57,13 +56,59 @@ class PathManager(object):
                     if row_i < 0 or row_i >= self.rows:
                         continue
                     if (row_i,col_i) in coords2in:
-                        print "testing %s" % str((row_i,col_i))
                         dist = distance.euclidean(point,(row_i,col_i))
                         if dist < best_dist:
                             best_dist = dist
             step += 1
         return best_dist
 
+    def edge_array_to_coords(edge_array):
+        """Determines all nodes traversed in an edge path.
+
+        Attributes
+            edge_array: an array of length num_edges that has traversed edges set to 1 (other edges 0 or -1)
+        Returns
+            node2in: dict mapping traversed nodes (in coordinate form) to True
+        """
+        coords2in = {}
+        for i in range(self.num_edges):
+            if edge_array[i] == 1:
+                node1,node2 = self.edge_index2tuple[i]
+                coords2in[self.node_to_coords(node1)] = True
+                coords2in[self.node_to_coords(node2)] = True
+        return coords2in
+
+    def max_and_total_shortest(coords2in1,coords2in2):
+        max_shortest = 0.0
+        total_shortest = 0.0
+        for point in coords2in1:
+            nearest = self.nearest_neighbor(point,coords2in2)
+            total_shortest += nearest
+            if nearest > max_shortest:
+                max_shortest = nearest
+        return max_shortest,total_shortest
+
+
+    def min_and_sum_hausdorff(edge_path1,edge_path2):
+        """Find the hausdorff and sum hausdorff distance for two edge arrays.
+        
+        Hausdorff distance is max nearest neighbor distance over every point in path 1
+
+        Sum Hausdorff is (sum of nearest neighbors for points in path 1)/points in path 1 + (same for path 2) all divided by 2
+
+        Attributes
+            edge_path1: array that has traversed edges set to 1
+            edge_path2: same
+        Returns:
+            Hausdorff and sum hausdorff distances
+        """
+        coords2in1 = self.edge_array_to_coords(edge_path1)
+        coords2in2 = self.edge_array_to_coords(edge_path2)
+        worst1,total1 = max_and_total_shortest(coords2in1,coords2in2)
+        worst2,total2 = max_and_total_shortest(coords2in2,coords2in1)
+        worst = max(worst1,worst2)
+        normed_total = ((total1/len(coords2in1)) + (total2/len(coords2in2)))/2
+        return worst,normed_total
 
 
     def save_paths(self,start,end,step_by_step,all_at_once=None):
@@ -950,6 +995,22 @@ def print_time_diff(start_time,op):
 
 def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
+
+    edge_path1 = [0 for i in range(man.num_edges)]
+    edge_path2 = [0 for i in range(man.num_edges)]
+
+    for i in (4,6,14,24,33,43):
+        edge_path1[i] = 1
+    for j in (4,10,12,13,14,15,16,26,37,36,33,43):
+        edge_path2[i] = 1
+
+    haus,sum_haus = man.min_and_sum_hausdorff(edge_path1,edge_path2)
+
+    print "Hausdorff: %d" % haus
+    print "Sum Hausdorff: %f" % sum_haus
+
+    return
+
     nodes = [2,3,9,15,21,22,23]
     coords2in = {}
     for node in nodes:

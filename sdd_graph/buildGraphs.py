@@ -997,7 +997,7 @@ def main():
     step_by_step_in = "%s.pickle" % step_by_step_prefix
     step_by_step_out = "%s_coords.txt" % step_by_step_prefix
     g.node_path_to_coords(step_by_step_in,step_by_step_out)
-    g.node_path_to_coords(all_at_once_in,all_at_once_out)
+    #g.node_path_to_coords(all_at_once_in,all_at_once_out)
     return
 
     #test_lat,test_lon = 37.793364, -122.409793 

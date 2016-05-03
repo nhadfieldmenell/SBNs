@@ -138,7 +138,7 @@ class PathManager(object):
                 best_i = s_i
 
 
-        self.draw_edge_probs([-1 for i in range(self.num_edges)],edge_num2prob,start,end)
+        #self.draw_edge_probs([-1 for i in range(self.num_edges)],edge_num2prob,start,end)
         return start_asgnmts[best_i]
 
     def partial_prob(self,partial,end):
@@ -210,7 +210,7 @@ class PathManager(object):
 
         print ""
         print ""
-        self.draw_edge_probs(cur_path,edge_num2prob,start,end)
+        #self.draw_edge_probs(cur_path,edge_num2prob,start,end)
         return possible_edges[best_i]
 
 
@@ -282,7 +282,9 @@ class PathManager(object):
         for i in range(len(path.model)):
             if path.model[i] == -1:
                 path.model[i] = 0
-        self.draw_edge_probs(path.model[:],{},start,end)
+        #self.draw_edge_probs(path.model[:],{},start,end)
+        print "STEP-BY-STEP PREDICTION"
+        self.draw_grid(path.model)
 
         return path.model[:]
 
@@ -945,8 +947,8 @@ def main():
     print_time_diff(s_time,"step by step prediction")
 
 
-    print "\n\nBEST MPE MODEL"
-    self.draw_grid(all_prediction)
+    print "\nALL-AT-ONCE PREDICTION"
+    man.draw_grid(all_prediction)
 
     man.save_paths(start,end,step_prediction,all_prediction)
     s_time = time.time()

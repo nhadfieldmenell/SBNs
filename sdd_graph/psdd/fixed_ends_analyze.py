@@ -62,7 +62,7 @@ class PathManager(object):
             step += 1
         return best_dist
 
-    def edge_array_to_coords(edge_array):
+    def edge_array_to_coords(self,edge_array):
         """Determines all nodes traversed in an edge path.
 
         Attributes
@@ -78,7 +78,7 @@ class PathManager(object):
                 coords2in[self.node_to_coords(node2)] = True
         return coords2in
 
-    def max_and_total_shortest(coords2in1,coords2in2):
+    def max_and_total_shortest(self,coords2in1,coords2in2):
         max_shortest = 0.0
         total_shortest = 0.0
         for point in coords2in1:
@@ -89,7 +89,7 @@ class PathManager(object):
         return max_shortest,total_shortest
 
 
-    def min_and_sum_hausdorff(edge_path1,edge_path2):
+    def min_and_sum_hausdorff(self,edge_path1,edge_path2):
         """Find the hausdorff and sum hausdorff distance for two edge arrays.
         
         Hausdorff distance is max nearest neighbor distance over every point in path 1

@@ -21,7 +21,7 @@ def normalize(line):
     time = int(line[counter+1:])
     return lat,lon,occupied,time
 
-def gps_to_coords(lat,lon,min_lat,max_lat,min_lon,max_lon):
+def gps_to_coords(lat,lon,min_lat,max_lat,min_lon,max_lon,lat_step,lon_step):
     """Taken from buildGraphs.py
     Determines the coodinates on the graph corresponding to a given gps point.
 
@@ -69,6 +69,8 @@ def main():
     max_lat = 37.806
     min_lon = -122.46
     max_lon = -122.39
+    lat_step = float((max_lat-min_lat)/rows)
+    lon_step = float((max_lon-min_lon)/cols)
 
     ids = pickle.load(open('../cabspottingdata/taxi_ids.pickle','rb'))
 
@@ -82,7 +84,7 @@ def main():
         fn.close()
         for line in lines:
             lat,lon,occ,time = normalize(line)
-            row,col = gps_to_coords(lat,lon,min_lat,max_lat,min_lon,max_lon)
+            row,col = gps_to_coords(lat,lon,min_lat,max_lat,min_lon,max_lon,lat_step,lon_step)
             node = coords_to_node(cols,row,col)
             node2count[node] += 1
             node2total_lat += lat

@@ -45,7 +45,7 @@ class PathManager(object):
                     if col_i < 0 or col_i >= self.cols:
                         continue
                     if (row_i,col_i) in coords2in:
-                        print "testing %s" % str(row_i,col_i)
+                        print "testing %s" % str((row_i,col_i))
                         dist = distance.euclidean(point,(row_i,col_i))
                         if dist < best_dist:
                             best_dist = dist
@@ -56,7 +56,7 @@ class PathManager(object):
                     if row_i < 0 or row_i >= self.rows:
                         continue
                     if (row_i,col_i) in coords2in:
-                        print "testing %s" % str(row_i,col_i)
+                        print "testing %s" % str((row_i,col_i))
                         dist = distance.euclidean(point,(row_i,col_i))
                         if dist < best_dist:
                             best_dist = dist

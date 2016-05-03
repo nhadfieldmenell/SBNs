@@ -104,8 +104,8 @@ class PathManager(object):
         """
         coords2in1 = self.edge_array_to_coords(edge_path1)
         coords2in2 = self.edge_array_to_coords(edge_path2)
-        worst1,total1 = max_and_total_shortest(coords2in1,coords2in2)
-        worst2,total2 = max_and_total_shortest(coords2in2,coords2in1)
+        worst1,total1 = man.max_and_total_shortest(coords2in1,coords2in2)
+        worst2,total2 = man.max_and_total_shortest(coords2in2,coords2in1)
         worst = max(worst1,worst2)
         normed_total = ((total1/len(coords2in1)) + (total2/len(coords2in2)))/2
         return worst,normed_total

@@ -1,0 +1,5 @@
+Apr 29, 2016:
+    Time to do step-vs-step vs all-at-once for 6x6: 530m
+
+May 2, 2016:
+    Time to do model checking for 10x10: 12,000 minutes

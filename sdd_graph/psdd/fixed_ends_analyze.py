@@ -40,11 +40,9 @@ class PathManager(object):
         step = 0
         while step < best_dist:
             for row_i in range(row-step,row+step+1):
-                print "row_i %d" % row_i
                 if row_i < 0 or row_i >= self.rows:
                     continue
                 for col_i in (col-step,col+step):
-                    print "col_i %d" % col_i
                     if col_i < 0 or col_i >= self.cols:
                         continue
                     if (row_i,col_i) in coords2in:
@@ -63,6 +61,7 @@ class PathManager(object):
                         dist = distance.euclidean(point,(row_i,col_i))
                         if dist < best_dist:
                             best_dist = dist
+            step += 1
         return best_dist
 
 

@@ -1014,7 +1014,7 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
     edge_path1 = [0 for i in range(man.num_edges)]
     edge_path2 = [0 for i in range(man.num_edges)]
 
-    for i in (2,8,16):
+    for i in (2,8,16,25,36):
         edge_path1[i] = 1
     for i in (6,14,24,33,43):
         edge_path2[i] = 1

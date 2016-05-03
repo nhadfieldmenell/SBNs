@@ -77,7 +77,7 @@ def main():
     node2count = defaultdict(int)
 
     for trip_id in ids:
-        fn = open('csv_%s.txt' % trip_id,'r')
+        fn = open('../cabspottingdata/csv_%s.txt' % trip_id,'r')
         lines = fn.readlines()
         fn.close()
         for line in lines:

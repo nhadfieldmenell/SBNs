@@ -101,6 +101,8 @@ class PathManager(object):
         Returns:
             Hausdorff and sum hausdorff distances
         """
+        print edge_path1
+        print edge_path2
         coords2in1 = self.edge_array_to_coords(edge_path1)
         for coord in coords2in1:
             print "Coords in 1: %s" % str(coord)

@@ -54,7 +54,7 @@ class Graph(object):
         self.first_last2trip_ids = defaultdict(list)
         #self.trip_id2lengths,self.avg_length = self.path_lengths()
 
-    def node_path_to_coords(self,edge_fn,out_fn):
+    def node_path_to_coords(self,edge_fn,out_fn,label):
         """Read in a path instantiation from a file and determine the corresponding path in GPS coords.
         For each node traversed in the path, output the center point of that node.
         """
@@ -68,7 +68,7 @@ class Graph(object):
         node2avg_gps = pickle.load(open('pickles/node2avg_gps_%d_%d.pickle' % (self.rows,self.cols),'rb'))
         with open(out_fn,'w') as outfile:
             for node in nodes.keys():
-                outfile.write("1,%s\n" % str(node2avg_gps[node])[1:-1])
+                outfile.write("%s,%s\n" % (label,str(node2avg_gps[node])[1:-1]))
                 #coords = self.node_to_coords(node)
                 #outfile.write("1,%s\n" % str(self.coords_to_gps(coords))[1:-1])
 
@@ -1000,8 +1000,8 @@ def main():
     step_by_step_prefix = "psdd/paths/step_%d_%d_%d_%d" % (rows,cols,start,end)
     step_by_step_in = "%s.pickle" % step_by_step_prefix
     step_by_step_out = "%s_coords.txt" % step_by_step_prefix
-    g.node_path_to_coords(step_by_step_in,step_by_step_out)
-    g.node_path_to_coords(all_at_once_in,all_at_once_out)
+    g.node_path_to_coords(step_by_step_in,step_by_step_out,"STEP")
+    g.node_path_to_coords(all_at_once_in,all_at_once_out,"ALL")
     return
 
     #test_lat,test_lon = 37.793364, -122.409793 

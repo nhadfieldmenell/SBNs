@@ -47,7 +47,6 @@ class Graph(object):
 
         #self.diags = self.create_diags()
         self.num_edges = self.rows*(self.cols-1) + self.cols*(self.rows-1)  #self.diags[self.rows+self.cols-2]
-        print "num edges: %d" % self.num_edges
         self.node2visited = defaultdict(int) 
         self.node2trip_ids = defaultdict(list)
         self.best_node = 1

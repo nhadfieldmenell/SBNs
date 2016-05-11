@@ -1173,16 +1173,12 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
 
 def exactly_one(edges,model):
     one_found = False
-    print "looking for %s" % str(edges)
     for edge in edges:
         if model[edge] == 1:
-            print "found %d" % edge
             if one_found == True:
                 return False
-            one_found == True
-    print "made it out"
+            one_found = True
     if one_found == True:
-        print "returning true"
         return True
     else:
         return False

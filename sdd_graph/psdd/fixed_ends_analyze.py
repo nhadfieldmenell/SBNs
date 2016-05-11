@@ -42,8 +42,9 @@ class PathManager(object):
                 all_prediction = self.best_all_at_once(i,j)
                 first_last2all_prediction[(i,j)] = all_prediction
                 reverse_prediction = self.best_all_at_once(j,i) 
-                if not array_equal(list(all_prediction),list(reverse_prediction)):
-                    print "reverse not same! %s" % str((i,j))
+                for k in range(len(all_prediction)):
+                    if all_prediction[k] != reverse_prediction[k]:
+                        print "reverse not same! %s" % str((i,j))
                 first_last2all_prediction[(j,i)] = first_last2all_prediction[(i,j)]
 
         with open('pickles/first_last2all_prediction-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:

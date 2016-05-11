@@ -28,7 +28,7 @@ class PathManager(object):
         self.copy = copy
         fl2models_fn = '../pickles/trip_id2first_last-%d-%d.pickle' % (self.rows,self.cols)
         fl2models_exists = os.path.isfile(fl2models_fn)
-        if file_exists:
+        if fl2models_exists:
             self.trip_id2first_last = pickle.load(open(fl2models_fn,'rb'))
 
     def all_all_predictions(self):

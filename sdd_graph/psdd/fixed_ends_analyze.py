@@ -77,6 +77,7 @@ class PathManager(object):
                 #print "trip first last: %s" % str(trip_fl)
                 model = full_tuple[trip_id]
                 if not self.model_matches_fl(model,trip_fl) or trip_fl[0] == trip_fl[1]:
+                    print trip_id
                     bad_paths[trip_id] = True
                     continue
                 if trip_fl not in first_last2models:
@@ -1167,7 +1168,6 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
         nearest_dist = man.nearest_neighbor(pt,coords2in)
         print "Nearest neighbor to %d is %.4f" % (node,nearest_dist)
 
-
 def exactly_one(edges,model):
     one_found = False
     for edge in edges:
@@ -1179,8 +1179,6 @@ def exactly_one(edges,model):
         return True
     else:
         return False
-
-
 
 def main():
     rows = int(sys.argv[1])

@@ -1176,6 +1176,7 @@ def exactly_one(edges,model):
     print "looking for %s" % str(edges)
     for edge in edges:
         if model[edge] == 1:
+            print "found %d" % edge
             if one_found == True:
                 return False
             one_found == True

@@ -1133,7 +1133,7 @@ def analyze_paths_taken(man):
     print "total paths: %d" % total_paths
     print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
     print "total long pairs (min distance %d): %d" % (long_dist,total_long_pairs)
-    print "average number of paths per long fl pair: %f" % (float(total_long_paths)/(total_long_pairs*total_long_trips))
+    print "average number of paths per long fl pair: %f" % (float(total_long_paths)/(total_long_trips))
     """
     for i in range(5):
         fl = heapq.heappop(count_and_fl)[1]

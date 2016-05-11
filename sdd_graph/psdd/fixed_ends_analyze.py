@@ -54,6 +54,9 @@ class PathManager(object):
     def create_first_last2models(self,data_fn,bad_fn):
         """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to lat.
         Map those models to the count of paths that take the model.
+
+        This function also determines the bad paths as defined by not having a path consistent with ones first, last pair.
+            We do not save this right now, but use it in calculating the first_last2models to have the true models
         """
         trip_id2first_last = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (self.rows,self.cols),'rb'))
         first_last2trip_ids = defaultdict(list)
@@ -95,13 +98,13 @@ class PathManager(object):
     def analyze_paths_taken(self):
         first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'rb'))
         count_and_fl_long = []
+        radius = 4 
         #this will double count overlapping paths going from (i,j) and (j,i)
         total_paths = 0
         total_fl_pairs = 0
         total_long_pairs = 0
         weighted_total_long_paths = 0
         total_long_paths = 0
-        long_dist = 0 
         total_long_trips = 0
         total_trips = 0
         weighted_total_paths = 0
@@ -116,7 +119,7 @@ class PathManager(object):
             total_trips += num_trips
             weighted_total_paths += num_trips*num_paths
 
-            if self.node_dist(first_last[0],first_last[1]) > long_dist:
+            if self.node_dist(first_last[0],first_last[1]) > radius:
                 total_long_trips += num_trips
                 total_long_pairs += 1
                 total_long_paths += num_paths
@@ -125,14 +128,14 @@ class PathManager(object):
         print "total paths: %d" % total_paths
         print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
         print "weighted average number of paths per fl pair: %f" % (float(weighted_total_paths)/(total_trips))
-        print "total long pairs (min distance %d): %d" % (long_dist,total_long_pairs)
+        print "total long pairs (min distance %d): %d" % (radius,total_long_pairs)
         print "average paths per long fl pair: %f" % (float(total_long_paths)/total_long_pairs)
         print "weighted average number of paths per long fl pair: %f" % (float(weighted_total_long_paths)/(total_long_trips))
         quarter_of_fl_long = total_long_pairs/4
         for i in range(4):
             count,fl = heapq.heappop(count_and_fl_long)
             count = 0-count
-            print "%dth percentile has %d models for long paths (min radius %d)" % ((100-i*25),count,long_dist)
+            print "%dth percentile has %d models for long paths (min radius %d)" % ((100-i*25),count,radius)
             print "first, last: %s" % str(fl)
             for model in first_last2models[fl]:
                 self.draw_grid(model)
@@ -1211,7 +1214,7 @@ def main():
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
-    man.create_first_last2models(data_fn_general,bad_fn_general)
+    #man.create_first_last2models(data_fn_general,bad_fn_general)
     man.analyze_paths_taken()
     return
 

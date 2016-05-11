@@ -1088,16 +1088,16 @@ def create_first_last2models(man,data_fn,bad_fn):
         #if trip_id > 25:
         #    return
         if (trip_id) not in bad_paths:
-            print "inserting trip: %d" % trip_id
+            #print "inserting trip: %d" % trip_id
             trip_fl = trip_id2first_last[trip_id]
-            print "trip first last: %s" % str(trip_fl)
+            #print "trip first last: %s" % str(trip_fl)
             model = full_tuple[trip_id]
             if not man.model_matches_fl(model,trip_fl):
                 bad_paths[trip_id] = True
                 continue
             if trip_fl not in first_last2models:
                 first_last2models[trip_fl] = defaultdict(int)
-            man.draw_grid(model)
+            #man.draw_grid(model)
             first_last2models[trip_fl][model] += 1
             inserted += 1
     with open('pickles/first_last2models-%d-%d.pickle' % (man.rows,man.cols),'wb') as output:

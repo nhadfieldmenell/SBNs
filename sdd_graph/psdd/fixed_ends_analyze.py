@@ -34,8 +34,8 @@ class PathManager(object):
         second_incidents = self.incident_edges(second)
         if exactly_one(first_incidents,model) and exactly_one(second_incidents,model):
             return True
-        print fl
-        self.draw_grid(model)
+        #print fl
+        #self.draw_grid(model)
         return False
         """
         found = False
@@ -71,16 +71,16 @@ class PathManager(object):
         first_last2models = {}
         inserted = 0
         for trip_id in range(1,len(full_tuple)):
-            if trip_id > 25:
-                return
+            #if trip_id > 25:
+            #    return
             if (trip_id) not in bad_paths:
                 #print "inserting trip: %d" % trip_id
                 trip_fl = trip_id2first_last[trip_id]
                 #print "trip first last: %s" % str(trip_fl)
                 model = full_tuple[trip_id]
                 if not self.model_matches_fl(model,trip_fl) or trip_fl[0] == trip_fl[1]:
-                    if trip_id < 200:
-                        print trip_id
+                    #if trip_id < 200:
+                    #    print trip_id
                     bad_paths[trip_id] = True
                     continue
                 if trip_fl not in first_last2models:
@@ -1178,7 +1178,7 @@ def exactly_one(edges,model):
             if one_found == True:
                 return False
             one_found = True
-    if one_found == True:
+    if one_found:
         return True
     else:
         return False

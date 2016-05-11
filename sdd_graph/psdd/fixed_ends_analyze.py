@@ -41,6 +41,89 @@ class PathManager(object):
                 return True
         return False
         
+    def create_first_last2models(self,data_fn,bad_fn):
+        """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to lat.
+        Map those models to the count of paths that take the model.
+        """
+        trip_id2first_last = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (self.rows,self.cols),'rb'))
+        first_last2trip_ids = defaultdict(list)
+        bad_paths = {}
+        with open(bad_fn,'r') as infile:
+            bad_indices = map(int,infile.readlines())
+            for index in bad_indices:
+                bad_paths[index+1] = True
+        with open(data_fn,'r') as infile:
+            lines = infile.readlines()
+            full_ints = map(lambda x: map(int,x[:-1].split(',')),lines)
+            full_tuple = map(tuple,full_ints)
+        #to deal with the 1-indexing of trip ids
+        full_tuple.insert(0,0)
+        first_last2models = {}
+        inserted = 0
+        for trip_id in range(1,len(full_tuple)):
+            #if trip_id > 25:
+            #    return
+            if (trip_id) not in bad_paths:
+                #print "inserting trip: %d" % trip_id
+                trip_fl = trip_id2first_last[trip_id]
+                #print "trip first last: %s" % str(trip_fl)
+                model = full_tuple[trip_id]
+                if not self.model_matches_fl(model,trip_fl) or trip_fl[0] == trip_fl[1]:
+                    bad_paths[trip_id] = True
+                    continue
+                if trip_fl not in first_last2models:
+                    first_last2models[trip_fl] = defaultdict(int)
+                #self.draw_grid(model)
+                first_last2models[trip_fl][model] += 1
+                inserted += 1
+        print "num inserted: %d" % inserted
+        with open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
+            pickle.dump(first_last2models,output)
+
+    def analyze_paths_taken(self):
+        first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'rb'))
+        count_and_fl = []
+        #this will double count overlapping paths going from (i,j) and (j,i)
+        total_paths = 0
+        total_fl_pairs = 0
+        total_long_pairs = 0
+        weighted_total_long_paths = 0
+        total_long_paths = 0
+        long_dist = 4 
+        total_long_trips = 0
+        total_trips = 0
+        weighted_total_paths = 0
+        for first_last in first_last2models:
+            models = first_last2models[first_last]
+            total_fl_pairs += 1
+            num_paths = len(first_last2models[first_last])
+            total_paths += num_paths
+            num_trips = 0
+            for model in models:
+                num_trips += models[model]
+            total_trips += num_trips
+            weighted_total_paths += num_trips*num_paths
+
+            if self.node_dist(first_last[0],first_last[1]) > long_dist:
+                total_long_trips += num_trips
+                total_long_pairs += 1
+                total_long_paths += num_paths
+                weighted_total_long_paths += num_trips*num_paths
+                heapq.heappush(count_and_fl,[(0-num_paths),first_last])
+        print "total paths: %d" % total_paths
+        print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
+        print "weighted average number of paths per fl pair: %f" % (float(weighted_total_paths)/(total_trips))
+        print "total long pairs (min distance %d): %d" % (long_dist,total_long_pairs)
+        print "average paths per long fl pair: %f" % (float(total_long_paths)/total_long_pairs)
+        print "weighted average number of paths per long fl pair: %f" % (float(weighted_total_long_paths)/(total_long_trips))
+        """
+        for i in range(5):
+            fl = heapq.heappop(count_and_fl)[1]
+            print "first, last: %s" % str(fl)
+            for model in first_last2models[fl]:
+                self.draw_grid(model)
+                print ""
+        """
 
     def node_dist(self,node1,node2):
         return euclidean(self.node_to_tuple(node1),self.node_to_tuple(node2))
@@ -1068,89 +1151,6 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
 
 
 
-def create_first_last2models(man,data_fn,bad_fn):
-    """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to lat.
-    Map those models to the count of paths that take the model.
-    """
-    trip_id2first_last = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (man.rows,man.cols),'rb'))
-    first_last2trip_ids = defaultdict(list)
-    bad_paths = {}
-    with open(bad_fn,'r') as infile:
-        bad_indices = map(int,infile.readlines())
-        for index in bad_indices:
-            bad_paths[index+1] = True
-    with open(data_fn,'r') as infile:
-        lines = infile.readlines()
-        full_ints = map(lambda x: map(int,x[:-1].split(',')),lines)
-        full_tuple = map(tuple,full_ints)
-    #to deal with the 1-indexing of trip ids
-    full_tuple.insert(0,0)
-    first_last2models = {}
-    inserted = 0
-    for trip_id in range(1,len(full_tuple)):
-        #if trip_id > 25:
-        #    return
-        if (trip_id) not in bad_paths:
-            #print "inserting trip: %d" % trip_id
-            trip_fl = trip_id2first_last[trip_id]
-            #print "trip first last: %s" % str(trip_fl)
-            model = full_tuple[trip_id]
-            if not man.model_matches_fl(model,trip_fl) or trip_fl[0] == trip_fl[1]:
-                bad_paths[trip_id] = True
-                continue
-            if trip_fl not in first_last2models:
-                first_last2models[trip_fl] = defaultdict(int)
-            #man.draw_grid(model)
-            first_last2models[trip_fl][model] += 1
-            inserted += 1
-    print "num inserted: %d" % inserted
-    with open('pickles/first_last2models-%d-%d.pickle' % (man.rows,man.cols),'wb') as output:
-        pickle.dump(first_last2models,output)
-
-def analyze_paths_taken(man):
-    first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (man.rows,man.cols),'rb'))
-    count_and_fl = []
-    #this will double count overlapping paths going from (i,j) and (j,i)
-    total_paths = 0
-    total_fl_pairs = 0
-    total_long_pairs = 0
-    weighted_total_long_paths = 0
-    total_long_paths = 0
-    long_dist = 4 
-    total_long_trips = 0
-    total_trips = 0
-    weighted_total_paths = 0
-    for first_last in first_last2models:
-        models = first_last2models[first_last]
-        total_fl_pairs += 1
-        num_paths = len(first_last2models[first_last])
-        total_paths += num_paths
-        num_trips = 0
-        for model in models:
-            num_trips += models[model]
-        total_trips += num_trips
-        weighted_total_paths += num_trips*num_paths
-
-        if man.node_dist(first_last[0],first_last[1]) > long_dist:
-            total_long_trips += num_trips
-            total_long_pairs += 1
-            total_long_paths += num_paths
-            weighted_total_long_paths += num_trips*num_paths
-            heapq.heappush(count_and_fl,[(0-num_paths),first_last])
-    print "total paths: %d" % total_paths
-    print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
-    print "weighted average number of paths per fl pair: %f" % (float(weighted_total_paths)/(total_trips))
-    print "total long pairs (min distance %d): %d" % (long_dist,total_long_pairs)
-    print "average paths per long fl pair: %f" % (float(total_long_paths)/total_long_pairs)
-    print "weighted average number of paths per long fl pair: %f" % (float(weighted_total_long_paths)/(total_long_trips))
-    """
-    for i in range(5):
-        fl = heapq.heappop(count_and_fl)[1]
-        print "first, last: %s" % str(fl)
-        for model in first_last2models[fl]:
-            man.draw_grid(model)
-            print ""
-    """
 
 
 
@@ -1182,8 +1182,8 @@ def main():
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
-    #create_first_last2models(man,data_fn_general,bad_fn_general)
-    analyze_paths_taken(man)
+    man.create_first_last2models(data_fn_general,bad_fn_general)
+    man.analyze_paths_taken()
     return
 
 

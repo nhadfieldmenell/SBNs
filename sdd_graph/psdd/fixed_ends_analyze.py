@@ -1040,6 +1040,33 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
         print "Nearest neighbor to %d is %.4f" % (node,nearest_dist)
 
 
+def paths_taken(rows,cols,edge2index,edge_index2tuple,data_fn,bad_fn):
+    man = PathManager(rows,cols,edge2index,edge_index2tuple)
+    trip_id2first_last = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (rows,cols),'rb'))
+    first_last2trip_ids = defaultdict(list)
+    bad_paths = {}
+    with open(bad_fn,'r') as infile:
+        bad_indices = map(int,infile.readlines())
+        for index in bad_indices:
+            bad_paths[index] = True
+    with open(data_fn,'r') as infile:
+        lines = infile.readlines()
+        full_ints = map(lambda x: map(int,x[:-1].split(',')),lines)
+        full_tuple = map(tuple,full_ints)
+    #to deal with the 1-indexing of trip ids
+    full_tuple.insert(0,0)
+    first_last2models = {}
+    inserted = 0
+    for trip_id in range(1,len(full_tuple)):
+        if trip_id not in bad_paths:
+            trip_fl = trip_id2first_last[trip_id]
+            if trip_fl not in first_last2models:
+                first_last2models[trip_fl] = defaultdict(int)
+            model = full_tuple[trip_id]
+            first_last2models[trip_fl][model] += 1
+            inserted += 1
+    print "inserted %d models" % inserted
+    print "there are %d good models" % (len(full_tuple)-1-len(bad_indices))
 
 def main():
     rows = int(sys.argv[1])
@@ -1068,6 +1095,8 @@ def main():
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
+    paths_taken(rows,cols,edge2index,edge_index2tuple,data_fn_general,bad_fn_general)
+    return
 
 
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)

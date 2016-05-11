@@ -472,10 +472,6 @@ class PathManager(object):
         best_prob = 0.0
         for s_a in start_asgnmts:
             for e_a in end_asgnmts:
-                print "start_edge: %d" % s_a[0]
-                print "start negative edges: %s" % str(s_a[1])
-                print "end_edge: %d" % e_a[0]
-                print "end negative edges: %s" % str(e_a[1])
                 inst = [-1 for i in range(self.num_edges)]
                 inst[s_a[0]] = 1
                 inst[e_a[0]] = 1
@@ -484,7 +480,13 @@ class PathManager(object):
                 for neg_edge in e_a[1]:
                     inst[neg_edge] = 0
                 evidence = DataSet.evidence(inst)
-                val,model = self.copy.mpe(evidence)
+                try:
+                    val,model = self.copy.mpe(evidence)
+                except:
+                    print "start_edge: %d" % s_a[0]
+                    print "start negative edges: %s" % str(s_a[1])
+                    print "end_edge: %d" % e_a[0]
+                    print "end negative edges: %s" % str(e_a[1])
                 mpe_model = [0 for i in range(self.num_edges)]
                 for key in model:
                     if model[key] == 1:

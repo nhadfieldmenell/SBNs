@@ -41,6 +41,9 @@ class PathManager(object):
                 print (i,j)
                 all_prediction = self.best_all_at_once(i,j)
                 first_last2all_prediction[(i,j)] = all_prediction
+                reverse_prediction = self.best_all_at_once(j,i) 
+                if not array_equal(list(all_prediction),list(reverse_prediction)):
+                    print "reverse not same! %s" % str((i,j))
                 first_last2all_prediction[(j,i)] = first_last2all_prediction[(i,j)]
 
         with open('pickles/first_last2all_prediction-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
@@ -484,9 +487,7 @@ class PathManager(object):
                     val,model = self.copy.mpe(evidence)
                 except:
                     print "start_edge: %d" % s_a[0]
-                    print "start negative edges: %s" % str(s_a[1])
                     print "end_edge: %d" % e_a[0]
-                    print "end negative edges: %s" % str(e_a[1])
                     continue
                 mpe_model = [0 for i in range(self.num_edges)]
                 for key in model:

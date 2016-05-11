@@ -89,7 +89,7 @@ class PathManager(object):
         total_long_pairs = 0
         weighted_total_long_paths = 0
         total_long_paths = 0
-        long_dist = 4 
+        long_dist = 6 
         total_long_trips = 0
         total_trips = 0
         weighted_total_paths = 0
@@ -1166,6 +1166,11 @@ def exactly_one(edges,model):
         if model[edge] == 1:
             if one_found == True:
                 return False
+            one_found == True
+    if one_found:
+        return True
+    else:
+        return False
 
 
 

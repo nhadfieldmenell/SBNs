@@ -1092,7 +1092,7 @@ def create_first_last2models(man,data_fn,bad_fn):
             trip_fl = trip_id2first_last[trip_id]
             #print "trip first last: %s" % str(trip_fl)
             model = full_tuple[trip_id]
-            if not man.model_matches_fl(model,trip_fl):
+            if not man.model_matches_fl(model,trip_fl) or trip_fl[0] == trip_fl[1]:
                 bad_paths[trip_id] = True
                 continue
             if trip_fl not in first_last2models:
@@ -1154,7 +1154,7 @@ def main():
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
-    #create_first_last2models(man,data_fn_general,bad_fn_general)
+    create_first_last2models(man,data_fn_general,bad_fn_general)
     analyze_paths_taken(man)
     return
 

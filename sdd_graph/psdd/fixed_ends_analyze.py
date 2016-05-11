@@ -27,9 +27,7 @@ class PathManager(object):
         self.copy = copy
 
     def node_dist(self,node1,node2):
-        return
-
-        return 0
+        return euclidean(self.node_to_tuple(node1),self.node_to_tuple(node2))
 
 
     def nearest_neighbor(self,point,coords2in):
@@ -1126,6 +1124,8 @@ def main():
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
     create_first_last2models(rows,cols,data_fn_general,bad_fn_general)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
+    print man.node_dist(2,12)
+    print man.node_dist(25,37)
     analyze_paths_taken(man)
     return
 

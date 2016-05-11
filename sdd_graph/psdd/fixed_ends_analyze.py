@@ -1118,6 +1118,7 @@ def analyze_paths_taken(man):
     print "total paths: %d" % total_paths
     print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
     fl = heapq.heappop(count_and_fl)[1]
+    print "first, last: %s" % str(fl)
     for model in first_last2models[fl]:
         man.draw_grid(model)
         print ""

@@ -1045,11 +1045,11 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
         print "Nearest neighbor to %d is %.4f" % (node,nearest_dist)
 
 
-def create_first_last2models(rows,cols,data_fn,bad_fn):
+def create_first_last2models(man,data_fn,bad_fn):
     """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to lat.
     Map those models to the count of paths that take the model.
     """
-    trip_id2first_last = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (rows,cols),'rb'))
+    trip_id2first_last = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (man.rows,man.cols),'rb'))
     first_last2trip_ids = defaultdict(list)
     bad_paths = {}
     with open(bad_fn,'r') as infile:
@@ -1065,14 +1065,19 @@ def create_first_last2models(rows,cols,data_fn,bad_fn):
     first_last2models = {}
     inserted = 0
     for trip_id in range(1,len(full_tuple)):
+        if trip_id > 25:
+            return
         if (trip_id) not in bad_paths:
+            print "inserting trip: %d" % trip_id
             trip_fl = trip_id2first_last[trip_id]
+            print "trip first last: %s" % str(trip_fl)
             if trip_fl not in first_last2models:
                 first_last2models[trip_fl] = defaultdict(int)
             model = full_tuple[trip_id]
+            print man.draw_grid(model)
             first_last2models[trip_fl][model] += 1
             inserted += 1
-    with open('pickles/first_last2models-%d-%d.pickle' % (rows,cols),'wb') as output:
+    with open('pickles/first_last2models-%d-%d.pickle' % (man.rows,man.cols),'wb') as output:
         pickle.dump(first_last2models,output)
 
 def analyze_paths_taken(man):
@@ -1122,10 +1127,8 @@ def main():
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
-    create_first_last2models(rows,cols,data_fn_general,bad_fn_general)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
-    print man.node_dist(2,12)
-    print man.node_dist(25,37)
+    create_first_last2models(man,data_fn_general,bad_fn_general)
     analyze_paths_taken(man)
     return
 

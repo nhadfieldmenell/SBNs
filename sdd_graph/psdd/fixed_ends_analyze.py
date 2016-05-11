@@ -1085,15 +1085,16 @@ def create_first_last2models(man,data_fn,bad_fn):
     first_last2models = {}
     inserted = 0
     for trip_id in range(1,len(full_tuple)):
-        if trip_id > 25:
-            return
+        #if trip_id > 25:
+        #    return
         if (trip_id) not in bad_paths:
             print "inserting trip: %d" % trip_id
             trip_fl = trip_id2first_last[trip_id]
             print "trip first last: %s" % str(trip_fl)
             model = full_tuple[trip_id]
             if not man.model_matches_fl(model,trip_fl):
-                print "BAD"
+                bad_paths[trip_id] = True
+                continue
             if trip_fl not in first_last2models:
                 first_last2models[trip_fl] = defaultdict(int)
             man.draw_grid(model)

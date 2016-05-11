@@ -1180,7 +1180,9 @@ def exactly_one(edges,model):
             if one_found == True:
                 return False
             one_found == True
+    print "made it out"
     if one_found:
+        print "returning true"
         return True
     else:
         return False

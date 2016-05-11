@@ -98,7 +98,7 @@ class PathManager(object):
     def analyze_paths_taken(self):
         first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'rb'))
         count_and_fl_long = []
-        radius = 4 
+        radius = 6 
         #this will double count overlapping paths going from (i,j) and (j,i)
         total_paths = 0
         total_fl_pairs = 0

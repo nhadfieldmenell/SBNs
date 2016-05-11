@@ -26,6 +26,9 @@ class PathManager(object):
         self.paths = []
         self.copy = copy
 
+    def node_dist(self,node1,node2):
+
+
     def nearest_neighbor(self,point,coords2in):
         """Find the euclidean distance of the nearest neighbor to point in the model
 
@@ -1082,7 +1085,7 @@ def analyze_paths_taken(rows,cols):
         total_paths += num_paths
         heapq.heappush([(0-num_paths),first_last],count_and_fl)
     print "total paths: %d" % total_paths
-    print "average paths per fl pair: %f" % (float(total_fl_pairs)/total_paths)
+    print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
 
 
 

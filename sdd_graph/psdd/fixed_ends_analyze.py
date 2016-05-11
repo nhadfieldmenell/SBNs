@@ -1066,7 +1066,7 @@ def create_first_last2models(rows,cols,data_fn,bad_fn):
     first_last2models = {}
     inserted = 0
     for trip_id in range(1,len(full_tuple)):
-        if trip_id not in bad_paths:
+        if (trip_id-1) not in bad_paths:
             trip_fl = trip_id2first_last[trip_id]
             if trip_fl not in first_last2models:
                 first_last2models[trip_fl] = defaultdict(int)
@@ -1124,7 +1124,7 @@ def main():
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
-    #create_first_last2models(rows,cols,data_fn_general,bad_fn_general)
+    create_first_last2models(rows,cols,data_fn_general,bad_fn_general)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
     analyze_paths_taken(man)
     return

@@ -1110,9 +1110,6 @@ def analyze_paths_taken(man):
     #this will double count overlapping paths going from (i,j) and (j,i)
     total_paths = 0
     total_fl_pairs = 0
-    for model in first_last2models[(3,37)]:
-        man.draw_grid(model)
-        print ""
     for first_last in first_last2models:
         total_fl_pairs += 1
         num_paths = len(first_last2models[first_last])
@@ -1120,6 +1117,10 @@ def analyze_paths_taken(man):
         heapq.heappush([(0-num_paths),first_last],count_and_fl)
     print "total paths: %d" % total_paths
     print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
+    fl = heapq.heappop(count_and_fl)[1]
+    for model in first_last2models[fl]:
+        man.draw_grid(model)
+        print ""
 
 
 
@@ -1152,7 +1153,7 @@ def main():
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
-    create_first_last2models(man,data_fn_general,bad_fn_general)
+    #create_first_last2models(man,data_fn_general,bad_fn_general)
     analyze_paths_taken(man)
     return
 

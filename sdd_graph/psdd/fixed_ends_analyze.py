@@ -1065,8 +1065,9 @@ def paths_taken(rows,cols,edge2index,edge_index2tuple,data_fn,bad_fn):
             model = full_tuple[trip_id]
             first_last2models[trip_fl][model] += 1
             inserted += 1
-    print "inserted %d models" % inserted
-    print "there are %d good models" % (len(full_tuple)-1-len(bad_indices))
+    with open('pickles/first_last2models-%d-%d.pickle' % (rows,cols),'wb') as output:
+        pickle.dump(first_last2models,output)
+
 
 def main():
     rows = int(sys.argv[1])

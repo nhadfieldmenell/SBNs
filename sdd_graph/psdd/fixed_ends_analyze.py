@@ -77,7 +77,8 @@ class PathManager(object):
                 #print "trip first last: %s" % str(trip_fl)
                 model = full_tuple[trip_id]
                 if not self.model_matches_fl(model,trip_fl) or trip_fl[0] == trip_fl[1]:
-                    print trip_id
+                    if trip_id < 200:
+                        print trip_id
                     bad_paths[trip_id] = True
                     continue
                 if trip_fl not in first_last2models:

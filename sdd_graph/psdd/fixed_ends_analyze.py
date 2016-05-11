@@ -1117,11 +1117,12 @@ def analyze_paths_taken(man):
         heapq.heappush(count_and_fl,[(0-num_paths),first_last])
     print "total paths: %d" % total_paths
     print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
-    fl = heapq.heappop(count_and_fl)[1]
-    print "first, last: %s" % str(fl)
-    for model in first_last2models[fl]:
-        man.draw_grid(model)
-        print ""
+    for i in range(5):
+        fl = heapq.heappop(count_and_fl)[1]
+        print "first, last: %s" % str(fl)
+        for model in first_last2models[fl]:
+            man.draw_grid(model)
+            print ""
 
 
 
@@ -1154,7 +1155,7 @@ def main():
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
-    create_first_last2models(man,data_fn_general,bad_fn_general)
+    #create_first_last2models(man,data_fn_general,bad_fn_general)
     analyze_paths_taken(man)
     return
 

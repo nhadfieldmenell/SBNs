@@ -1113,21 +1113,29 @@ def analyze_paths_taken(man):
     #this will double count overlapping paths going from (i,j) and (j,i)
     total_paths = 0
     total_fl_pairs = 0
+    total_long_pairs = 0
+    total_long_paths = 0
+    long_dist = 4
     for first_last in first_last2models:
         total_fl_pairs += 1
         num_paths = len(first_last2models[first_last])
         total_paths += num_paths
-        if man.node_dist(first_last[0],first_last[1]) > 4:
+        if man.node_dist(first_last[0],first_last[1]) > long_dist:
+            total_long_pairs += 1
+            total_long_paths += num_paths
             heapq.heappush(count_and_fl,[(0-num_paths),first_last])
     print "total paths: %d" % total_paths
     print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
+    print "total long pairs (min distance %d): %d" % (long_dist,total_long_pairs)
+    print "average number of paths per long fl pair: %f" % % (float(total_long_paths)/total_long_pairs)
+    """
     for i in range(5):
         fl = heapq.heappop(count_and_fl)[1]
         print "first, last: %s" % str(fl)
         for model in first_last2models[fl]:
             man.draw_grid(model)
             print ""
-
+    """
 
 
 

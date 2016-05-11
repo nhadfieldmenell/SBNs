@@ -1000,9 +1000,9 @@ def main():
     step_by_step_prefix = "psdd/paths/step_%d_%d_%d_%d" % (rows,cols,start,end)
     step_by_step_in = "%s.pickle" % step_by_step_prefix
     step_by_step_out = "%s_coords.txt" % step_by_step_prefix
-    g.node_path_to_coords(step_by_step_in,step_by_step_out,"STEP")
-    g.node_path_to_coords(all_at_once_in,all_at_once_out,"ALL")
-    return
+    #g.node_path_to_coords(step_by_step_in,step_by_step_out,"STEP")
+    #g.node_path_to_coords(all_at_once_in,all_at_once_out,"ALL")
+    #return
 
     #test_lat,test_lon = 37.793364, -122.409793 
     #coords = g.gps_to_coords(test_lat,test_lon)
@@ -1028,7 +1028,7 @@ def main():
 
 
     #single_epoch(g,rows,cols,midpoint)
-    taxi_epoch_no_times(g,rows,cols,start,end,trip_id2line_num)
+    #taxi_epoch_no_times(g,rows,cols,start,end,trip_id2line_num)
     taxi_general_no_times(g,rows,cols,trip_id2line_num)
 
     

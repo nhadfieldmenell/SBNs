@@ -120,7 +120,7 @@ class PathManager(object):
         for i in range(4):
             count,fl = heapq.heappop(count_and_fl_long)
             count = 0-count
-            print "%dth percentile has % models" % ((100-i*25),count)
+            print "%dth percentile has %d models" % ((100-i*25),count)
             print "first, last: %s" % str(fl)
             for model in first_last2models[fl]:
                 self.draw_grid(model)

@@ -120,7 +120,7 @@ class PathManager(object):
         for i in range(4):
             count,fl = heapq.heappop(count_and_fl_long)
             count = 0-count
-            print "%dth percentile has %d models" % ((100-i*25),count)
+            print "%dth percentile has %d models for long paths (min radius %d)" % ((100-i*25),count,long_dist)
             print "first, last: %s" % str(fl)
             for model in first_last2models[fl]:
                 self.draw_grid(model)
@@ -1163,7 +1163,9 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
 def exactly_one(edges,model):
     one_found == False
     for edge in edges:
-        break
+        if model[edge] == 1:
+            if one_found == True:
+                return False
 
 
 

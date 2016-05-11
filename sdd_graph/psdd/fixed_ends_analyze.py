@@ -82,7 +82,7 @@ class PathManager(object):
 
     def analyze_paths_taken(self):
         first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'rb'))
-        count_and_fl = []
+        count_and_fl_long = []
         #this will double count overlapping paths going from (i,j) and (j,i)
         total_paths = 0
         total_fl_pairs = 0
@@ -109,21 +109,29 @@ class PathManager(object):
                 total_long_pairs += 1
                 total_long_paths += num_paths
                 weighted_total_long_paths += num_trips*num_paths
-                heapq.heappush(count_and_fl,[(0-num_paths),first_last])
+                heapq.heappush(count_and_fl_long,[(0-num_paths),first_last])
         print "total paths: %d" % total_paths
         print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
         print "weighted average number of paths per fl pair: %f" % (float(weighted_total_paths)/(total_trips))
         print "total long pairs (min distance %d): %d" % (long_dist,total_long_pairs)
         print "average paths per long fl pair: %f" % (float(total_long_paths)/total_long_pairs)
         print "weighted average number of paths per long fl pair: %f" % (float(weighted_total_long_paths)/(total_long_trips))
-        """
-        for i in range(5):
-            fl = heapq.heappop(count_and_fl)[1]
+        quarter_of_fl_long = total_long_pairs/4
+        for i in range(4):
+            count,fl = heapq.heappop(count_and_fl_long)
+            count = 0-count
+            print "%dth percentile has % models" % ((100-i*25),count)
             print "first, last: %s" % str(fl)
             for model in first_last2models[fl]:
                 self.draw_grid(model)
                 print ""
-        """
+            for j in range(quarter_of_fl_long):
+                if j < 2:
+                fl = heapq.heappop(count_and_fl_long)[1]
+                print "first, last: %s" % str(fl)
+                for model in first_last2models[fl]:
+                    self.draw_grid(model)
+                    print ""
 
     def node_dist(self,node1,node2):
         return euclidean(self.node_to_tuple(node1),self.node_to_tuple(node2))

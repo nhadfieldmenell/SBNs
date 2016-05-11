@@ -30,6 +30,12 @@ class PathManager(object):
         first = fl[0]
         second = fl[1]
         found = False
+        first_incidents = self.incident_edges(first)
+        second_incidents = self.incident_edges(second)
+        if not exactly_one(first_incidents,model) or not exactly_one(second_incidents,model):
+            return False
+        return true
+        """
         for edge in self.incident_edges(first):
             if model[edge] == 1:
                 found = True
@@ -40,7 +46,8 @@ class PathManager(object):
             if model[edge] == 1:
                 return True
         return False
-        
+        """
+
     def create_first_last2models(self,data_fn,bad_fn):
         """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to lat.
         Map those models to the count of paths that take the model.
@@ -89,7 +96,7 @@ class PathManager(object):
         total_long_pairs = 0
         weighted_total_long_paths = 0
         total_long_paths = 0
-        long_dist = 6 
+        long_dist = 0 
         total_long_trips = 0
         total_trips = 0
         weighted_total_paths = 0

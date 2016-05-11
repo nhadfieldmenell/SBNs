@@ -1116,7 +1116,7 @@ def analyze_paths_taken(man):
     total_long_pairs = 0
     weighted_total_long_paths = 0
     total_long_paths = 0
-    long_dist = 6 
+    long_dist = 4 
     total_long_trips = 0
     total_trips = 0
     weighted_total_paths = 0

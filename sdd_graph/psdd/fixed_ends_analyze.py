@@ -26,6 +26,10 @@ class PathManager(object):
         self.edge_index2tuple = edge_index2tuple
         self.paths = []
         self.copy = copy
+        fl2models_fn = '../pickles/trip_id2first_last-%d-%d.pickle' % (self.rows,self.cols)
+        fl2models_exists = os.path.isfile(fl2models_fn)
+        if file_exists:
+            self.trip_id2first_last = pickle.load(open(fl2models_fn,'rb'))
 
     def all_all_predictions(self):
         """Find and save all the all-at-once predictions for a given grid.
@@ -33,8 +37,8 @@ class PathManager(object):
         """
         first_last2all_prediction = {}
         for i in range(1,self.num_nodes+1):
-            print "finding paths starting at %d" % i
             for j in range(i+1,self.num_nodes+1):
+                print (i,j)
                 all_prediction = self.best_all_at_once(i,j)
                 first_last2all_prediction[(i,j)] = all_prediction
                 first_last2all_prediction[(j,i)] = first_last2all_prediction[(i,j)]
@@ -100,11 +104,19 @@ class PathManager(object):
                 first_last2models[trip_fl][model] += 1
                 inserted += 1
         print "num inserted: %d" % inserted
+        self.first_last2models = first_last2models
         with open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
             pickle.dump(first_last2models,output)
 
-    def analyze_paths_taken(self):
+    def compare_observed_models(self):
+        """Compare the difference between different paths taken for the same start,end pair.
+        Weight these differences by the proportion of paths that took a given model.
+        """
         first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'rb'))
+        
+
+    def analyze_paths_taken(self):
+        #first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'rb'))
         count_and_fl_long = []
         radius = 6 
         #this will double count overlapping paths going from (i,j) and (j,i)
@@ -116,10 +128,10 @@ class PathManager(object):
         total_long_trips = 0
         total_trips = 0
         weighted_total_paths = 0
-        for first_last in first_last2models:
-            models = first_last2models[first_last]
+        for first_last in self.first_last2models:
+            models = self.first_last2models[first_last]
             total_fl_pairs += 1
-            num_paths = len(first_last2models[first_last])
+            num_paths = len(self.first_last2models[first_last])
             total_paths += num_paths
             num_trips = 0
             for model in models:
@@ -148,7 +160,7 @@ class PathManager(object):
             count = 0-count
             print "%dth percentile has %d models for long paths (min radius %d)" % ((100-i*25),count,radius)
             print "first, last: %s" % str(fl)
-            for model in first_last2models[fl]:
+            for model in self.first_last2models[fl]:
                 self.draw_grid(model)
                 print ""
             if i == 3:
@@ -157,7 +169,7 @@ class PathManager(object):
                 fl = heapq.heappop(count_and_fl_long)[1]
                 if j < 2:
                     print "first, last: %s" % str(fl)
-                    for model in first_last2models[fl]:
+                    for model in self.first_last2models[fl]:
                         self.draw_grid(model)
                         print ""
 

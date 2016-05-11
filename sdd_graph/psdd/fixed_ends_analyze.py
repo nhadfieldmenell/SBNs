@@ -1040,8 +1040,10 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
         print "Nearest neighbor to %d is %.4f" % (node,nearest_dist)
 
 
-def paths_taken(rows,cols,edge2index,edge_index2tuple,data_fn,bad_fn):
-    man = PathManager(rows,cols,edge2index,edge_index2tuple)
+def create_first_last2models(rows,cols,data_fn,bad_fn):
+    """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to lat.
+    Map those models to the count of paths that take the model.
+    """
     trip_id2first_last = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (rows,cols),'rb'))
     first_last2trip_ids = defaultdict(list)
     bad_paths = {}
@@ -1067,6 +1069,22 @@ def paths_taken(rows,cols,edge2index,edge_index2tuple,data_fn,bad_fn):
             inserted += 1
     with open('pickles/first_last2models-%d-%d.pickle' % (rows,cols),'wb') as output:
         pickle.dump(first_last2models,output)
+
+def analyze_paths_taken(rows,cols):
+    first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (rows,cols),'rb'))
+    count_and_fl = []
+    #this will double count overlapping paths going from (i,j) and (j,i)
+    total_paths = 0
+    total_fl_pairs = 0
+    for first_last in first_last2models:
+        total_fl_pairs += 1
+        num_paths = len(first_last2models[first_last])
+        total_paths += num_paths
+        heapq.heappush(((0-num_paths),count_and_fl))
+    print "total paths: %d" % total_paths
+    print "average paths per fl pair: %f" % (float(total_fl_pairs)/total_paths)
+
+
 
 
 def main():
@@ -1096,7 +1114,8 @@ def main():
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
-    paths_taken(rows,cols,edge2index,edge_index2tuple,data_fn_general,bad_fn_general)
+    #create_first_last2models(rows,cols,data_fn_general,bad_fn_general)
+    analyze_paths_taken(rows,cols)
     return
 
 

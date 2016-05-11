@@ -5,7 +5,7 @@ import sys
 def main():
     row = int(sys.argv[1])
     col = int(sys.argv[2])
-    first_last2trip_id = pickle.load(open('pickles/first_last2trip_ids-%d-%d.pickle' % (row,col),'rb'))
+    first_last2trip_ids = pickle.load(open('pickles/first_last2trip_ids-%d-%d.pickle' % (row,col),'rb'))
     trip_id2first_last = {}
     for first_last in first_last2trip_ids:
         trips = first_last2trip_ids[first_last]

@@ -1116,18 +1116,24 @@ def analyze_paths_taken(man):
     total_long_pairs = 0
     total_long_paths = 0
     long_dist = 4
+    total_long_trips = 0
     for first_last in first_last2models:
+        models = first_last2models[first_last]
         total_fl_pairs += 1
         num_paths = len(first_last2models[first_last])
         total_paths += num_paths
         if man.node_dist(first_last[0],first_last[1]) > long_dist:
+            num_trips = 0
+            for model in models:
+                num_trips += models[model]
+            total_long_trips += num_trips
             total_long_pairs += 1
-            total_long_paths += num_paths
+            total_long_paths += num_trips*num_paths
             heapq.heappush(count_and_fl,[(0-num_paths),first_last])
     print "total paths: %d" % total_paths
     print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
     print "total long pairs (min distance %d): %d" % (long_dist,total_long_pairs)
-    print "average number of paths per long fl pair: %f" % (float(total_long_paths)/total_long_pairs)
+    print "average number of paths per long fl pair: %f" % (float(total_long_paths)/(total_long_pairs*total_long_trips))
     """
     for i in range(5):
         fl = heapq.heappop(count_and_fl)[1]

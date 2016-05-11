@@ -27,6 +27,7 @@ class PathManager(object):
         self.copy = copy
 
     def node_dist(self,node1,node2):
+        return 0
 
 
     def nearest_neighbor(self,point,coords2in):

@@ -20,16 +20,37 @@ class PathManager(object):
     def __init__(self,rows,cols,edge2index,edge_index2tuple,copy=None):
         self.rows = rows
         self.cols = cols
+        self.num_nodes = rows*cols
         self.num_edges = (rows-1) * cols + (cols-1) * rows
         self.edge2index = edge2index
         self.edge_index2tuple = edge_index2tuple
         self.paths = []
         self.copy = copy
 
+    def all_all_predictions(self):
+        """Find and save all the all-at-once predictions for a given grid.
+        prediction for (i,j) will be the same as prediction for (j,i)
+        """
+        first_last2all_prediction = {}
+        for i in range(1,self.num_nodes+1):
+            print "finding paths starting at %d" % i
+            for j in range(i+1,self.num_nodes+1):
+                all_prediction = self.best_all_at_once(i,j)
+                first_last2all_prediction[(i,j)] = all_prediction
+                first_last2all_prediction[(j,i)] = first_last2all_prediction[(i,j)]
+
+        with open('pickles/first_last2all_prediction-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
+            pickle.dump(first_last2all_prediction,output)
+
+        
+
     def model_matches_fl(self,model,fl):
+        """Determine if the model is consistent with the actual start and end point of the represented trip.
+        Return True if the model terminates at start and end.
+        Return False otherwise.
+        """
         first = fl[0]
         second = fl[1]
-        #"""
         first_incidents = self.incident_edges(first)
         second_incidents = self.incident_edges(second)
         if exactly_one(first_incidents,model) and exactly_one(second_incidents,model):
@@ -37,19 +58,6 @@ class PathManager(object):
         #print fl
         #self.draw_grid(model)
         return False
-        """
-        found = False
-        for edge in self.incident_edges(first):
-            if model[edge] == 1:
-                found = True
-                break
-        if not found:
-            return False
-        for edge in self.incident_edges(second):
-            if model[edge] == 1:
-                return True
-        return False
-        """
 
     def create_first_last2models(self,data_fn,bad_fn):
         """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to lat.
@@ -128,6 +136,9 @@ class PathManager(object):
         print "total paths: %d" % total_paths
         print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
         print "weighted average number of paths per fl pair: %f" % (float(weighted_total_paths)/(total_trips))
+
+        print "\nRadius %d" % radius
+
         print "total long pairs (min distance %d): %d" % (radius,total_long_pairs)
         print "average paths per long fl pair: %f" % (float(total_long_paths)/total_long_pairs)
         print "weighted average number of paths per long fl pair: %f" % (float(weighted_total_long_paths)/(total_long_trips))
@@ -1213,15 +1224,16 @@ def main():
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
-    man = PathManager(rows,cols,edge2index,edge_index2tuple)
+    #man = PathManager(rows,cols,edge2index,edge_index2tuple)
     #man.create_first_last2models(data_fn_general,bad_fn_general)
-    man.analyze_paths_taken()
-    return
+    #man.analyze_paths_taken()
+    #return
 
 
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
-
+    man.all_all_predictions()
+    return
     s_time = time.time()
     all_prediction = man.best_all_at_once(start,end)
     print_time_diff(s_time,"all at once prediction")

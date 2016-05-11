@@ -27,6 +27,7 @@ class PathManager(object):
         self.copy = copy
 
     def node_dist(self,node1,node2):
+        return
 
         return 0
 
@@ -1083,6 +1084,7 @@ def analyze_paths_taken(man):
     total_fl_pairs = 0
     for model in first_last2models[(3,37)]:
         man.draw_grid(model)
+        print ""
     return
     for first_last in first_last2models:
         total_fl_pairs += 1

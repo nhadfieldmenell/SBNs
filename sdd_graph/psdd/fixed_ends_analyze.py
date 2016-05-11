@@ -27,6 +27,7 @@ class PathManager(object):
         self.copy = copy
 
     def node_dist(self,node1,node2):
+
         return 0
 
 
@@ -1074,12 +1075,15 @@ def create_first_last2models(rows,cols,data_fn,bad_fn):
     with open('pickles/first_last2models-%d-%d.pickle' % (rows,cols),'wb') as output:
         pickle.dump(first_last2models,output)
 
-def analyze_paths_taken(rows,cols):
-    first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (rows,cols),'rb'))
+def analyze_paths_taken(man):
+    first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (man.rows,man.cols),'rb'))
     count_and_fl = []
     #this will double count overlapping paths going from (i,j) and (j,i)
     total_paths = 0
     total_fl_pairs = 0
+    for model in first_last2models[(3,37)]:
+        man.draw_grid(model)
+    return
     for first_last in first_last2models:
         total_fl_pairs += 1
         num_paths = len(first_last2models[first_last])
@@ -1119,7 +1123,8 @@ def main():
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
     #create_first_last2models(rows,cols,data_fn_general,bad_fn_general)
-    analyze_paths_taken(rows,cols)
+    man = PathManager(rows,cols,edge2index,edge_index2tuple)
+    analyze_paths_taken(man)
     return
 
 

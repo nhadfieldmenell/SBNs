@@ -157,6 +157,8 @@ class PathManager(object):
     def draw_grid(self,model):
         m = self.rows
         n = self.cols
+        for i in xrange(n):
+            sys.stdout.write("%d " % i)
         for i in xrange(m):
             for j in xrange(n):
                 sys.stdout.write('.')
@@ -164,7 +166,7 @@ class PathManager(object):
                     edge = (i*m+j+1,i*m+j+2)
                     index = self.edge2index[edge]
                     sys.stdout.write('-' if model[index] == 1 else ' ')
-            sys.stdout.write('\n')
+            sys.stdout.write(' %d\n' % i)
             if i < m-1:
                 for j in xrange(n):
                     edge = (i*m+j+1,i*m+m+j+1)

@@ -125,6 +125,8 @@ class PathManager(object):
             for model in first_last2models[fl]:
                 self.draw_grid(model)
                 print ""
+            if i == 3:
+                break
             for j in range(quarter_of_fl_long):
                 fl = heapq.heappop(count_and_fl_long)[1]
                 if j < 2:
@@ -1158,7 +1160,8 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
         print "Nearest neighbor to %d is %.4f" % (node,nearest_dist)
 
 
-
+def exactly_one(edges,model):
+    
 
 
 

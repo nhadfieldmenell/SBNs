@@ -159,6 +159,7 @@ class PathManager(object):
         n = self.cols
         for i in xrange(n):
             sys.stdout.write("%d " % i)
+        sys.stdout.write("\n")
         for i in xrange(m):
             for j in xrange(n):
                 sys.stdout.write('.')

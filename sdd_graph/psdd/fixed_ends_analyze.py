@@ -1080,7 +1080,7 @@ def analyze_paths_taken(rows,cols):
         total_fl_pairs += 1
         num_paths = len(first_last2models[first_last])
         total_paths += num_paths
-        heapq.heappush(((0-num_paths),count_and_fl))
+        heapq.heappush(((0-num_paths),first_last),count_and_fl)
     print "total paths: %d" % total_paths
     print "average paths per fl pair: %f" % (float(total_fl_pairs)/total_paths)
 

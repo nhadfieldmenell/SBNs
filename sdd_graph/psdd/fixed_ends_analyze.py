@@ -1168,7 +1168,7 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
 
 
 def exactly_one(edges,model):
-    one_found == False
+    one_found = False
     for edge in edges:
         if model[edge] == 1:
             if one_found == True:

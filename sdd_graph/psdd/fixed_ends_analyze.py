@@ -487,6 +487,7 @@ class PathManager(object):
                     print "start negative edges: %s" % str(s_a[1])
                     print "end_edge: %d" % e_a[0]
                     print "end negative edges: %s" % str(e_a[1])
+                    continue
                 mpe_model = [0 for i in range(self.num_edges)]
                 for key in model:
                     if model[key] == 1:

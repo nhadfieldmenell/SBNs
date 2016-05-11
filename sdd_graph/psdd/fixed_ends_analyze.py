@@ -1100,6 +1100,7 @@ def create_first_last2models(man,data_fn,bad_fn):
             #man.draw_grid(model)
             first_last2models[trip_fl][model] += 1
             inserted += 1
+    print "num inserted: %d" % inserted
     with open('pickles/first_last2models-%d-%d.pickle' % (man.rows,man.cols),'wb') as output:
         pickle.dump(first_last2models,output)
 

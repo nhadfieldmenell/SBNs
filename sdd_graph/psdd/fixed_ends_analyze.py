@@ -29,13 +29,14 @@ class PathManager(object):
     def model_matches_fl(self,model,fl):
         first = fl[0]
         second = fl[1]
-        found = False
+        """
         first_incidents = self.incident_edges(first)
         second_incidents = self.incident_edges(second)
         if not exactly_one(first_incidents,model) or not exactly_one(second_incidents,model):
             return False
         return true
         """
+        found = False
         for edge in self.incident_edges(first):
             if model[edge] == 1:
                 found = True
@@ -46,7 +47,7 @@ class PathManager(object):
             if model[edge] == 1:
                 return True
         return False
-        """
+        #"""
 
     def create_first_last2models(self,data_fn,bad_fn):
         """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to lat.

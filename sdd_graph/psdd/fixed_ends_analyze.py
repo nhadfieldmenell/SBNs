@@ -927,6 +927,7 @@ def find_kl(rows,cols,fn_prefix,bad_fn,data_fn):
     full_lines = full_file.readlines()
     full_file.close()
 
+    r2
     full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
     full_tuples = map(tuple,full_ints)
 
@@ -1054,7 +1055,7 @@ def create_first_last2models(rows,cols,data_fn,bad_fn):
     with open(bad_fn,'r') as infile:
         bad_indices = map(int,infile.readlines())
         for index in bad_indices:
-            bad_paths[index] = True
+            bad_paths[index+1] = True
     with open(data_fn,'r') as infile:
         lines = infile.readlines()
         full_ints = map(lambda x: map(int,x[:-1].split(',')),lines)
@@ -1064,7 +1065,7 @@ def create_first_last2models(rows,cols,data_fn,bad_fn):
     first_last2models = {}
     inserted = 0
     for trip_id in range(1,len(full_tuple)):
-        if (trip_id-1) not in bad_paths:
+        if (trip_id) not in bad_paths:
             trip_fl = trip_id2first_last[trip_id]
             if trip_fl not in first_last2models:
                 first_last2models[trip_fl] = defaultdict(int)
@@ -1083,7 +1084,6 @@ def analyze_paths_taken(man):
     for model in first_last2models[(3,37)]:
         man.draw_grid(model)
         print ""
-    return
     for first_last in first_last2models:
         total_fl_pairs += 1
         num_paths = len(first_last2models[first_last])

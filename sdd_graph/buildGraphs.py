@@ -6,7 +6,6 @@ import os.path
 import heapq
 import math
 from collections import defaultdict
-import numpypy
 import numpy as np
 import decodeGps as dg
 import test_graph as tg

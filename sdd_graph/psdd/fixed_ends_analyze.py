@@ -26,9 +26,28 @@ class PathManager(object):
         self.paths = []
         self.copy = copy
 
+    def model_matches_fl(self,model,fl):
+        first = fl[0]
+        second = fl[1]
+        found = False
+        for edge in self.incident_edges(first):
+            if model[edge] == 1:
+                found = True
+                break
+        if not found:
+            return False
+        for edge in self.incident_edges(second):
+            if model[edge] == 1:
+                return True
+        return False
+        
+
     def node_dist(self,node1,node2):
         return euclidean(self.node_to_tuple(node1),self.node_to_tuple(node2))
 
+    def incident_edges(self,node):
+        neighbors = self.neighbor_nodes(node)
+        return map(lambda x: self.edge2index[min(x,node),max(x,node)],neighbors)
 
     def nearest_neighbor(self,point,coords2in):
         """Find the euclidean distance of the nearest neighbor to point in the model
@@ -1045,6 +1064,7 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
         print "Nearest neighbor to %d is %.4f" % (node,nearest_dist)
 
 
+
 def create_first_last2models(man,data_fn,bad_fn):
     """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to lat.
     Map those models to the count of paths that take the model.
@@ -1071,10 +1091,12 @@ def create_first_last2models(man,data_fn,bad_fn):
             print "inserting trip: %d" % trip_id
             trip_fl = trip_id2first_last[trip_id]
             print "trip first last: %s" % str(trip_fl)
+            model = full_tuple[trip_id]
+            if not man.model_matches_fl(model,trip_fl):
+                print "BAD"
             if trip_fl not in first_last2models:
                 first_last2models[trip_fl] = defaultdict(int)
-            model = full_tuple[trip_id]
-            print man.draw_grid(model)
+            man.draw_grid(model)
             first_last2models[trip_fl][model] += 1
             inserted += 1
     with open('pickles/first_last2models-%d-%d.pickle' % (man.rows,man.cols),'wb') as output:

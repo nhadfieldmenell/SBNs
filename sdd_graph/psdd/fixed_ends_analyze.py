@@ -1115,6 +1115,7 @@ def analyze_paths_taken(man):
     total_fl_pairs = 0
     total_long_pairs = 0
     weighted_total_long_paths = 0
+    total_long_paths = 0
     long_dist = 6 
     total_long_trips = 0
     total_trips = 0
@@ -1133,12 +1134,14 @@ def analyze_paths_taken(man):
         if man.node_dist(first_last[0],first_last[1]) > long_dist:
             total_long_trips += num_trips
             total_long_pairs += 1
+            total_long_paths += num_paths
             weighted_total_long_paths += num_trips*num_paths
             heapq.heappush(count_and_fl,[(0-num_paths),first_last])
     print "total paths: %d" % total_paths
     print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
     print "weighted average number of paths per fl pair: %f" % (float(weighted_total_paths)/(total_trips))
     print "total long pairs (min distance %d): %d" % (long_dist,total_long_pairs)
+    print "average paths per long fl pair: %f" % (float(total_long_paths)/total_long_pairs)
     print "weighted average number of paths per long fl pair: %f" % (float(weighted_total_long_paths)/(total_long_trips))
     """
     for i in range(5):

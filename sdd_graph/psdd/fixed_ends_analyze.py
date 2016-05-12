@@ -180,7 +180,7 @@ class PathManager(object):
         overall_sum_haus = 0.0
         overall_DSN = 0.0
         for fl in fl2num_trips:
-            if len(first_last2models[fl]) == 1:
+            if len(self.first_last2models[fl]) == 1:
                 continue
             num_trips = fl2num_trips[fl]
             meas = fl2similarity_measures[fl]

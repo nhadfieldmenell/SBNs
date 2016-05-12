@@ -135,7 +135,7 @@ class PathManager(object):
                 probs[model_i] += count
                 total_trips += count
                 model_array.append(model)
-                print "Trips with model %d: %d" % (model_i,count)
+                #print "Trips with model %d: %d" % (model_i,count)
                 model_i += 1
             tot_ovr_trips += total_trips
             fl2num_trips[fl] = total_trips
@@ -146,7 +146,7 @@ class PathManager(object):
             for i in range(num_models):
                 for j in range(i+1,num_models):
                     weights[i][j] = (2*probs[i]*probs[j])/denom
-
+            """
             for i in range(len(model_array)):
                 print "path %d" % i
                 self.draw_grid(model_array[i])
@@ -157,22 +157,37 @@ class PathManager(object):
                 print ""
                 weight_sum += sum(weights[i])
             #print "weight sum: %f" % weight_sum
+            """
 
             fl2similarity_measures[fl] = [0.0,0.0,0.0]
             for i in range(len(model_array)):
                 for j in range(i+1,len(model_array)):
                     weight = weights[i][j]
                     haus,sum_haus,DSN = self.path_diff_measures(model_array[i],model_array[j])
-                    print "%s: haus %.2f, sum_haus %.2f, DSN %.2f" % (str((i,j)),haus,sum_haus,DSN) 
+                    #print "%s: haus %.2f, sum_haus %.2f, DSN %.2f" % (str((i,j)),haus,sum_haus,DSN) 
                     fl2similarity_measures[fl][0] += weight*haus
                     fl2similarity_measures[fl][1] += weight*sum_haus
                     fl2similarity_measures[fl][2] += weight*DSN
             measures = fl2similarity_measures[fl]
             print "overall: haus %.2f, sum_haus %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
-            print ""
+            #print ""
             if num_iters > 6:
                 return
             num_iters += 1
+        overall_haus = 0.0
+        overal_sum_haus = 0.0
+        overall_DSN = 0.0
+        for fl in fl2num_trips:
+            num_trips = fl2num_trips[fl]
+            meas = fl2similarity_measures[fl]
+            overall_haus += num_trips*meas[0]
+            overall_sum_haus += num_trips*meas[1]
+            overall_DSN += num_trips*meas[2]
+        overall_haus = overall_haus/tot_ovr_trips
+        overall_sum_haus = overall_sum_haus/tot_ovr_trips
+        overall_DSN = overall_DSN/tot_ovr_trips
+        print "\naverage hausdorff %.2f, average sum hausdorff %.2f, average DSN %.2f"
+            % (overall_haus,overall_sum_haus,overall_DSN)
         
 
         return

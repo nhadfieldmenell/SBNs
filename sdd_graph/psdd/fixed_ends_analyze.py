@@ -118,7 +118,7 @@ class PathManager(object):
         """Compare the difference between different paths taken for the same start,end pair.
         Weight these differences by the proportion of paths that took a given model.
         """
-       return
+        return
 
     def analyze_paths_taken(self):
         #first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'rb'))

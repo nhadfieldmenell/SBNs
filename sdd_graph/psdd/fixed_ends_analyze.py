@@ -143,7 +143,9 @@ class PathManager(object):
                     weights[i][j] = (2*probs[i]*probs[j])/denom
             weight_sum = 0.0
             for i in range(num_models):
-                print weights[i]
+                for j in range(num_models):
+                    sys.stdout.write("%.3f " % weights[i][j])
+                print ""
                 weight_sum += sum(weights[i])
             print "weight sum: %f\n" % weight_sum
             if num_iters > 4:

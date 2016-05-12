@@ -119,6 +119,10 @@ class PathManager(object):
         Weight these differences by the proportion of paths that took a given model.
         """
         num_iters = 0
+        tot_ovr_trips = 0.0
+        fl2num_trips = {}
+        #first element is hausdorff distance, second is sum hausdorff, third is DSN
+        fl2similarity_measures = {}
         for fl in self.first_last2models:
             models = self.first_last2models[fl]
             num_models = len(models)
@@ -131,16 +135,18 @@ class PathManager(object):
                 probs[model_i] += count
                 total_trips += count
                 model_array.append(model)
-                print "Trips with model %d: %d" % (model_i,count)
+                #print "Trips with model %d: %d" % (model_i,count)
                 model_i += 1
+            tot_ovr_trips += total_trips
+            fl2num_trips[fl] = total_trips
             probs = map(lambda x: x/total_trips,probs)
             diag_sum = sum(map(lambda x: x*x,probs))
-            print "diag sum %f" % diag_sum
             denom = 1.0-diag_sum
             weights = [[0.0 for i in range(num_models)] for i in range(num_models)]
             for i in range(num_models):
                 for j in range(i+1,num_models):
                     weights[i][j] = (2*probs[i]*probs[j])/denom
+
             weight_sum = 0.0
             for i in range(num_models):
                 for j in range(num_models):
@@ -148,12 +154,23 @@ class PathManager(object):
                 print ""
                 weight_sum += sum(weights[i])
             print "weight sum: %f\n" % weight_sum
+
+            fl2similarity_measures[fl] = [0.0,0.0,0.0]
+            for i in range(len(model_array)):
+                for j in range(i+1,len(model_array)):
+                    weight = weights[i][j]
+                    haus,sum_haus,DSN = self.path_diff_measures(,edge_path2)
+                    print "%s: haus %.2f, sum_haus %.2f, DSN %.2f" % (str((i,j)),haus,sum_haus,DSN) 
+                    fl2similarity_measures[fl][0] += weight*haus
+                    fl2similarity_measures[fl][1] += weight*sum_haus
+                    fl2similarity_measures[fl][2] += weight*DSN
+            measures = fl2similarity_measures[fl]
+            print "overall: haus %.2f, sum_haus %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
             if num_iters > 4:
                 return
             num_iters += 1
+        
 
-
-        #path_diff_measures(edge_path1,edge_path2)
         return
 
     def analyze_paths_taken(self):
@@ -285,9 +302,12 @@ class PathManager(object):
     def path_diff_measures(self,edge_path1,edge_path2):
         haus,sum_haus = self.min_and_sum_hausdorff(edge_path1,edge_path2)
         DSN = edge_DSN(edge_path1,edge_path2)
+        """
         print "Hausdorff: %f" % haus
         print "Sum Hausdorff: %f" % sum_haus
         print "Dissimilarity: %f" % DSN
+        """
+        return haus,sum_haus,DSN
 
 
     def min_and_sum_hausdorff(self,edge_path1,edge_path2):

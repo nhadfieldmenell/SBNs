@@ -153,7 +153,7 @@ class PathManager(object):
                     sys.stdout.write("%.3f " % weights[i][j])
                 print ""
                 weight_sum += sum(weights[i])
-            print "weight sum: %f\n" % weight_sum
+            #print "weight sum: %f" % weight_sum
 
             fl2similarity_measures[fl] = [0.0,0.0,0.0]
             for i in range(len(model_array)):
@@ -166,6 +166,7 @@ class PathManager(object):
                     fl2similarity_measures[fl][2] += weight*DSN
             measures = fl2similarity_measures[fl]
             print "overall: haus %.2f, sum_haus %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
+            print ""
             if num_iters > 4:
                 return
             num_iters += 1

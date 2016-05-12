@@ -36,12 +36,20 @@ class PathManager(object):
         only gets prediction for (min(i,j),max(i,j)) since prediction for (i,j) == prediction for (j,i)
         """
         first_last2all_prediction = {}
+        count = 0
+        for fl in self.first_last2models:
+            key = (min(fl[0],fl[1]),max(fl[0],fl[1]))
+            if key not in first_last2all_prediction:
+                print count
+                count += 1
+                all_prediction = self.best_all_at_once(fl[0],fl[1])
+                first_last2all_prediction[key] = all_prediction
+        """
         for i in range(1,self.num_nodes+1):
             for j in range(i+1,self.num_nodes+1):
                 print (i,j)
                 all_prediction = self.best_all_at_once(i,j)
                 first_last2all_prediction[(i,j)] = all_prediction
-                """
                 reverse_prediction = self.best_all_at_once(j,i) 
                 for k in range(len(all_prediction)):
                     if all_prediction[k] != reverse_prediction[k]:
@@ -49,7 +57,8 @@ class PathManager(object):
                 """
                 #first_last2all_prediction[(j,i)] = first_last2all_prediction[(i,j)]
 
-        with open('pickles/first_last2all_prediction-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
+        with open('pickles/first_last2all_prediction_taken-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
+        #with open('pickles/first_last2all_prediction-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
             pickle.dump(first_last2all_prediction,output)
 
         

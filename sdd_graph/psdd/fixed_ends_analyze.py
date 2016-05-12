@@ -135,7 +135,7 @@ class PathManager(object):
                 probs[model_i] += count
                 total_trips += count
                 model_array.append(model)
-                #print "Trips with model %d: %d" % (model_i,count)
+                print "Trips with model %d: %d" % (model_i,count)
                 model_i += 1
             tot_ovr_trips += total_trips
             fl2num_trips[fl] = total_trips
@@ -167,7 +167,7 @@ class PathManager(object):
             measures = fl2similarity_measures[fl]
             print "overall: haus %.2f, sum_haus %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
             print ""
-            if num_iters > 4:
+            if num_iters > 6:
                 return
             num_iters += 1
         

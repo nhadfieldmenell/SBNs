@@ -175,7 +175,7 @@ class PathManager(object):
                 break
             num_iters += 1
         overall_haus = 0.0
-        overal_sum_haus = 0.0
+        overall_sum_haus = 0.0
         overall_DSN = 0.0
         for fl in fl2num_trips:
             num_trips = fl2num_trips[fl]

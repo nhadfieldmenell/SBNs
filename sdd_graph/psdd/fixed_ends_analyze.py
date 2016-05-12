@@ -172,7 +172,7 @@ class PathManager(object):
             print "overall: haus %.2f, sum_haus %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
             #print ""
             if num_iters > 6:
-                return
+                break
             num_iters += 1
         overall_haus = 0.0
         overal_sum_haus = 0.0

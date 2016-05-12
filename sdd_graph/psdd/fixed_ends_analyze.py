@@ -186,8 +186,7 @@ class PathManager(object):
         overall_haus = overall_haus/tot_ovr_trips
         overall_sum_haus = overall_sum_haus/tot_ovr_trips
         overall_DSN = overall_DSN/tot_ovr_trips
-        print "\naverage hausdorff %.2f, average sum hausdorff %.2f, average DSN %.2f"
-            % (overall_haus,overall_sum_haus,overall_DSN)
+        print "\naverage hausdorff %.2f, average sum hausdorff %.2f, average DSN %.2f" % (overall_haus,overall_sum_haus,overall_DSN)
         
 
         return

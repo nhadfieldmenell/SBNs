@@ -118,6 +118,40 @@ class PathManager(object):
         """Compare the difference between different paths taken for the same start,end pair.
         Weight these differences by the proportion of paths that took a given model.
         """
+        num_iters = 0
+        for fl in self.first_last2models:
+            models = self.first_last2models[fl]
+            num_models = len(models)
+            probs = [0.0 for i in range(len(models))]
+            model_array = []
+            total_trips = 0.0
+            model_i = 0
+            for model in models:
+                count = models[model]
+                probs[model_i] += count
+                total_trips += count
+                model_array.append(model)
+                print "Trips with model %d: %d" % (model_i,count)
+                model_i += 1
+            probs = map(lambda x: x/total_trips,probs)
+            diag_sum = sum(map(lambda x: x*x,probs))
+            print "diag sum %f" % diag_sum
+            denom = 1.0-diag_sum
+            weights[[0.0 for i in range(num_models)] for i in range(num_models)]
+            for i in range(num_models):
+                for j in range(i+1,num_models):
+                    weights[i][j] = (2*probs[i]*probs[j])/denom
+            weight_sum = 0.0
+            for i in range(num_models):
+                print weights[i]
+                weight_sum += sum(weights[i])
+            print "weight sum: %f\n" % weight_sum
+            if num_iters > 4:
+                return
+            num_iters += 1
+
+
+        #path_diff_measures(edge_path1,edge_path2)
         return
 
     def analyze_paths_taken(self):
@@ -1246,10 +1280,11 @@ def main():
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
-    #man = PathManager(rows,cols,edge2index,edge_index2tuple)
+    man = PathManager(rows,cols,edge2index,edge_index2tuple)
     #man.create_first_last2models(data_fn_general,bad_fn_general)
     #man.analyze_paths_taken()
-    #return
+    man.compare_observed_models()
+    return
 
 
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)

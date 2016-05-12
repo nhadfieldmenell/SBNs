@@ -137,7 +137,7 @@ class PathManager(object):
             diag_sum = sum(map(lambda x: x*x,probs))
             print "diag sum %f" % diag_sum
             denom = 1.0-diag_sum
-            weights[[0.0 for i in range(num_models)] for i in range(num_models)]
+            weights = [[0.0 for i in range(num_models)] for i in range(num_models)]
             for i in range(num_models):
                 for j in range(i+1,num_models):
                     weights[i][j] = (2*probs[i]*probs[j])/denom

@@ -159,7 +159,7 @@ class PathManager(object):
             for i in range(len(model_array)):
                 for j in range(i+1,len(model_array)):
                     weight = weights[i][j]
-                    haus,sum_haus,DSN = self.path_diff_measures(,edge_path2)
+                    haus,sum_haus,DSN = self.path_diff_measures(model_array[i],model_array[j])
                     print "%s: haus %.2f, sum_haus %.2f, DSN %.2f" % (str((i,j)),haus,sum_haus,DSN) 
                     fl2similarity_measures[fl][0] += weight*haus
                     fl2similarity_measures[fl][1] += weight*sum_haus

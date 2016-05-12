@@ -169,10 +169,10 @@ class PathManager(object):
                     fl2similarity_measures[fl][1] += weight*sum_haus
                     fl2similarity_measures[fl][2] += weight*DSN
             measures = fl2similarity_measures[fl]
-            print "overall: haus %.2f, sum_haus %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
+            #print "overall: haus %.2f, sum_haus %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
             #print ""
-            if num_iters > 6:
-                break
+            #if num_iters > 6:
+            #    break
             num_iters += 1
         overall_haus = 0.0
         overall_sum_haus = 0.0

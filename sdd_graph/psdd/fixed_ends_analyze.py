@@ -33,7 +33,7 @@ class PathManager(object):
 
     def all_all_predictions(self):
         """Find and save all the all-at-once predictions for a given grid.
-        prediction for (i,j) will be the same as prediction for (j,i)
+        only gets prediction for (min(i,j),max(i,j)) since prediction for (i,j) == prediction for (j,i)
         """
         first_last2all_prediction = {}
         for i in range(1,self.num_nodes+1):
@@ -41,11 +41,13 @@ class PathManager(object):
                 print (i,j)
                 all_prediction = self.best_all_at_once(i,j)
                 first_last2all_prediction[(i,j)] = all_prediction
+                """
                 reverse_prediction = self.best_all_at_once(j,i) 
                 for k in range(len(all_prediction)):
                     if all_prediction[k] != reverse_prediction[k]:
                         print "reverse not same! %s" % str((i,j))
-                first_last2all_prediction[(j,i)] = first_last2all_prediction[(i,j)]
+                """
+                #first_last2all_prediction[(j,i)] = first_last2all_prediction[(i,j)]
 
         with open('pickles/first_last2all_prediction-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
             pickle.dump(first_last2all_prediction,output)
@@ -116,8 +118,7 @@ class PathManager(object):
         """Compare the difference between different paths taken for the same start,end pair.
         Weight these differences by the proportion of paths that took a given model.
         """
-        first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'rb'))
-        
+       return
 
     def analyze_paths_taken(self):
         #first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'rb'))

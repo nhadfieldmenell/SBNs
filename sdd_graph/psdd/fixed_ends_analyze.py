@@ -119,7 +119,7 @@ class PathManager(object):
         Weight these differences by the proportion of paths that took a given model.
         """
         num_iters = 0
-        tot_ovr_trips = 0.0
+        tot_ovr_trips_mult_paths = 0.0
         fl2num_trips = {}
         #first element is hausdorff distance, second is sum hausdorff, third is DSN
         fl2similarity_measures = {}
@@ -137,7 +137,9 @@ class PathManager(object):
                 model_array.append(model)
                 #print "Trips with model %d: %d" % (model_i,count)
                 model_i += 1
-            tot_ovr_trips += total_trips
+            if len(model_array) == 1:
+                continue
+            tot_ovr_trips_mult_paths += total_trips
             fl2num_trips[fl] = total_trips
             probs = map(lambda x: x/total_trips,probs)
             diag_sum = sum(map(lambda x: x*x,probs))
@@ -178,14 +180,16 @@ class PathManager(object):
         overall_sum_haus = 0.0
         overall_DSN = 0.0
         for fl in fl2num_trips:
+            if len(first_last2models[fl]) == 1:
+                continue
             num_trips = fl2num_trips[fl]
             meas = fl2similarity_measures[fl]
             overall_haus += num_trips*meas[0]
             overall_sum_haus += num_trips*meas[1]
             overall_DSN += num_trips*meas[2]
-        overall_haus = overall_haus/tot_ovr_trips
-        overall_sum_haus = overall_sum_haus/tot_ovr_trips
-        overall_DSN = overall_DSN/tot_ovr_trips
+        overall_haus = overall_haus/tot_ovr_trips_mult_paths
+        overall_sum_haus = overall_sum_haus/tot_ovr_trips_mult_paths
+        overall_DSN = overall_DSN/tot_ovr_trips_mult_paths
         print "\naverage hausdorff %.2f, average sum hausdorff %.2f, average DSN %.2f" % (overall_haus,overall_sum_haus,overall_DSN)
         
 

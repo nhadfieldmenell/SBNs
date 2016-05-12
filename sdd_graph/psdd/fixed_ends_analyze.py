@@ -44,7 +44,7 @@ class PathManager(object):
                 count += 1
                 all_prediction = self.best_all_at_once(fl[0],fl[1])
                 first_last2all_prediction[key] = all_prediction
-            if count > 30:
+            if count > 100:
                 break
         """
         for i in range(1,self.num_nodes+1):

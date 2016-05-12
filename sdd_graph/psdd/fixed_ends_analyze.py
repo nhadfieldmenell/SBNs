@@ -147,6 +147,9 @@ class PathManager(object):
                 for j in range(i+1,num_models):
                     weights[i][j] = (2*probs[i]*probs[j])/denom
 
+            for i in range(len(model_array)):
+                print "path %d" % i
+                self.draw_grid(model_array[i])
             weight_sum = 0.0
             for i in range(num_models):
                 for j in range(num_models):

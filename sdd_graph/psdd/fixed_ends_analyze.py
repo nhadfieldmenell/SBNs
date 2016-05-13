@@ -45,7 +45,7 @@ class PathManager(object):
                 count += 1
                 all_prediction = self.best_all_at_once(fl[0],fl[1])
                 first_last2all_prediction[key] = all_prediction
-            if count > 100:
+            if count > 400:
                 break
         """
         for i in range(1,self.num_nodes+1):
@@ -1376,12 +1376,12 @@ def main():
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
-    man = PathManager(rows,cols,edge2index,edge_index2tuple)
+    #man = PathManager(rows,cols,edge2index,edge_index2tuple)
     #man.analyze_predictions()
-    man.create_first_last2models(data_fn_general,bad_fn_general)
+    #man.create_first_last2models(data_fn_general,bad_fn_general)
     #man.analyze_paths_taken()
-    man.compare_observed_models()
-    return
+    #man.compare_observed_models()
+    #return
 
 
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)

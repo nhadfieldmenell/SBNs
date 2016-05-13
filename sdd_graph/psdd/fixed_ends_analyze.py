@@ -150,6 +150,7 @@ class PathManager(object):
                     model_count = models[model]
                     total_trips += model_count
                     haus,sum_haus,DSN = self.path_diff_measures(model,prediction)
+                    print "%s: haus %.2f, sum_haus %.2f, DSN %.2f" % (str((i,j)),haus,sum_haus,DSN) 
                     tot_haus += model_count*haus
                     tot_sum_haus += model_count*sum_haus
                     tot_DSN += model_count*DSN

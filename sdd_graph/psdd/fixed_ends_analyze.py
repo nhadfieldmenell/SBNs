@@ -150,7 +150,7 @@ class PathManager(object):
                     continue
                 fl_pairs_examined += 1
                 for model in models:
-                    model_count = models[model]
+                    model_count = len(models[model])
                     total_trips += model_count
                     haus,sum_haus,DSN = self.path_diff_measures(model,prediction)
                     print "%s: haus %.2f, sum_haus %.2f, DSN %.2f" % (str(fl),haus,sum_haus,DSN) 

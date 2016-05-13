@@ -742,12 +742,14 @@ def create_all(graph,first_last_fn):
     p = Path(trip_id,graph,line_num=line_num)
     num_trips += 1
     #paths[trip_id] = p
+    trip_id2model = {}
     while p.next_line != len(graph.lines):#file_length:
         graph.trip_id2line_num[trip_id] = line_num
         line_num = p.next_line
         trip_id = normalize_simple(graph.lines[line_num])[0]
         #trip_id = dg.normalize(lines[line_num])[0]
         p = Path(trip_id,graph,line_num=line_num)
+        trip_id2model[trip_id] = p.edges
         num_trips += 1
        # paths[trip_id] = p
     graph.trip_id2line_num[trip_id] = line_num
@@ -757,6 +759,8 @@ def create_all(graph,first_last_fn):
     with open(first_last_fn,'wb') as output:
         pickle.dump(graph.first_last2trip_ids,output)
 
+    with open('pickles/trip_id2model.pickle','wb') as output:
+        pickle.dump(trip_id2model)
     #return paths
         
 
@@ -1009,7 +1013,9 @@ def main():
     """
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
-    g.node_path_to_median_coords()
+    #g.node_path_to_median_coords()
+    first_last_fn = 'pickles/first_last2trip_ids-%d-%d.pickle' % (rows,cols)
+    create_all(g,first_last_fn)
 
     #test_lat,test_lon = 37.793364, -122.409793 
     #coords = g.gps_to_coords(test_lat,test_lon)

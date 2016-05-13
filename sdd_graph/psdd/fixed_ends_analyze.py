@@ -140,7 +140,7 @@ class PathManager(object):
         for first_last in fl2prediction:
             for fl in (first_last,(first_last[1],first_last[0])):
                 models = None
-                if fl in models:
+                if fl in self.first_last2models:
                     models = self.first_last2models[fl]
                 else:
                     continue

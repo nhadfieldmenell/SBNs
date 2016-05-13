@@ -45,7 +45,7 @@ class PathManager(object):
                 count += 1
                 all_prediction = self.best_all_at_once(fl[0],fl[1])
                 first_last2all_prediction[key] = all_prediction
-            if count > 400:
+            if count > 100:
                 break
         """
         for i in range(1,self.num_nodes+1):
@@ -62,7 +62,7 @@ class PathManager(object):
 
         #with open('pickles/first_last2all_prediction_taken-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
         #with open('pickles/first_last2all_prediction-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
-        with open('pickles/first_last2all_prediction_some_filter_more-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
+        with open('pickles/first_last2all_prediction_100_filter_more-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
             pickle.dump(first_last2all_prediction,output)
 
         

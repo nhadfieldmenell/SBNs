@@ -157,7 +157,7 @@ class PathManager(object):
                         correctly_guessed += model_count
         avg_haus = tot_haus/total_trips
         avg_sum_haus = tot_sum_haus/total_trips
-        avg_tot_DSN = tot_DSN/total_trips
+        avg_DSN = tot_DSN/total_trips
         correct_pct = correctly_guessed/total_trips
         print "Average Hausdorff Distance: %.3f" % avg_haus
         print "Average Sum Hausdorff Distance: %.3f" % avg_sum_haus

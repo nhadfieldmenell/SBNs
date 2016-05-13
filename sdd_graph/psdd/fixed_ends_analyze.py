@@ -138,6 +138,7 @@ class PathManager(object):
         tot_DSN = 0.0
         correctly_guessed = 0.0
         for first_last in fl2prediction:
+            prediction = fl2prediction[first_last]
             for fl in (first_last,(first_last[1],first_last[0])):
                 models = None
                 if fl in self.first_last2models:
@@ -145,7 +146,6 @@ class PathManager(object):
                 else:
                     continue
 
-                prediction = fl2prediction[fl]
                 for model in models:
                     model_count = models[model]
                     total_trips += model_count

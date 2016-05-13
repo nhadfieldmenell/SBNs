@@ -138,7 +138,11 @@ class PathManager(object):
         tot_DSN = 0.0
         correctly_guessed = 0.0
         for fl in fl2prediction:
-            models = self.first_last2models[fl]
+            if fl in models:
+                models = self.first_last2models[fl]
+            else:
+                models = self.first_last2models[(fl[1],fl[0])]
+
             prediction = fl2prediction[fl]
             for model in models:
                 model_count = models[model]

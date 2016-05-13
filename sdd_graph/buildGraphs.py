@@ -760,7 +760,7 @@ def create_all(graph,first_last_fn):
         pickle.dump(graph.first_last2trip_ids,output)
 
     with open('pickles/trip_id2model.pickle','wb') as output:
-        pickle.dump(trip_id2model)
+        pickle.dump(trip_id2model,output)
     #return paths
         
 

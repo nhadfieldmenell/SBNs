@@ -54,6 +54,39 @@ class Graph(object):
         self.first_last2trip_ids = defaultdict(list)
         #self.trip_id2lengths,self.avg_length = self.path_lengths()
 
+    def incident_edges(self,node):
+        neighbors = self.neighbor_nodes(node)
+        return map(lambda x: self.edge2index[min(x,node),max(x,node)],neighbors)
+
+    def neighbor_nodes(self,node):
+        """Find all the nodes that neighbor a node.
+
+        Return:
+            A list of all the node indexes that neighbor the given node.
+        """
+
+        neighbors = []
+        if node > self.cols:
+            neighbors.append(node-self.cols)
+        if node <= self.cols*(self.rows-1):
+            neighbors.append(node+self.cols)
+        if node % self.cols != 1:
+            neighbors.append(node-1)
+        if node % self.cols != 0:
+            neighbors.append(node+1)
+
+        return neighbors
+
+    def create_node2neighbors2freq_grid(self):
+        """Create a dict mapping that will be used to determine the optimal gps point for that node given neighbors.
+        node-num -> (neighboring edge 1,neighboring edge 2) -> AxA grid -> list of all gps points that are in grid spot.
+        """
+        trip_id2model = pickle.load(open('pickles/trip_id2model.pickle','rb'))
+        for line in self.lines:
+            continue
+
+
+
     def node_path_to_coords(self,edge_fn,out_fn,label):
         """Read in a path instantiation from a file and determine the corresponding path in GPS coords.
         For each node traversed in the path, output the center point of that node.
@@ -738,11 +771,12 @@ def create_all(graph,first_last_fn):
     trip_id = 1
     line_num = 0
     num_trips = 0
+    trip_id2model = {}
     #paths = {}
     p = Path(trip_id,graph,line_num=line_num)
+    trip_id2model[trip_id] = p.edges
     num_trips += 1
     #paths[trip_id] = p
-    trip_id2model = {}
     while p.next_line != len(graph.lines):#file_length:
         graph.trip_id2line_num[trip_id] = line_num
         line_num = p.next_line
@@ -904,6 +938,7 @@ def single_epoch(g,rows,cols,midpoint):
 
     out_file.close()
 
+
 def create_epochs(g,rows,cols):
     """ Create Epochs of Data """
     trip_list = g.node2trip_ids[g.best_node]
@@ -989,6 +1024,8 @@ def main():
 
     #midpoint = int(sys.argv[3])
     #full_fn = open('csvGPS.txt','r')
+
+    #TODO: MIGHT NEED TO CHANGE THIS TO CAB_CHRONOLOGICAL.TXT for first_last information
     full_fn = open('cab_trips.txt','r')
     trip_id2line_num = pickle.load(open('pickles/trip_id2line_num.pickle','rb'))
 

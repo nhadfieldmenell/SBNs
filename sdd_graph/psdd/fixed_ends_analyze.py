@@ -84,7 +84,7 @@ class PathManager(object):
 
     def create_first_last2models(self,data_fn,bad_fn):
         """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to lat.
-        Map those models to the count of paths that take the model.
+        Map those models to the trip_ids of paths that take the model.
 
         This function also determines the bad paths as defined by not having a path consistent with ones first, last pair.
             We do not save this right now, but use it in calculating the first_last2models to have the true models
@@ -118,9 +118,9 @@ class PathManager(object):
                     bad_paths[trip_id] = True
                     continue
                 if trip_fl not in first_last2models:
-                    first_last2models[trip_fl] = defaultdict(int)
+                    first_last2models[trip_fl] = defaultdict(list)
                 #self.draw_grid(model)
-                first_last2models[trip_fl][model] += 1
+                first_last2models[trip_fl][model].append(trip_id)
                 inserted += 1
         print "num inserted: %d" % inserted
         self.first_last2models = first_last2models
@@ -186,7 +186,7 @@ class PathManager(object):
             total_trips = 0.0
             model_i = 0
             for model in models:
-                count = models[model]
+                count = len(models[model])
                 probs[model_i] += count
                 total_trips += count
                 model_array.append(model)
@@ -249,7 +249,6 @@ class PathManager(object):
         return
 
     def analyze_paths_taken(self):
-        #first_last2models = pickle.load(open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'rb'))
         count_and_fl_long = []
         radius = 6 
         #this will double count overlapping paths going from (i,j) and (j,i)
@@ -268,7 +267,7 @@ class PathManager(object):
             total_paths += num_paths
             num_trips = 0
             for model in models:
-                num_trips += models[model]
+                num_trips += len(models[model])
             total_trips += num_trips
             weighted_total_paths += num_trips*num_paths
 
@@ -1378,10 +1377,10 @@ def main():
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
-    man.analyze_predictions()
-    #man.create_first_last2models(data_fn_general,bad_fn_general)
+    #man.analyze_predictions()
+    man.create_first_last2models(data_fn_general,bad_fn_general)
     #man.analyze_paths_taken()
-    #man.compare_observed_models()
+    man.compare_observed_models()
     return
 
 

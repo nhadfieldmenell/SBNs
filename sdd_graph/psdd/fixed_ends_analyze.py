@@ -31,6 +31,7 @@ class PathManager(object):
         if fl2models_exists:
             self.first_last2models = pickle.load(open(fl2models_fn,'rb'))
 
+
     def all_all_predictions(self):
         """Find and save all the all-at-once predictions for a given grid.
         only gets prediction for (min(i,j),max(i,j)) since prediction for (i,j) == prediction for (j,i)
@@ -126,6 +127,39 @@ class PathManager(object):
         with open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
             pickle.dump(first_last2models,output)
 
+    def analyze_predictions(self):
+        """Find similarity measures for the predicted paths
+        Weight measures by the frequency of a given path (# of trips for that path, not first last pair)
+        """
+        fl2prediction = pickle.load(open('first_last2all_prediction_some-10-10.pickle','rb'))
+        total_trips = 0.0
+        tot_haus = 0.0
+        tot_sum_haus = 0.0
+        tot_DSN = 0.0
+        correctly_guessed = 0.0
+        for fl in fl2prediction:
+            models = self.first_last2models[fl]
+            prediction = fl2prediction[fl]
+            for model in models:
+                model_count = models[model]
+                total_trips += model_count
+                haus,sum_haus,DSN = self.path_diff_measures(model,prediction)
+                tot_haus += model_count*haus
+                tot_sum_haus += model_count*sum_haus
+                tot_DSN += model_count*DSN
+                if DSN == 0:
+                    correctly_guessed += model_count
+        avg_haus = tot_haus/total_trips
+        avg_sum_haus = tot_sum_haus/total_trips
+        avg_tot_DSN = tot_DSN/total_trips
+        correct_pct = correctly_guessed/total_trips
+        print "Average Hausdorff Distance: %.3f" % avg_haus
+        print "Average Sum Hausdorff Distance: %.3f" % avg_sum_haus
+        print "Average DSN: %.3f" % avg_DSN
+        print "Correct guess percentage: %.3f" % correct_pct
+
+
+
     def compare_observed_models(self):
         """Compare the difference between different paths taken for the same start,end pair.
         Weight these differences by the proportion of paths that took a given model.
@@ -203,8 +237,6 @@ class PathManager(object):
         overall_sum_haus = overall_sum_haus/tot_ovr_trips_mult_paths
         overall_DSN = overall_DSN/tot_ovr_trips_mult_paths
         print "\naverage hausdorff %.2f, average sum hausdorff %.2f, average DSN %.2f" % (overall_haus,overall_sum_haus,overall_DSN)
-        
-
         return
 
     def analyze_paths_taken(self):

@@ -62,7 +62,7 @@ class PathManager(object):
 
         #with open('pickles/first_last2all_prediction_taken-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
         #with open('pickles/first_last2all_prediction-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
-        with open('pickles/first_last2all_prediction_some-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
+        with open('pickles/first_last2all_prediction_some_filter_more-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
             pickle.dump(first_last2all_prediction,output)
 
         
@@ -1011,6 +1011,14 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
 
     bad_lines = None
     bad_paths = {}
+
+    trip_id2bad_fn = 'pickles/trip_id2bad-%d-%d.pickle' % (rows,cols)
+    file_exists = os.path.isfile(trip_id2bad_fn)
+    if file_exists:
+        trip_id2bad = pickle.load(open(trip_id2bad_fn,'rb'))
+        for trip_id in trip_id2bad:
+            bad_paths[trip_id-1] = True
+    """
     file_exists = os.path.isfile(bad_fn)
     if file_exists:
         bad_file = open(bad_fn,'r')
@@ -1018,7 +1026,7 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
         bad_file.close()
         for i in bad_lines:
             bad_paths[int(i)] = True
-
+    """
     data = []
 
     copy.uniform_weights()
@@ -1378,12 +1386,12 @@ def main():
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
-    man = PathManager(rows,cols,edge2index,edge_index2tuple)
+    #man = PathManager(rows,cols,edge2index,edge_index2tuple)
     #man.analyze_predictions()
-    man.create_first_last2models(data_fn_general,bad_fn_general)
+    #man.create_first_last2models(data_fn_general,bad_fn_general)
     #man.analyze_paths_taken()
     #man.compare_observed_models()
-    return
+    #return
 
 
     copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)

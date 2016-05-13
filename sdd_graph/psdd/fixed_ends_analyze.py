@@ -137,6 +137,7 @@ class PathManager(object):
         tot_sum_haus = 0.0
         tot_DSN = 0.0
         correctly_guessed = 0.0
+        fl_pairs_examined = 0
         for first_last in fl2prediction:
             prediction = fl2prediction[first_last]
             for fl in (first_last,(first_last[1],first_last[0])):
@@ -145,7 +146,7 @@ class PathManager(object):
                     models = self.first_last2models[fl]
                 else:
                     continue
-
+                fl_pairs_examined += 1
                 for model in models:
                     model_count = models[model]
                     total_trips += model_count
@@ -160,6 +161,7 @@ class PathManager(object):
         avg_sum_haus = tot_sum_haus/total_trips
         avg_DSN = tot_DSN/total_trips
         correct_pct = correctly_guessed/total_trips
+        print "Examined %d first last pairs" % fl_pairs_examined
         print "Average Hausdorff Distance: %.3f" % avg_haus
         print "Average Sum Hausdorff Distance: %.3f" % avg_sum_haus
         print "Average DSN: %.3f" % avg_DSN

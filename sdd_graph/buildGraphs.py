@@ -95,7 +95,7 @@ class Graph(object):
             out_fn = "%s_coords.txt" % fn_prefix
             with open(out_fn,'w') as outfile:
                 for node in nodes.keys():
-                    outfile.write("%s,%s\n" % (label,str(node2median[node])[1:-1]))
+                    outfile.write("%s,%s\n" % ('0',str(node2median[node])[1:-1]))
 
 
     def path_lengths(self):

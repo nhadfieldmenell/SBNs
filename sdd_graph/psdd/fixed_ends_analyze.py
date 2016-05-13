@@ -137,22 +137,24 @@ class PathManager(object):
         tot_sum_haus = 0.0
         tot_DSN = 0.0
         correctly_guessed = 0.0
-        for fl in fl2prediction:
-            if fl in models:
-                models = self.first_last2models[fl]
-            else:
-                models = self.first_last2models[(fl[1],fl[0])]
+        for first_last in fl2prediction:
+            for fl in (first_last,(first_last[1],first_last[0])):
+                models = None
+                if fl in models:
+                    models = self.first_last2models[fl]
+                else:
+                    continue
 
-            prediction = fl2prediction[fl]
-            for model in models:
-                model_count = models[model]
-                total_trips += model_count
-                haus,sum_haus,DSN = self.path_diff_measures(model,prediction)
-                tot_haus += model_count*haus
-                tot_sum_haus += model_count*sum_haus
-                tot_DSN += model_count*DSN
-                if DSN == 0:
-                    correctly_guessed += model_count
+                prediction = fl2prediction[fl]
+                for model in models:
+                    model_count = models[model]
+                    total_trips += model_count
+                    haus,sum_haus,DSN = self.path_diff_measures(model,prediction)
+                    tot_haus += model_count*haus
+                    tot_sum_haus += model_count*sum_haus
+                    tot_DSN += model_count*DSN
+                    if DSN == 0:
+                        correctly_guessed += model_count
         avg_haus = tot_haus/total_trips
         avg_sum_haus = tot_sum_haus/total_trips
         avg_tot_DSN = tot_DSN/total_trips

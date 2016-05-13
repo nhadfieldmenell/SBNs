@@ -80,6 +80,8 @@ class Graph(object):
         node2median = pickle.load(open('pickles/node2median_%d_%d.pickle' % (self.rows,self.cols),'rb'))
         count = 0
         for fl in fl2prediction:
+            print count
+            count += 1
             if count > 5:
                 break
             nodes = {}
@@ -89,7 +91,7 @@ class Graph(object):
                     node_tup = self.edge_index2tuple[i]
                     nodes[node_tup[0]] = True
                     nodes[node_tup[1]] = True
-            fn_prefix = "psdd/paths/median_%d_%d_%d_%d" % (rows,cols,fl[0],fl[1])
+            fn_prefix = "psdd/paths/median_%d_%d_%d_%d" % (self.rows,self.cols,fl[0],fl[1])
             out_fn = "%s_coords.txt" % all_at_once_prefix
             with open(out_fn,'w') as outfile:
                 for node in nodes.keys():

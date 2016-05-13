@@ -72,6 +72,28 @@ class Graph(object):
                 #coords = self.node_to_coords(node)
                 #outfile.write("1,%s\n" % str(self.coords_to_gps(coords))[1:-1])
 
+    def node_path_to_median_coords(self):
+        """Read in a path instantiation from a file and determine the corresponding path in GPS coords.
+        For each node traversed in the path, output the center point of that node.
+        """
+        fl2prediction = pickle.load(open('psdd/pickles/first_last2prediction_some-10-10.pickle','rb'))
+        node2median = pickle.load(open('pickles/node2median_%d_%d.pickle' % (self.rows,self.cols),'rb'))
+        count = 0
+        for fl in fl2prediction:
+            if count > 5:
+                break
+            nodes = {}
+            edges = fl2prediction[fl]
+            for i in range(len(edges)):
+                if edges[i] == 1:
+                    node_tup = self.edge_index2tuple[i]
+                    nodes[node_tup[0]] = True
+                    nodes[node_tup[1]] = True
+            fn_prefix = "psdd/paths/median_%d_%d_%d_%d" % (rows,cols,fl[0],fl[1])
+            out_fn = "%s_coords.txt" % all_at_once_prefix
+            with open(out_fn,'w') as outfile:
+                for node in nodes.keys():
+                    outfile.write("%s,%s\n" % (label,str(node2median[node])[1:-1]))
 
 
     def path_lengths(self):
@@ -985,6 +1007,7 @@ def main():
     """
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
+    g.node_path_to_median_coords()
 
     #test_lat,test_lon = 37.793364, -122.409793 
     #coords = g.gps_to_coords(test_lat,test_lon)
@@ -993,7 +1016,7 @@ def main():
     #coords = g.gps_to_coords(test_lat,test_lon)
     #print g.coords_to_node(coords[0],coords[1])
 
-    #return
+    return
     all_at_once_prefix = "psdd/paths/all_%d_%d_%d_%d" % (rows,cols,start,end)
     all_at_once_in = "%s.pickle" % all_at_once_prefix
     all_at_once_out = "%s_coords.txt" % all_at_once_prefix

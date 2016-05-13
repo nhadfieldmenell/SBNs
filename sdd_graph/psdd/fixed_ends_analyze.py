@@ -131,7 +131,7 @@ class PathManager(object):
         """Find similarity measures for the predicted paths
         Weight measures by the frequency of a given path (# of trips for that path, not first last pair)
         """
-        fl2prediction = pickle.load(open('first_last2all_prediction_some-10-10.pickle','rb'))
+        fl2prediction = pickle.load(open('pickles/first_last2all_prediction_some-10-10.pickle','rb'))
         total_trips = 0.0
         tot_haus = 0.0
         tot_sum_haus = 0.0

@@ -76,7 +76,7 @@ class Graph(object):
         """Read in a path instantiation from a file and determine the corresponding path in GPS coords.
         For each node traversed in the path, output the center point of that node.
         """
-        fl2prediction = pickle.load(open('psdd/pickles/first_last2prediction_some-10-10.pickle','rb'))
+        fl2prediction = pickle.load(open('first_last2all_prediction_some-10-10.pickle','rb'))
         node2median = pickle.load(open('pickles/node2median_%d_%d.pickle' % (self.rows,self.cols),'rb'))
         count = 0
         for fl in fl2prediction:

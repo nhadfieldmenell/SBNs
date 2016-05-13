@@ -1386,7 +1386,7 @@ def main():
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
-    #man = PathManager(rows,cols,edge2index,edge_index2tuple)
+    man = PathManager(rows,cols,edge2index,edge_index2tuple)
     #man.analyze_predictions()
     man.create_first_last2models(data_fn_general,bad_fn_general)
     #man.analyze_paths_taken()

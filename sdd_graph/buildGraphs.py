@@ -124,7 +124,7 @@ class Graph(object):
                 sub_grid2points = edges_on2sub_grid2points[edges_on]
                 best_spot = (-1,-1)
                 best_score = 0
-                for row in sub_grid2points
+                #for row in sub_grid2points
 
 
 

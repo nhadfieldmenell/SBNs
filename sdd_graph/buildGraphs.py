@@ -464,6 +464,9 @@ class Graph(object):
         """
         return ((self.min_lat + (self.lat_step * (0.5+coords[0]))),(self.min_lon + (self.lon_step * (0.5+coords[1]))))
 
+    def coords_to_min_and_max_lat_lon(self,coords):
+        print coords
+
     def gps_to_coords(self,lat,lon):
         """Determines the coodinates on the graph corresponding to a given gps point.
 
@@ -484,8 +487,6 @@ class Graph(object):
         #print "lat: %f lon: %f lat_spot: %f lon_spot: %f" % (lat,lon,lat_spot,lon_spot)
         return (lat_spot,lon_spot)
 
-    def coords_to_min_and_max_lat_lon(self,coords):
-        print coords
 
     def coords_to_min_max_lat_lon(self,coords):
         """Determine the min/max lat/lon for a given node

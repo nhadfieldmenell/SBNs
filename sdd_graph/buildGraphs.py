@@ -81,7 +81,7 @@ class Graph(object):
         """Create a dict mapping that will be used to determine the optimal gps point for that node given neighbors.
         node-num -> (neighboring edge 1,neighboring edge 2) -> AxA grid -> list of all gps points that are in grid spot.
         """
-        trip_id2model = pickle.load(open('pickles/trip_id2model.pickle','rb'))
+        #trip_id2model = pickle.load(open('pickles/trip_id2model.pickle','rb'))
         old_trip_id = -1
         model = trip_id2model[1]
         sub_x = 5
@@ -94,6 +94,8 @@ class Graph(object):
                 model = trip_id2model[trip_id]
                 old_trip_id = trip_id
             node = self.gps_to_node(lat,lon)
+            print node
+            return
             incident_edges = self.incident_edges(node)
             edges_on = []
             for edge in incident_edges:

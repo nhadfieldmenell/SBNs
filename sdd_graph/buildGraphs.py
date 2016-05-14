@@ -101,7 +101,7 @@ class Graph(object):
                     edges_on.append(edge)
             edges_on.sort()
             edges_on = tuple(edges_on)
-            min_lat,min_lon,max_lat,max_lon = self.coords_to_min_max_lat_lon(self.node_to_coords(node))
+            min_lat,max_lat,min_lon,max_lon = self.coords_to_min_max_lat_lon(self.node_to_coords(node))
 
             sub_row,sub_col = gen_gps_to_coords(lat,lon,sub_x,sub_y,min_lat,max_lat,min_lon,max_lon)
             sub_tuple = (sub_row,sub_col)
@@ -489,8 +489,8 @@ class Graph(object):
         """
         row = float(coords[0])
         col = float(coords[1])
-        min_lat = self.min_lat + row*(self.lat_step)
-        max_lat = min_lat + self.lat_step
+        max_lat = self.max_lat - row*(self.lat_step)
+        min_lat = max_lat - self.lat_step
         min_lon = self.min_lon + col*(self.lon_step)
         max_lon = min_lon + self.lon_step
         return min_lat,max_lat,min_lon,max_lon

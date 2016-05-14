@@ -489,13 +489,13 @@ class Graph(object):
         """
         row = float(coords[0])
         col = float(coords[1])
-        print row
-        print col
-        print ""
         max_lat = self.max_lat - row*(self.lat_step)
         min_lat = max_lat - self.lat_step
         min_lon = self.min_lon + col*(self.lon_step)
         max_lon = min_lon + self.lon_step
+        print row
+        print col
+        print ""
         return min_lat,max_lat,min_lon,max_lon
 
 def gen_gps_to_coords(lat,lon,rows,cols,min_lat,max_lat,min_lon,max_lon):

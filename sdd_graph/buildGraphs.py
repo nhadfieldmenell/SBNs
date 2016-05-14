@@ -115,8 +115,8 @@ class Graph(object):
                 edges_on2sub_grid2points[edges_on] = defaultdict(list)
             sub_grid2points = edges_on2sub_grid2points[edges_on]
             points = sub_grid2points[sub_tuple]
-            #node2edges_on2sub_grid2points[node][edges_on]
-            points.append([lat,lon])
+            node2edges_on2sub_grid2points[node][edges_on][sub_tuple].append([lat,lon])
+            #points.append([lat,lon])
 
         print node2edges_on2sub_grid2points.keys()
         

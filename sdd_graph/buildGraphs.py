@@ -140,7 +140,6 @@ class Graph(object):
         
         with open('pickles/node2edges_on2median-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
             pickle.dump(node2edges_on2median,output)
-        """THIS IS STILL VERY MUCH A WORK IN PROGRESS"""
 
 
 
@@ -193,8 +192,32 @@ class Graph(object):
         for i in range(n):
             fl = heapq.heappop(dist_heap)[1]
             print fl
-            self.median_path(fl,node2median,fl2prediction)
+            #self.median_path(fl,node2median,fl2prediction)
+            self.median_path(fl)
 
+
+    def create_gps_opt(self,fl):
+        node2edges_on2median = pickle.load(open('pickles/node2edges_on2median-10-10.pickle','rb'))
+        fl2prediction = pickle.load(open('psdd/pickles/first_last2all_prediction_some-10-10.pickle','rb'))
+        nodes = {}
+        edges = fl2prediction[fl]
+        for i in range(len(edges)):
+            if edges[i] == 1:
+                node_tup = self.edge_index2tuple[i]
+                nodes[node_tup[0]] = True
+                nodes[node_tup[1]] = True
+        fn_prefix = "psdd/paths/median_%d_%d_%d_%d" % (self.rows,self.cols,fl[0],fl[1])
+        out_fn = "%s_coords.txt" % fn_prefix
+        with open(out_fn,'w') as outfile:
+            for node in nodes.keys():
+                incident_edges = self.incident_edges(node)
+                edges_on = []
+                for edge in incident_edges:
+                    if model[edge] == 1:
+                        edges_on.append(edge)
+                edges_on.sort()
+                edges_on = tuple(edges_on)
+                outfile.write("%s,%s\n" % ('0',str(node2edges_on2median[node][edges_on])[1:-1]))
 
 
 
@@ -1172,8 +1195,8 @@ def main():
     """
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
-    #g.n_longest_median_paths(5)
-    g.create_node2edges_on2freq_grid()
+    g.n_longest_median_paths(5)
+    #g.create_node2edges_on2freq_grid()
 
     #test_lat,test_lon = 37.793364, -122.409793 
     #coords = g.gps_to_coords(test_lat,test_lon)

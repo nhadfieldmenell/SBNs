@@ -464,7 +464,7 @@ class Graph(object):
         """
         return ((self.min_lat + (self.lat_step * (0.5+coords[0]))),(self.min_lon + (self.lon_step * (0.5+coords[1]))))
 
-    def coords_to_min_and_max_lat_lon(self,coords):
+    def wtf(self,coords):
         print coords
 
     def gps_to_coords(self,lat,lon):

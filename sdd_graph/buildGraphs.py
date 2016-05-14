@@ -96,7 +96,7 @@ class Graph(object):
             node = self.gps_to_node(lat,lon)
             if node == -1:
                 continue
-            print "pushed through"
+            #print "pushed through"
             incident_edges = self.incident_edges(node)
             edges_on = []
             for edge in incident_edges:

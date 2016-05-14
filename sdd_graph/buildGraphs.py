@@ -82,8 +82,43 @@ class Graph(object):
         node-num -> (neighboring edge 1,neighboring edge 2) -> AxA grid -> list of all gps points that are in grid spot.
         """
         trip_id2model = pickle.load(open('pickles/trip_id2model.pickle','rb'))
+        old_trip_id = -1
+        model = trip_id2model[1]
+        sub_x = 5
+        sub_y = 5
+        node2edges_on2sub_grid2points = {}
         for line in self.lines:
-            continue
+            trip_id,lat,lon = normalize_simple(line)
+            if trip_id != old_trip_id:
+                print trip_id
+                model = trip_id2model[trip_id]
+                old_trip_id = trip_id
+            node = self.coords_to_node(lat,lon)
+            incident_edges = self.incident_edges(node)
+            edges_on = []
+            for edge in incident_edges:
+                if model[edge] == 1:
+                    edges_on.append(edge)
+            edges_on.sort()
+            edges_on = tuple(edges_on)
+            min_lat,min_lon,max_lat,max_lon = self.coords_to_min_max_lat_lon(coords)
+
+            sub_row,sub_col = gen_gps_to_coords(lat,lon,sub_x,sub_y,min_lat,max_lat,min_lon,max_lon)
+            sub_tuple = (sub_row,sub_col)
+            if node not in node2edges_on2sub_grid2points:
+                node2edges_on2sub_grid2points[node] = {}
+            edges_on2sub_grid2points = node2edges_on2sub_grid2points[node]
+            if edges_on not in edges_on2sub_grid2points:
+                edges_on2sub_grid2points[edges_on] = {}
+            sub_grid2points = edges_on2sub_grid2points[edges_on]
+            if sub_tuple not in sub_grid2points:
+                sub_grid2points[sub_tuple] = defaultdict(list)
+            points = sub_grid2points[sub_tuple]
+            points.append([lat,lon])
+
+        
+
+
 
 
 
@@ -419,6 +454,40 @@ class Graph(object):
         lon_spot = int((lon-self.min_lon)/self.lon_step)
         #print "lat: %f lon: %f lat_spot: %f lon_spot: %f" % (lat,lon,lat_spot,lon_spot)
         return (lat_spot,lon_spot)
+
+    def coords_to_min_max_lat_lon(self,coords):
+        """Determine the min/max lat/lon for a given node
+        """
+        row = float(coords[0])
+        col = float(coords[1])
+        min_lat = self.min_lat + row*(self.lat_step)
+        max_lat = min_lat + self.lat_step
+        min_lon = self.min_lon + col*(self.lon_step)
+        max_lon = min_lon + self.lon_step
+        return min_lat,max_lat,min_lon,max_lon
+
+def gen_gps_to_coords(lat,lon,rows,cols,min_lat,max_lat,min_lon,max_lon):
+    """Determines the coodinates on the graph corresponding to a given gps point.
+
+    Attributes:
+        lat: the latitude of the point
+        lon: the longitude of the point
+
+    Returns:
+        A pair corresponding to the (row,column) in the graph that holds that gps point
+        (-1,-1) if the coordinates are out of scope
+    """
+
+    if (lat <= min_lat or lat >= max_lat or lon <= min_lon or lon >= max_lon):
+        return (-1,-1)
+
+    lat_step = abs(max_lat-min_lat)/rows
+    lon_step = abs(max_lon-min_lon)/cols
+
+    lat_spot = int((max_lat-lat)/lat_step)
+    lon_spot = int((lon-min_lon)/lon_step)
+    #print "lat: %f lon: %f lat_spot: %f lon_spot: %f" % (lat,lon,lat_spot,lon_spot)
+    return (lat_spot,lon_spot)
 
 def dist_points(x,y):
     """Finds the shortest distance between two points in a grid graph.
@@ -1051,8 +1120,7 @@ def main():
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
     #g.node_path_to_median_coords()
-    first_last_fn = 'pickles/first_last2trip_ids-%d-%d.pickle' % (rows,cols)
-    create_all(g,first_last_fn)
+    g.create_node2neighbors2freq_grid()
 
     #test_lat,test_lon = 37.793364, -122.409793 
     #coords = g.gps_to_coords(test_lat,test_lon)

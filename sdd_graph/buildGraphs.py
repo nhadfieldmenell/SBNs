@@ -139,7 +139,7 @@ class Graph(object):
                 node2edges_on2median[node][edges_on] = list_median(sub_grid2points[spot])
         
         with open('pickles/node2edges_on2median-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
-            pickle.dump(graph.first_last2trip_ids,output)
+            pickle.dump(node2edges_on2median,output)
         """THIS IS STILL VERY MUCH A WORK IN PROGRESS"""
 
 

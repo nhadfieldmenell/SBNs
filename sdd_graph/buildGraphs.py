@@ -8,7 +8,7 @@ import math
 from collections import defaultdict
 #import numpy as np
 #import decodeGps as dg
-import test_graph as tg
+#import test_graph as tg
 
 class Graph(object):
     """Object that holds edge/node information for a gps graph.

@@ -155,6 +155,7 @@ class Graph(object):
         """Read in a path instantiation from a file and determine the corresponding path in GPS coords.
         For each node traversed in the path, output the center point of that node.
         """
+        nodes = {}
         edges = fl2prediction[fl]
         for i in range(len(edges)):
             if edges[i] == 1:

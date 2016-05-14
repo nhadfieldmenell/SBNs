@@ -90,7 +90,7 @@ class Graph(object):
         for line in self.lines:
             trip_id,lat,lon = normalize_simple(line)
             if trip_id != old_trip_id:
-                print trip_id
+                #print trip_id
                 model = trip_id2model[trip_id]
                 old_trip_id = trip_id
             node = self.gps_to_node(lat,lon)
@@ -120,6 +120,7 @@ class Graph(object):
 
         print node2edges_on2sub_grid2points.keys()
         print node2edges_on2sub_grid2points[2].keys()
+        print node2edges_on2sub_grid2points[2][(3,2)].keys()
         
         node2edges_on2median = {}
         for node in node2edges_on2sub_grid2points:

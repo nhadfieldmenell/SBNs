@@ -96,6 +96,7 @@ class Graph(object):
             node = self.gps_to_node(lat,lon)
             if node == -1:
                 continue
+            print "pushed through"
             incident_edges = self.incident_edges(node)
             edges_on = []
             for edge in incident_edges:
@@ -116,6 +117,7 @@ class Graph(object):
             points = sub_grid2points[sub_tuple]
             points.append([lat,lon])
 
+        print node2edges_on2sub_grid2points.keys()
         return node2edges_on2sub_grid2points
         
         node2edges_on2median = {}
@@ -131,6 +133,9 @@ class Graph(object):
                         best_score = score
                         best_spot = spot
                 node2edges_on2median[node][edges_on] = list_median(sub_grid2points[spot])
+        
+        with open('pickles/node2edges_on2median-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
+            pickle.dump(graph.first_last2trip_ids,output)
         """THIS IS STILL VERY MUCH A WORK IN PROGRESS"""
 
 

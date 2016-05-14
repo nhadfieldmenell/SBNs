@@ -489,8 +489,10 @@ class Graph(object):
         """
         print coords
         print "LLLLLL"
-        row = coords[0]
-        col = coords[1]
+        #row = coords[0]
+        #col = coords[1]
+        row = 0
+        col = 1
         max_lat = self.max_lat - row*(self.lat_step)
         min_lat = max_lat - self.lat_step
         min_lon = self.min_lon + col*(self.lon_step)

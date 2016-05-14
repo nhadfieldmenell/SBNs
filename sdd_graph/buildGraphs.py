@@ -484,6 +484,9 @@ class Graph(object):
         #print "lat: %f lon: %f lat_spot: %f lon_spot: %f" % (lat,lon,lat_spot,lon_spot)
         return (lat_spot,lon_spot)
 
+    def coords_to_min_and_max_lat_lon(self,coords):
+        print coords
+
     def coords_to_min_max_lat_lon(self,coords):
         """Determine the min/max lat/lon for a given node
         """

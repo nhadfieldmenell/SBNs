@@ -1150,7 +1150,7 @@ def main():
     """
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
-    g.n_longest_median_paths(self,5)
+    g.n_longest_median_paths(5)
     #g.node_path_to_median_coords()
     #g.create_node2edges_on2freq_grid()
 

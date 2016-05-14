@@ -101,7 +101,7 @@ class Graph(object):
                     edges_on.append(edge)
             edges_on.sort()
             edges_on = tuple(edges_on)
-            min_lat,min_lon,max_lat,max_lon = self.coords_to_min_max_lat_lon(coords)
+            min_lat,min_lon,max_lat,max_lon = self.coords_to_min_max_lat_lon(self.node_to_coords(node))
 
             sub_row,sub_col = gen_gps_to_coords(lat,lon,sub_x,sub_y,min_lat,max_lat,min_lon,max_lon)
             sub_tuple = (sub_row,sub_col)
@@ -124,6 +124,7 @@ class Graph(object):
                 sub_grid2points = edges_on2sub_grid2points[edges_on]
                 best_spot = (-1,-1)
                 best_score = 0
+                for row in sub_grid2points
 
 
 

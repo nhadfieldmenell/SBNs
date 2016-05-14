@@ -109,10 +109,8 @@ class Graph(object):
                 node2edges_on2sub_grid2points[node] = {}
             edges_on2sub_grid2points = node2edges_on2sub_grid2points[node]
             if edges_on not in edges_on2sub_grid2points:
-                edges_on2sub_grid2points[edges_on] = {}
+                edges_on2sub_grid2points[edges_on] = defaultdict(list)
             sub_grid2points = edges_on2sub_grid2points[edges_on]
-            if sub_tuple not in sub_grid2points:
-                sub_grid2points[sub_tuple] = defaultdict(list)
             points = sub_grid2points[sub_tuple]
             points.append([lat,lon])
 
@@ -124,7 +122,10 @@ class Graph(object):
                 sub_grid2points = edges_on2sub_grid2points[edges_on]
                 best_spot = (-1,-1)
                 best_score = 0
-                #for row in sub_grid2points
+                for spot in sub_grid2points:
+                    score = len(sub_grid2points[spot])
+                    if score > best_score:
+                        best_score = score
 
 
 

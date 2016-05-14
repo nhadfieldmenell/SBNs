@@ -28,7 +28,7 @@ lines = orig.readlines()
 orig.close()
 out = open('getTripsOut.txt','w')
 #trip_nums = map(int,sys.argv[1].split(','))
-trip_nums = map(int,sys.argv[1:][:-1])
+trip_nums = map(lambda x: int(x[:-1]),sys.argv[1:])
 for trip_num in trip_nums: 
     writeTrip(trip_num,lines,out,trip_id2line_num)
 out.close()

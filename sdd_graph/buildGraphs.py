@@ -119,6 +119,7 @@ class Graph(object):
             points.append([lat,lon])
 
         print node2edges_on2sub_grid2points.keys()
+        return node2edges_on2sub_grid2points
         
         node2edges_on2median = {}
         for node in node2edges_on2sub_grid2points:

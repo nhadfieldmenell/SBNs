@@ -192,8 +192,8 @@ class Graph(object):
         for i in range(n):
             fl = heapq.heappop(dist_heap)[1]
             print fl
-            #self.median_path(fl,node2median,fl2prediction)
-            self.create_gps_opt(fl)
+            self.median_path(fl,node2median,fl2prediction)
+            #self.create_gps_opt(fl)
 
 
     def create_gps_opt(self,fl):

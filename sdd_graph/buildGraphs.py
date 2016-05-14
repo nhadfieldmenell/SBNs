@@ -41,6 +41,8 @@ class Graph(object):
         self.edge2index = pickle.load(open(edge_filename,'rb'))
         edge_tuple_filename = 'graphs/edge-to-tuple-%d-%d.pickle' % (self.rows,self.cols)
         self.edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
+        self.fl2prediction = pickle.load(open('psdd/pickles/first_last2all_prediction_some-10-10.pickle','rb'))
+        self.node2median = pickle.load(open('pickles/node2median_%d_%d.pickle' % (self.rows,self.cols),'rb'))
 
         self.lat_step = float((max_lat-min_lat)/rows)
         self.lon_step = float((max_lon-min_lon)/cols)
@@ -162,12 +164,12 @@ class Graph(object):
                 #coords = self.node_to_coords(node)
                 #outfile.write("1,%s\n" % str(self.coords_to_gps(coords))[1:-1])
 
-    def median_path(self,fl,node2median,fl2prediction):
+    def median_path(self,fl):
         """Read in a path instantiation from a file and determine the corresponding path in GPS coords.
         For each node traversed in the path, output the center point of that node.
         """
         nodes = {}
-        edges = fl2prediction[fl]
+        edges = self.fl2prediction[fl]
         for i in range(len(edges)):
             if edges[i] == 1:
                 node_tup = self.edge_index2tuple[i]
@@ -177,14 +179,12 @@ class Graph(object):
         out_fn = "%s_coords.txt" % fn_prefix
         with open(out_fn,'w') as outfile:
             for node in nodes.keys():
-                outfile.write("%s,%s\n" % ('0',str(node2median[node])[1:-1]))
+                outfile.write("%s,%s\n" % ('0',str(self.node2median[node])[1:-1]))
 
     def n_longest_median_paths(self,n):
         """Create the median path for the n furthest apart fl pairs"""
-        fl2prediction = pickle.load(open('psdd/pickles/first_last2all_prediction_some-10-10.pickle','rb'))
-        node2median = pickle.load(open('pickles/node2median_%d_%d.pickle' % (self.rows,self.cols),'rb'))
         dist_heap = []
-        for fl in fl2prediction:
+        for fl in self.fl2prediction:
             coord0 = self.node_to_coords(fl[0])
             coord1 = self.node_to_coords(fl[1])
             dist = euclidean(coord0,coord1)
@@ -192,15 +192,14 @@ class Graph(object):
         for i in range(n):
             fl = heapq.heappop(dist_heap)[1]
             print fl
-            self.median_path(fl,node2median,fl2prediction)
+            self.median_path(fl)
             #self.create_gps_opt(fl)
 
 
     def create_gps_opt(self,fl):
         node2edges_on2median = pickle.load(open('pickles/node2edges_on2median-10-10.pickle','rb'))
-        fl2prediction = pickle.load(open('psdd/pickles/first_last2all_prediction_some-10-10.pickle','rb'))
         nodes = {}
-        edges = fl2prediction[fl]
+        edges = self.fl2prediction[fl]
         for i in range(len(edges)):
             if edges[i] == 1:
                 node_tup = self.edge_index2tuple[i]
@@ -1195,7 +1194,8 @@ def main():
     """
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
-    g.n_longest_median_paths(5)
+    g.median_path((39,65))
+    #g.n_longest_median_paths(5)
     #g.create_node2edges_on2freq_grid()
 
     #test_lat,test_lon = 37.793364, -122.409793 

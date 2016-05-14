@@ -213,7 +213,7 @@ class Graph(object):
                 incident_edges = self.incident_edges(node)
                 edges_on = []
                 for edge in incident_edges:
-                    if model[edge] == 1:
+                    if edges[edge] == 1:
                         edges_on.append(edge)
                 edges_on.sort()
                 edges_on = tuple(edges_on)

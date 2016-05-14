@@ -83,7 +83,7 @@ class Graph(object):
         """
         #trip_id2model = pickle.load(open('pickles/trip_id2model.pickle','rb'))
         old_trip_id = -1
-        model = trip_id2model[1]
+        #model = trip_id2model[1]
         sub_x = 5
         sub_y = 5
         node2edges_on2sub_grid2points = {}
@@ -91,7 +91,7 @@ class Graph(object):
             trip_id,lat,lon = normalize_simple(line)
             if trip_id != old_trip_id:
                 print trip_id
-                model = trip_id2model[trip_id]
+                #model = trip_id2model[trip_id]
                 old_trip_id = trip_id
             node = self.gps_to_node(lat,lon)
             print node

@@ -116,6 +116,7 @@ class Graph(object):
             points = sub_grid2points[sub_tuple]
             points.append([lat,lon])
 
+        return node2edges_on2sub_grid2points
         
         node2edges_on2median = {}
         for node in node2edges_on2sub_grid2points:
@@ -502,7 +503,9 @@ class Graph(object):
         return min_lat,max_lat,min_lon,max_lon
 
 def list_median(arr):
-    return
+    ordered = arr[:]
+    ordered.sort()
+    return ordered[len(ordered)/2]
 
 def gen_gps_to_coords(lat,lon,rows,cols,min_lat,max_lat,min_lon,max_lon):
     """Determines the coodinates on the graph corresponding to a given gps point.

@@ -487,6 +487,7 @@ class Graph(object):
     def coords_to_min_max_lat_lon(self,coords):
         """Determine the min/max lat/lon for a given node
         """
+        print coords
         row = float(coords[0])
         col = float(coords[1])
         max_lat = self.max_lat - row*(self.lat_step)

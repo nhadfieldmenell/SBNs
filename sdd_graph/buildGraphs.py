@@ -1135,7 +1135,7 @@ def main():
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
     #g.node_path_to_median_coords()
-    g.create_node2neighbors2freq_grid()
+    g.create_node2edges_on2freq_grid()
 
     #test_lat,test_lon = 37.793364, -122.409793 
     #coords = g.gps_to_coords(test_lat,test_lon)

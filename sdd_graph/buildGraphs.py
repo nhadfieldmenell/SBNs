@@ -175,7 +175,7 @@ class Graph(object):
                 node_tup = self.edge_index2tuple[i]
                 nodes[node_tup[0]] = True
                 nodes[node_tup[1]] = True
-        fn_prefix = "psdd/paths/median_%d_%d_%d_%d" % (self.rows,self.cols,fl[0],fl[1])
+        fn_prefix = "psdd/paths/may14/median_%d_%d_%d_%d" % (self.rows,self.cols,fl[0],fl[1])
         out_fn = "%s_coords.txt" % fn_prefix
         with open(out_fn,'w') as outfile:
             for node in nodes.keys():
@@ -1194,8 +1194,8 @@ def main():
     """
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
-    g.median_path((start,end))
-    #g.n_longest_median_paths(5)
+    #g.median_path((start,end))
+    g.n_longest_median_paths(10)
     #g.create_node2edges_on2freq_grid()
 
     #test_lat,test_lon = 37.793364, -122.409793 

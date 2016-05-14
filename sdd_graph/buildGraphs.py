@@ -125,6 +125,7 @@ class Graph(object):
         node2edges_on2median = {}
         for node in node2edges_on2sub_grid2points:
             edges_on2sub_grid2points = node2edges_on2sub_grid2points[node]
+            node2edges_on2median[node] = {}
             for edges_on in edges_on2sub_grid2points:
                 sub_grid2points = edges_on2sub_grid2points[edges_on]
                 best_spot = (-1,-1)

@@ -94,6 +94,8 @@ class Graph(object):
                 model = trip_id2model[trip_id]
                 old_trip_id = trip_id
             node = self.gps_to_node(lat,lon)
+            if node == -1:
+                continue
             incident_edges = self.incident_edges(node)
             edges_on = []
             for edge in incident_edges:
@@ -438,8 +440,9 @@ class Graph(object):
     def gps_to_node(self,lat,lon):
         """Determines the node associated with a lat,lon pair.
         """
-        print "hullabaloo"
         row,col = self.gps_to_coords(lat,lon)
+        if row == -1:
+            return -1
         return self.coords_to_node(row,col)
         
 
@@ -463,7 +466,7 @@ class Graph(object):
         """Return the midpoint (lat,lon) of the node at the specified coordinates
         THIS CODE IS BROKEN.  THE LONGITUDE CALCULATION IS WRONG
         """
-        return ((self.min_lat + (self.lat_step * (0.5+coords[0]))),(self.min_lon + (self.lon_step * (0.5+coords[1]))))
+        return ((self.max_lat - (self.lat_step * (0.5+coords[0]))),(self.min_lon + (self.lon_step * (0.5+coords[1]))))
 
 
     def gps_to_coords(self,lat,lon):
@@ -497,6 +500,9 @@ class Graph(object):
         min_lon = self.min_lon + col*(self.lon_step)
         max_lon = min_lon + self.lon_step
         return min_lat,max_lat,min_lon,max_lon
+
+def list_median(arr):
+    return
 
 def gen_gps_to_coords(lat,lon,rows,cols,min_lat,max_lat,min_lon,max_lon):
     """Determines the coodinates on the graph corresponding to a given gps point.

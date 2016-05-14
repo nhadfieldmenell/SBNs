@@ -438,6 +438,7 @@ class Graph(object):
     def gps_to_node(self,lat,lon):
         """Determines the node associated with a lat,lon pair.
         """
+        print "hullabaloo"
         row,col = self.gps_to_coords(lat,lon)
         return self.coords_to_node(row,col)
         
@@ -464,8 +465,6 @@ class Graph(object):
         """
         return ((self.min_lat + (self.lat_step * (0.5+coords[0]))),(self.min_lon + (self.lon_step * (0.5+coords[1]))))
 
-    def wtf(self,coords):
-        print coords
 
     def gps_to_coords(self,lat,lon):
         """Determines the coodinates on the graph corresponding to a given gps point.

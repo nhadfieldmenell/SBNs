@@ -77,7 +77,7 @@ class Graph(object):
 
         return neighbors
 
-    def create_node2neighbors2freq_grid(self):
+    def create_node2edges_on2freq_grid(self):
         """Create a dict mapping that will be used to determine the optimal gps point for that node given neighbors.
         node-num -> (neighboring edge 1,neighboring edge 2) -> AxA grid -> list of all gps points that are in grid spot.
         """
@@ -93,7 +93,7 @@ class Graph(object):
                 print trip_id
                 model = trip_id2model[trip_id]
                 old_trip_id = trip_id
-            node = self.coords_to_node(lat,lon)
+            node = self.gps_to_node(lat,lon)
             incident_edges = self.incident_edges(node)
             edges_on = []
             for edge in incident_edges:
@@ -117,7 +117,13 @@ class Graph(object):
             points.append([lat,lon])
 
         
-
+        node2edges_on2median = {}
+        for node in node2edges_on2sub_grid2points:
+            edges_on2sub_grid2points = node2edges_on2sub_grid2points[node]
+            for edges_on in edges_on2sub_grid2points:
+                sub_grid2points = edges_on2sub_grid2points[edges_on]
+                best_spot = (-1,-1)
+                best_score = 0
 
 
 
@@ -412,6 +418,13 @@ class Graph(object):
         row = (node_num - 1) / self.cols
         col = (node_num - 1) % self.cols
         return (row,col)
+
+    def gps_to_node(self,lat,lon):
+        """Determines the node associated with a lat,lon pair.
+        """
+        row,col = self.gps_to_coords(lat,lon)
+        return self.coords_to_node(row,col)
+        
 
     def coords_to_node(self,row,col):
         """determines the node index of a coordinate in the path graph

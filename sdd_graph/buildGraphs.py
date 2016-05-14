@@ -120,10 +120,11 @@ class Graph(object):
 
         print node2edges_on2sub_grid2points.keys()
         print node2edges_on2sub_grid2points[2].keys()
-        print node2edges_on2sub_grid2points[2][(3,2)].keys()
+        print node2edges_on2sub_grid2points[2][(2,3)].keys()
         
         node2edges_on2median = {}
         for node in node2edges_on2sub_grid2points:
+            print node
             edges_on2sub_grid2points = node2edges_on2sub_grid2points[node]
             node2edges_on2median[node] = {}
             for edges_on in edges_on2sub_grid2points:

@@ -489,6 +489,7 @@ class Graph(object):
         """
         row = float(coords[0])
         col = float(coords[1])
+        print str(row,col)
         max_lat = self.max_lat - row*(self.lat_step)
         min_lat = max_lat - self.lat_step
         min_lon = self.min_lon + col*(self.lon_step)

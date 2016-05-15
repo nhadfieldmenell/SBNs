@@ -1217,7 +1217,7 @@ def main():
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
     #g.median_path((start,end))
-    g.n_longest_median_paths(10)
+    g.n_longest_median_paths(30)
     #g.create_node2edges_on2freq_grid()
 
     #test_lat,test_lon = 37.793364, -122.409793 

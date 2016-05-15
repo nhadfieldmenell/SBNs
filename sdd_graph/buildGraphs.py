@@ -56,6 +56,28 @@ class Graph(object):
         self.first_last2trip_ids = defaultdict(list)
         #self.trip_id2lengths,self.avg_length = self.path_lengths()
 
+    def draw_grid(self,model):
+        m = self.rows
+        n = self.cols
+        for i in xrange(n):
+            sys.stdout.write("%d " % i)
+        sys.stdout.write("\n")
+        for i in xrange(m):
+            for j in xrange(n):
+                sys.stdout.write('.')
+                if j < n-1:
+                    edge = (i*m+j+1,i*m+j+2)
+                    index = self.edge2index[edge]
+                    sys.stdout.write('-' if model[index] == 1 else ' ')
+            sys.stdout.write(' %d\n' % i)
+            if i < m-1:
+                for j in xrange(n):
+                    edge = (i*m+j+1,i*m+m+j+1)
+                    index = self.edge2index[edge]
+                    sys.stdout.write('|' if model[index] == 1 else ' ')
+                    sys.stdout.write(' ')
+            sys.stdout.write('\n')
+
     def incident_edges(self,node):
         neighbors = self.neighbor_nodes(node)
         return map(lambda x: self.edge2index[min(x,node),max(x,node)],neighbors)

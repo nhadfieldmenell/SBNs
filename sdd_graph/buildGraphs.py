@@ -82,7 +82,7 @@ class Graph(object):
 
     def print_fl_models(self,fl):
         """Print the models for all trips with a certain first last pair."""
-        for t_id in self.fl2t_ids:
+        for t_id in self.fl2t_ids[fl]:
             print t_id
             self.draw_grid(self.t_id2model[t_id])
             print ""

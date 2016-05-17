@@ -561,13 +561,19 @@ class Graph(object):
             for j in range(self.cols):
                 min_lat,max_lat,min_lon,max_lon = self.coords_to_min_max_lat_lon((i,j))
                 if i == 0:
-                    print str((max_lat,max_lon))
+                    print_gps(max_lat,max_lon,"grid")
                     if j == 0:
-                        print str((max_lat,min_lon))
+                        print_gps(max_lat,min_lon,"grid")
                 if j == 0:
-                    print str((min_lat,min_lon))
-                print str((min_lat,max_lon))
+                    print_gps(min_lat,min_lon,"grid")
+                print_gps(min_lat,max_lon,"grid")
 
+
+def print_gps(self,lat,lon,label):
+    """Print GPS in a format that is good for gpsvisualizer.com.
+    Use label label.
+    """
+    print "%s,%f,%f" % (label,lat,lon)
 
 def list_median(arr):
     ordered = arr[:]

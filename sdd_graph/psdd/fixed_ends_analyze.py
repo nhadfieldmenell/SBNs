@@ -26,7 +26,7 @@ class PathManager(object):
         self.edge_index2tuple = edge_index2tuple
         self.paths = []
         self.copy = copy
-        fl2models_fn = 'pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols)
+        fl2models_fn = 'p/ckles/first_last2models-%d-%d.pickle' % (self.rows,self.cols)
         fl2models_exists = os.path.isfile(fl2models_fn)
         if fl2models_exists:
             self.first_last2models = pickle.load(open(fl2models_fn,'rb'))
@@ -133,7 +133,8 @@ class PathManager(object):
         """Find similarity measures for the predicted paths
         Weight measures by the frequency of a given path (# of trips for that path, not first last pair)
         """
-        fl2prediction = pickle.load(open('pickles/first_last2all_prediction_100_filter_more-10-10.pickle','rb'))
+        fl2prediction = pickle.load(open('pickles/first_last2all_prediction_taken-10-10.pickle','rb'))
+        #fl2prediction = pickle.load(open('pickles/first_last2all_prediction_100_filter_more-10-10.pickle','rb'))
         #fl2prediction = pickle.load(open('pickles/first_last2all_prediction_some-10-10.pickle','rb'))
         total_trips = 0.0
         tot_haus = 0.0
@@ -1407,10 +1408,10 @@ def main():
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
-    #man.analyze_predictions()
+    man.analyze_predictions()
     #man.create_first_last2models(data_fn_general,bad_fn_general)
     #man.analyze_paths_taken()
-    man.compare_observed_models()
+    #man.compare_observed_models()
     return
 
 

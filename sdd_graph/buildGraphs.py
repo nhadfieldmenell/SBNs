@@ -701,6 +701,174 @@ class Path(object):
         self.line_num = pivot
         return pivot
 
+    def find_edges(self,gps,prev_gps):
+        """Find the edges that are traversed going from point gps to prev_gps
+        """
+        slope = slope(prev_gps[0],prev_gps[1],gps[0],gps[1])
+        prev_lat,prev_lon = prev_gps
+        end_lat,end_lon = gps
+        step = 0.00001
+        if prev_lat > end_lat:
+            step = 0.0-step
+        lat = prev_lat
+        lon = prev_lon
+        prev_coords = self.gps_to_coords(prev_lat,prev_lon)
+        edges = []
+        if prev_lat < end_lat:
+            while lat < end_lat:
+                lat,lon,prev_coords,edges = self.next_step_edges(slope,step,prev_coords,edges,lat,lon)
+        else:
+            while lat > end_lat:
+                lat,lon,prev_coords,edges = self.next_step_edges(slope,step,prev_coords,edges,lat,lon)
+        return edges
+
+    def next_step_edges(self,slope,step,prev_coords,edges,lat,lon):
+        coords = self.gps_to_coords(lat,lon)
+        if coords != prev_coords:
+            edge_num = self.graph.edge_num(prev_coords[0],prev_coords[1],coords[0],coords[1])
+            edges.append(edge_num)
+        prev_coords = coords
+        lat += step
+        lon += slope*step
+        return lat,lon,prev_coords,edges
+    
+                
+
+
+    def create_path_new(self):
+        """Creates the path grid for the path's trip_id.
+
+        It creates an array to model the graph's dimensions.
+        Array spots are 1 if the path traverses them.
+        Array spots are 0 if path doesnt traverse them.
+        If a coordinate is outside the graph, do not include it in the graph.
+        Finds the longest collection of points in between exits from the graph.
+        Updates graph node visit information by calling graph.node_visit().
+        Sets self.next_line value.
+        
+
+        Returns:
+            A numpy array with dimensions equal to those of the input graph.
+            Grid spots are 1 if the path traverses them, 0 otherwise.
+
+            The set of edges corresponding to that path.
+                Each edge is 0 if it is not included and 1 if it is included.
+
+            A boolean that is true if all adjacent points have valid edges, false otherwise.
+
+            A dict that contains the partial path from the start of the path to the midpoint.
+                Edges from the start to the midpoint are set to 1.
+                Edges around the start point and not used in the path are set to 0.
+                    This is the entirity of the information we know about the final path from the partial.
+                    We know that the path is not any longer in the direction away from the midpoint.
+        """
+
+        partials = []
+        partials.append({})
+        #print self.trip_id
+
+        #this variable is true if we have not yet recorded the first edge of a path
+        first_edge = True
+
+        first_lasts = []
+        first_lasts.append([0,0])
+        matrices = []
+        matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
+        edge_sets = []
+        edge_sets.append([0 for i in range(self.graph.num_edges)])
+        cur_line = self.line_num
+        good_graphs = []
+        good_graphs.append(True)
+        nodes_visited = []
+        nodes_visited.append([])
+        #normalized = dg.normalize(self.graph.lines[cur_line])
+        normalized = normalize_simple(self.graph.lines[cur_line])
+        matrices_index = 0
+        prev_coords = (-1,-1)
+        prev_gps = (-1.0,-1.0)
+        while normalized[0] == self.trip_id:
+            lat = normalized[1]
+            lon = normalized[2]
+            coords = self.graph.gps_to_coords(lat,lon)
+            node = self.graph.coords_to_node(coords[0],coords[1])
+
+            if prev_coords == (-1,-1) and coords[0] != -1:
+                first_lasts[matrices_index][0] = node
+
+            if coords[0] == -1 and prev_coords[0] != -1:
+                prev_node = self.graph.coords_to_node(prev_coords[0],prev_coords[1])
+                first_lasts[matrices_index][1] = prev_node
+
+            if prev_coords != (-1,-1) and coords[0] != -1 and coords != prev_coords:
+                edge_num = self.graph.edge_num(prev_coords[0],prev_coords[1],coords[0],coords[1])
+                if edge_num == -1:
+                    good_graphs[matrices_index] = False
+                else:
+                    edge_sets[matrices_index][edge_num] = 1
+                    if edge_num in partials[matrices_index] and partials[matrices_index][edge_num] == 0:
+                        del partials[matrices_index][edge_num]
+                    if not hit_midpoint:
+                        if first_edge:
+                            above = (prev_coords[0]-1,prev_coords[1])
+                            below = (prev_coords[0]+1,prev_coords[1])
+                            left = (prev_coords[0],prev_coords[1]-1)
+                            right = (prev_coords[0],prev_coords[1]+1)
+                            for next_coords in (above,below,left,right):
+                                other_edge = self.graph.edge_num(prev_coords[0],prev_coords[1],next_coords[0],next_coords[1])
+                                if other_edge != -1:
+                                    partials[matrices_index][other_edge] = 0
+                            first_edge = False
+                            if self.graph.coords_to_node(prev_coords[0],prev_coords[1]) == self.midpoint:
+                                hit_midpoint = True
+                        partials[matrices_index][edge_num] = 1
+                        if self.graph.coords_to_node(coords[0],coords[1]) == self.midpoint:
+                            hit_midpoint = True
+
+            if coords[0] == -1:
+                matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
+                first_lasts.append([0,0])
+                edge_sets.append([0 for i in range(self.graph.num_edges)])
+                good_graphs.append(True)
+                nodes_visited.append([])
+                matrices_index += 1
+                partials.append({})
+                hit_midpoint = False
+                first_edge = True
+            
+            elif coords[0] < self.graph.rows and coords[1] < self.graph.cols and not matrices[matrices_index][0][coords[0]][coords[1]]:
+                matrices[matrices_index][1] += 1
+                matrices[matrices_index][0][coords[0]][coords[1]] = 1
+                nodes_visited[matrices_index].append(coords)
+
+            prev_coords = coords
+
+            cur_line += 1
+            if cur_line == len(self.graph.lines):
+                break
+            #normalized = dg.normalize(self.graph.lines[cur_line])
+            normalized = normalize_simple(self.graph.lines[cur_line])
+            prev_gps = (lat,lon)
+
+        prev_node = self.graph.coords_to_node(prev_coords[0],prev_coords[1])
+        first_lasts[matrices_index][1] = prev_node
+        self.next_line = cur_line
+        best_index = 0
+        best_score = 0
+        for matrix_index in range(len(matrices)):
+            if matrices[matrix_index][1] > best_score:
+                best_score = matrices[matrix_index][1]
+                best_index = matrix_index
+
+        for coords in nodes_visited[best_index]:
+            self.graph.node_visit(self.trip_id,coords)
+        
+
+        if self.trip_id not in self.graph.trip_id2line_num:
+            #if first_lasts[best_index] == [28,5]:
+            #    print "a to b: %d" % self.trip_id
+            self.graph.first_last2trip_ids[tuple(first_lasts[best_index])].append(self.trip_id)
+
+        return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index],partials[best_index]
 
     #@profile
     def create_path(self):
@@ -898,6 +1066,12 @@ class Path(object):
                         
 
         return edges
+
+def slope(lat1,lon1,lat2,lon2):
+    """Find the slope from point A to point B.
+    Intended to be used to increment latitude and find change in longitude.
+    """
+    return (lon2-lon1)/(lat2-lat1)
 
 def find_next_comma_newline(line,index):
     """Find the index of the next comma or newline character in a line.

@@ -561,12 +561,12 @@ class Graph(object):
             for j in range(self.cols):
                 min_lat,max_lat,min_lon,max_lon = self.coords_to_min_max_lat_lon((i,j))
                 if i == 0:
-                    print str(max_lat,max_lon)
+                    print str((max_lat,max_lon))
                     if j == 0:
-                        print str(max_lat,min_lon)
+                        print str((max_lat,min_lon))
                 if j == 0:
-                    print str(min_lat,min_lon)
-                print str(min_lat,max_lon)
+                    print str((min_lat,min_lon))
+                print str((min_lat,max_lon))
 
 
 def list_median(arr):

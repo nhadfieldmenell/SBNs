@@ -207,18 +207,6 @@ class PathManager(object):
                 for j in range(i+1,num_models):
                     weights[i][j] = (2*probs[i]*probs[j])/denom
             """
-            for i in range(len(model_array)):
-                print "path %d" % i
-                self.draw_grid(model_array[i])
-            weight_sum = 0.0
-            for i in range(num_models):
-                for j in range(num_models):
-                    sys.stdout.write("%.3f " % weights[i][j])
-                print ""
-                weight_sum += sum(weights[i])
-            #print "weight sum: %f" % weight_sum
-            """
-
             fl2similarity_measures[fl] = [0.0,0.0,0.0]
             for i in range(len(model_array)):
                 for j in range(i+1,len(model_array)):
@@ -229,6 +217,37 @@ class PathManager(object):
                     fl2similarity_measures[fl][1] += weight*sum_haus
                     fl2similarity_measures[fl][2] += weight*DSN
             measures = fl2similarity_measures[fl]
+            """
+            """
+            for i in range(len(model_array)):
+                print "path %d" % i
+                self.draw_grid(model_array[i])
+            """
+            weights_with_diag = [[0.0 for i in range(num_models)] for i in range(num_models)]
+            for i in range(num_models):
+                for j in range(i,num_models):
+                    if i == j:
+                        weights_with_diag[i][j] = weights[i][j]*denom
+                    else:
+                        weights_with_diag[i][j] = probs[i]*probs[i]
+            fl2similarity_measures[fl] = [0.0,0.0,0.0]
+            weight_sum = 0.0
+            for i in range(num_models):
+                #for j in range(num_models):
+                #    sys.stdout.write("%.3f " % weights_with_diag[i][j])
+                #print ""
+                weight_sum += sum(weights[i])
+            print "weight sum: %f" % weight_sum
+            for i in range(len(model_array)):
+                for j in range(i,len(model_array)):
+                    weight = weights_with_diag[i][j]
+                    haus,sum_haus,DSN = self.path_diff_measures(model_array[i],model_array[j])
+                    #print "%s: haus %.2f, sum_haus %.2f, DSN %.2f" % (str((i,j)),haus,sum_haus,DSN) 
+                    fl2similarity_measures[fl][0] += weight*haus
+                    fl2similarity_measures[fl][1] += weight*sum_haus
+                    fl2similarity_measures[fl][2] += weight*DSN
+            measures = fl2similarity_measures[fl]
+
             print "overall: haus %.2f, sum_haus %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
             #print ""
             #if num_iters > 6:
@@ -1388,10 +1407,10 @@ def main():
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
-    man.analyze_predictions()
+    #man.analyze_predictions()
     #man.create_first_last2models(data_fn_general,bad_fn_general)
     #man.analyze_paths_taken()
-    #man.compare_observed_models()
+    man.compare_observed_models()
     return
 
 

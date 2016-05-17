@@ -555,6 +555,20 @@ class Graph(object):
         max_lon = min_lon + self.lon_step
         return min_lat,max_lat,min_lon,max_lon
 
+    def grid_points(self):
+        """Print out all of the grid GPS points in the graph to visualize on a map"""
+        for i in range(self.rows):
+            for j in range(self.cols):
+                min_lat,max_lat,min_lon,max_lon = self.coords_to_min_max_lat_lon((i,j))
+                if i == 0:
+                    print str(max_lat,max_lon)
+                    if j == 0:
+                        print str(max_lat,min_lon)
+                if j == 0:
+                    print str(min_lat,min_lon)
+                print str(min_lat,max_lon)
+
+
 def list_median(arr):
     ordered = arr[:]
     ordered.sort()
@@ -1216,7 +1230,8 @@ def main():
     """
 
     g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
-    g.median_path((start,end))
+    g.grid_points()
+    #g.median_path((start,end))
     #g.n_longest_median_paths(50)
     #g.create_node2edges_on2freq_grid()
 

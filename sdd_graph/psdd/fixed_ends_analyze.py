@@ -26,7 +26,7 @@ class PathManager(object):
         self.edge_index2tuple = edge_index2tuple
         self.paths = []
         self.copy = copy
-        fl2models_fn = 'p/ckles/first_last2models-%d-%d.pickle' % (self.rows,self.cols)
+        fl2models_fn = 'pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols)
         fl2models_exists = os.path.isfile(fl2models_fn)
         if fl2models_exists:
             self.first_last2models = pickle.load(open(fl2models_fn,'rb'))

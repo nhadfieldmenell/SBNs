@@ -569,7 +569,7 @@ class Graph(object):
                 print_gps(min_lat,max_lon,"grid")
 
 
-def print_gps(self,lat,lon,label):
+def print_gps(lat,lon,label):
     """Print GPS in a format that is good for gpsvisualizer.com.
     Use label label.
     """

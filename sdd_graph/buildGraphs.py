@@ -24,7 +24,7 @@ class Graph(object):
         cols: the number of columns for the graph
     """
 
-    def __init__(self,fn,min_lat,max_lat,min_lon,max_lon,rows,cols):
+    def __init__(self,fn,min_lat,max_lat,min_lon,max_lon,rows,cols,fl2t_ids=None,t_id2model=None):
         self.lines = fn.readlines()
         self.gps_length = len(self.lines)
         self.trip_id2line_num = {}
@@ -54,6 +54,8 @@ class Graph(object):
         self.best_node = 1
         self.best_node_score = 0
         self.first_last2trip_ids = defaultdict(list)
+        self.fl2t_ids = fl2t_ids
+        self.t_id2model = t_id2model
         #self.trip_id2lengths,self.avg_length = self.path_lengths()
 
     def draw_grid(self,model):
@@ -77,6 +79,14 @@ class Graph(object):
                     sys.stdout.write('|' if model[index] == 1 else ' ')
                     sys.stdout.write(' ')
             sys.stdout.write('\n')
+
+    def print_fl_models(self,fl):
+        """Print the models for all trips with a certain first last pair."""
+        for t_id in self.fl2t_ids:
+            print t_id
+            self.draw_grid(self.t_id2model[t_id])
+            print ""
+
 
     def incident_edges(self,node):
         neighbors = self.neighbor_nodes(node)
@@ -239,10 +249,6 @@ class Graph(object):
                 edges_on.sort()
                 edges_on = tuple(edges_on)
                 outfile.write("%s,%s\n" % ('0',str(node2edges_on2median[node][edges_on])[1:-1]))
-
-
-
-
 
     def path_lengths(self):
         """Determines the length of each path in the dataset
@@ -1235,8 +1241,13 @@ def main():
     max_lon = -122.4
     """
 
-    g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
-    g.grid_points()
+    fl2t_ids = pickle.load(open('pickles/first_last2trip_ids-%d-%d.pickle' % (rows,cols),'rb'))
+    t_id2model = pickle.load(open('pickles/trip_id2model.pickle','rb'))
+
+    #g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
+    g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols,fl2t_ids=fl2t_ids,t_id2model=t_id2model)
+    g.print_fl_models((5,84))
+    #g.grid_points()
     #g.median_path((start,end))
     #g.n_longest_median_paths(50)
     #g.create_node2edges_on2freq_grid()

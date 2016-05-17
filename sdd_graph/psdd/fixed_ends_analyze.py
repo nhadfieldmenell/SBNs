@@ -236,7 +236,7 @@ class PathManager(object):
                 #for j in range(num_models):
                 #    sys.stdout.write("%.3f " % weights_with_diag[i][j])
                 #print ""
-                weight_sum += sum(weights[i])
+                weight_sum += sum(weights_with_diag[i])
             print "weight sum: %f" % weight_sum
             for i in range(len(model_array)):
                 for j in range(i,len(model_array)):

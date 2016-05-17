@@ -227,9 +227,9 @@ class PathManager(object):
             for i in range(num_models):
                 for j in range(i,num_models):
                     if i == j:
-                        weights_with_diag[i][j] = weights[i][j]*denom
-                    else:
                         weights_with_diag[i][j] = probs[i]*probs[i]
+                    else:
+                        weights_with_diag[i][j] = weights[i][j]*denom
             fl2similarity_measures[fl] = [0.0,0.0,0.0]
             weight_sum = 0.0
             for i in range(num_models):

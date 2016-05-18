@@ -20,29 +20,13 @@ def main():
     t_id2testing = {}
     for i in range(2*tenth):
         t_id2testing[all_ids[i]] = True
-    for i in range(2*tenth-4,len(all_ids)):
+    for i in range(2*tenth,len(all_ids)):
         t_id2training[all_ids[i]] = True
-    print "Testing instances"
-    count = 0
-    for t in t_id2testing:
-        print t
-        if count > 10:
-            break
-        count += 1
-    print "Training instances"
-    count = 0
-    for t in t_id2training:
-        print t
-        if count > 10:
-            break
-        count += 1
 
-    for t in t_id2testing:
-        if t in t_id2training:
-            print "%d in both!"
-    for t in t_id2training:
-        if t in t_id2testing:
-            print "%d in both!"
+    with open('pickles/t2testing.pickle','wb') as output:
+        pickle.dump(t_id2testing,output)
+    with open('pickles/t2training.pickle','wb') as output:
+        pickle.dump(t_id2training,output)
 
     
     return

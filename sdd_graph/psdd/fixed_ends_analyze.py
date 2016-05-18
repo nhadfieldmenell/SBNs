@@ -1266,7 +1266,7 @@ def generate_copy_new(rows,cols,fn_prefix):
     t2model = pickle.load(open('../pickles/trip_id2model_better.pickle','rb'))
 
     models = []
-    for t in t2bad:
+    for t in t2model:
         print t
         if not t in t2bad:
             models.append(tuple(t2model[t]))
@@ -1308,7 +1308,7 @@ def generate_copy_new(rows,cols,fn_prefix):
     print "Starting Training"
     start_time = time.time()
     copy.learn(training,psi=psi,scale=scale,show_progress=True)
-    print "WORKED FOR TRIPS 1 through 100"
+    print "WORKED FOR TRIPS"
     print "== TRAINING =="
     print "    training time: %.3fs" % (time.time()-start_time)
     ll = copy.log_likelihood_alt(training)

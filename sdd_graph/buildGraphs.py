@@ -723,7 +723,7 @@ class Path(object):
         return edges
 
     def next_step_edges(self,slope,step,prev_coords,edges,lat,lon):
-        coords = self.gps_to_coords(lat,lon)
+        coords = self.graph.gps_to_coords(lat,lon)
         if coords != prev_coords:
             edge_num = self.graph.edge_num(prev_coords[0],prev_coords[1],coords[0],coords[1])
             edges.append(edge_num)

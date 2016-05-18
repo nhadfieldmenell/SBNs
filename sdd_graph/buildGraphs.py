@@ -776,7 +776,7 @@ class Path(object):
         first_lasts = []
         first_lasts.append([0,0])
         matrices = []
-        matrices.append([[[0.0 for i in range(self.graph.cols)] for i in range(self.graph.rows)],0])
+        matrices.append([[[0 for i in range(self.graph.cols)] for i in range(self.graph.rows)],0])
         edge_sets = []
         edge_sets.append([0 for i in range(self.graph.num_edges)])
         cur_line = self.line_num
@@ -809,7 +809,7 @@ class Path(object):
                     edge_sets[matrices_index][edge_num] = 1
 
             if coords[0] == -1:
-                matrices.append([[[0.0 for i in range(self.graph.cols)] for i in range(self.graph.rows)],0])
+                matrices.append([[[0 for i in range(self.graph.cols)] for i in range(self.graph.rows)],0])
                 first_lasts.append([0,0])
                 edge_sets.append([0 for i in range(self.graph.num_edges)])
                 nodes_visited.append([])

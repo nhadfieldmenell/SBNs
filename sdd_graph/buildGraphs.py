@@ -1084,6 +1084,25 @@ def normalize_simple(line):
         lon = float(line[second+1:third])
     return int(line[0:first]),float(line[first+1:second]),lon
 
+def just_create_paths(graph):
+    """create a dict containing every path"""
+    trip_id = 1
+    line_num = 0
+    num_trips = 0
+    trip_id2model = {}
+    p = Path(trip_id,graph,line_num=line_num)
+    trip_id2model[trip_id] = p.edges
+    num_trips += 1
+    while p.next_line != len(graph.lines):
+        line_num = p.next_line
+        trip_id = normalize_simple(graph.lines[line_num])[0]
+        print trip_id
+        p = Path(trip_id,graph,line_num=line_num)
+        trip_id2model[trip_id] = p.edges
+        num_trips += 1
+
+    with open('pickles/trip_id2model.pickle','wb') as output:
+        pickle.dump(trip_id2model,output)
 
 
 #@profile
@@ -1382,12 +1401,13 @@ def main():
     max_lon = -122.4
     """
 
-    fl2t_ids = pickle.load(open('pickles/first_last2trip_ids-%d-%d.pickle' % (rows,cols),'rb'))
-    t_id2model = pickle.load(open('pickles/trip_id2model.pickle','rb'))
+    #fl2t_ids = pickle.load(open('pickles/first_last2trip_ids-%d-%d.pickle' % (rows,cols),'rb'))
+    #t_id2model = pickle.load(open('pickles/trip_id2model.pickle','rb'))
 
-    #g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
-    g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols,fl2t_ids=fl2t_ids,t_id2model=t_id2model)
-    g.print_fl_models((5,84))
+    g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols)
+    just_create_paths(g)
+    #g = Graph(full_fn,min_lat,max_lat,min_lon,max_lon,rows,cols,fl2t_ids=fl2t_ids,t_id2model=t_id2model)
+    #g.print_fl_models((5,84))
     #g.grid_points()
     #g.median_path((start,end))
     #g.n_longest_median_paths(50)

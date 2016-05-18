@@ -1125,6 +1125,7 @@ def just_create_paths(graph):
     while p.next_line != len(graph.lines):
         #if trip_id > 30:
         #    return
+        print trip_id
         line_num = p.next_line
         trip_id = normalize_simple(graph.lines[line_num])[0]
         p = Path(trip_id,graph,line_num=line_num)

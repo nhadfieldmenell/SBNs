@@ -1135,6 +1135,7 @@ def just_create_paths(graph):
         p = Path(trip_id,graph,line_num=line_num)
         nodes = [0 for i in range(graph.rows*graph.cols+1)]
         for edge in p.path:
+            print edge
             incidents = graph.edge_index2tuple[edge]
             nodes[incidents[0]] = 1
             nodes[incidents[1]] = 1

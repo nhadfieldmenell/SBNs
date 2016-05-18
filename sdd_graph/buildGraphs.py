@@ -94,7 +94,7 @@ class Graph(object):
         return map(lambda x: self.edge2index[min(x,node),max(x,node)],neighbors)
 
     def is_simple(self,edges,first,last):
-        print "first: %d" % first
+        #print "first: %d" % first
         cur = first
         while cur != last:
             i_es = self.incident_edges(cur)
@@ -1124,7 +1124,7 @@ def just_create_paths(graph):
     fl2t = p
     id2bad = {}
     while p.next_line != len(graph.lines):
-        if trip_id > 10:
+        if trip_id > 20:
             return
         line_num = p.next_line
         trip_id = normalize_simple(graph.lines[line_num])[0]

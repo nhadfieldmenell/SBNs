@@ -96,6 +96,8 @@ class Graph(object):
     def is_simple(self,edges,first,last):
         #print "first: %d" % first
         cur = first
+        node2seen = {}
+        node2seen[cur] = True
         while cur != last:
             i_es = self.incident_edges(cur)
             neighbor = -1
@@ -111,6 +113,9 @@ class Graph(object):
                     cur = node
                     break
             edges[edge] = 0
+            if cur in node2seen:
+                return False
+            node2seen[cur] = True
         if edges.count(1) > 0:
             return False
         return True

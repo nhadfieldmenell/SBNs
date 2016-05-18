@@ -96,27 +96,27 @@ class Graph(object):
     def is_simple(self,nodes,first,last):
         print "first: %d" % first
         cur = first
-        flat_nodes = [0]
-        for row in nodes:
-            for pt in row:
-                flat_nodes.append(pt)
+        #flat_nodes = [0]
+        #for row in nodes:
+        #    for pt in row:
+        #        flat_nodes.append(pt)
         while cur != last:
             print cur
-            flat_nodes[cur] = 0
+            nodes[cur] = 0
             neighbors = self.neighbor_nodes(cur)
             print neighbors
             neighbor = -1
             for n in neighbors:
                 #print n
-                if flat_nodes[n] == 1:
+                if nodes[n] == 1:
                     neighbor = n
                     break
             if neighbor == -1:
                 return False
             cur = neighbor
-        flat_nodes[cur] = 0
-        if flat_nodes.count(1) > 0:
-            print flat_nodes
+        nodes[cur] = 0
+        if nodes.count(1) > 0:
+            print nodes
             return False
         return True
 

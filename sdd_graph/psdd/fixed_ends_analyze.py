@@ -1291,8 +1291,7 @@ def generate_copy_new(rows,cols,fn_prefix):
 
 
     models = []
-    for t in range(1,100):
-        print t
+    for t in t2bad:
         if not t in t2bad:
             models.append(tuple(t2model[t]))
     """
@@ -1302,6 +1301,7 @@ def generate_copy_new(rows,cols,fn_prefix):
     training = DataSet.to_dict(models)
 
 
+    print "Starting Training"
     start_time = time.time()
     copy.learn(training,psi=psi,scale=scale,show_progress=True)
     print "WORKED FOR TRIPS 1 through 100"

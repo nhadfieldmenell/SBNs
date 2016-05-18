@@ -1125,6 +1125,7 @@ def just_create_paths(graph):
     num_trips += 1
     fl2t = p
     id2bad = {}
+    print "\n"
     while p.next_line != len(graph.lines):
         if trip_id > 10:
             return

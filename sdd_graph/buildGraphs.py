@@ -1110,6 +1110,7 @@ def just_create_paths(graph):
         print trip_id
         p = Path(trip_id,graph,line_num=line_num)
         first,last = p.first_last
+        print first
         print p.path
         return
 

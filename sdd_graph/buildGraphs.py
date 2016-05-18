@@ -1148,7 +1148,7 @@ def just_create_paths(graph):
         num_trips += 1
 
     print len(id2bad.keys())
-    with open('pickles/trip_id2bad-%d-%d.pickle','wb') as output:
+    with open('pickles/trip_id2bad-%d-%d.pickle' % (graph.rows,graph.cols),'wb') as output:
         pickle.dump(id2bad,output)
     #with open('pickles/trip_id2model_better.pickle','wb') as output:
     #    pickle.dump(trip_id2model,output)

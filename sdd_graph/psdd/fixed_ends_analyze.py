@@ -1016,6 +1016,129 @@ class Path(object):
 def euclidean(pt1,pt2):
     return math.sqrt(math.pow(pt1[0]-pt2[0],2) + math.pow(pt1[1]-pt2[1],2))
 
+def filter_bad_new(copy,in_fn,bad_fn,rows,cols,edge2index):
+    """Create a dataset from the file that consists of only models that are consistent with the sdd
+    If there is a file that already contains the indices of the bad paths, then don't recompute.
+    If there is no such file, find the bad paths and store their indices in the file with name bad_fn.
+    '../datasets/first_last-%d-%d-%d-%d-%d' % (rows,cols,start,end,run)
+    """
+
+    full_file = open(in_fn, "r")
+    full_lines = full_file.readlines()
+    full_file.close()
+
+    full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
+    full_tuple = map(tuple,full_ints)
+
+    bad_lines = None
+    bad_paths = {}
+
+    trip_id2bad_fn = 'pickles/trip_id2bad-%d-%d.pickle' % (rows,cols)
+    file_exists = os.path.isfile(trip_id2bad_fn)
+    if file_exists:
+        trip_id2bad = pickle.load(open(trip_id2bad_fn,'rb'))
+        for trip_id in trip_id2bad:
+            bad_paths[trip_id-1] = True
+    """
+    file_exists = os.path.isfile(bad_fn)
+    if file_exists:
+        bad_file = open(bad_fn,'r')
+        bad_lines = bad_file.readlines()
+        bad_file.close()
+        for i in bad_lines:
+            bad_paths[int(i)] = True
+    """
+    data = []
+
+    copy.uniform_weights()
+    bad_models = {}
+    unique_bad = 0
+    total_bad = 0
+    total_good = 0
+    unique_good = 0
+
+    bad_indices = {}
+    good_models = {}
+    bad_printed = 0
+    times_printed = 0
+    good_printed = 0
+
+    if not file_exists: 
+        cur_time = time.time()
+        for i in range(len(full_tuple)):
+            prev_time = cur_time
+            cur_time = time.time()
+            #if times_printed < 100:
+            #    print "time to evaluate model %d: %f" % (i-1,cur_time-prev_time)
+            model = full_tuple[i]
+            if str(model) in good_models:
+                total_good += 1
+                data.append(model)
+                continue
+            if str(model) in bad_models:
+                total_bad += 1
+                bad_indices[i] = True
+                continue
+            evidence = DataSet.evidence(model)
+            probability = copy.probability(evidence)
+            if probability == 0:
+                if bad_printed < 25:
+                    bad_printed += 1
+                    #print "Bad model:"
+                    #draw_grid(model,rows,cols,edge2index)
+                bad_models[str(model)] = True
+                unique_bad += 1
+                total_bad += 1
+                bad_indices[i] = True
+                continue
+
+            else:
+                if good_printed < 25:
+                    good_printed += 1
+                    print "Good model:"
+                    #draw_grid(model,rows,cols,edge2index)
+                good_models[str(model)] = True
+                unique_good += 1
+                total_good += 1
+                data.append(model)
+
+        print "total bad: %d, unique bad: %d, total good: %d, unique good: %d" % (total_bad,unique_bad, total_good, unique_good)
+
+        bad_file = open(bad_fn,'w')
+        for i in bad_indices.keys():
+            bad_file.write("%d\n" % i)
+        bad_file.close()
+
+        full_dataset = DataSet.to_dict(data)
+
+        return full_dataset
+
+    else:
+        for i in range(len(full_tuple)):
+            model = full_tuple[i]
+            if i in bad_paths:
+                bad_models[str(model)] = True
+                unique_bad += 1
+                total_bad += 1
+                continue
+
+            else:
+                if str(model) in good_models:
+                    total_good += 1
+                    data.append(model)
+                    continue
+                else:
+                    good_models[str(model)] = True
+                    unique_good += 1
+                    total_good += 1
+                    data.append(model)
+
+        print "total bad: %d, unique bad: %d, total good: %d, unique good: %d" % (total_bad,unique_bad, total_good, unique_good)
+        full_dataset = DataSet.to_dict(data)
+
+        print "num bad paths: %d" % len(bad_paths)
+        return full_dataset
+
 def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
     """Create a dataset from the file that consists of only models that are consistent with the sdd
     If there is a file that already contains the indices of the bad paths, then don't recompute.
@@ -1138,6 +1261,61 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
 
         print "num bad paths: %d" % len(bad_paths)
         return full_dataset
+
+def generate_copy_new(rows,cols,fn_prefix):
+    t2bad = pickle.load(open('../pickles/trip_id2bad-10-10.pickle','rb'))
+    t2model = pickle.load(open('../pickles/trip_id2model_better.pickle','rb'))
+
+    vtree_filename = '%s.vtree' % fn_prefix
+    sdd_filename = '%s.sdd' % fn_prefix
+
+    psi,scale = 2.0,None # learning hyper-parameters
+    N,M = 2**10,2**10 # size of training/testing dataset
+    em_max_iters = 10 # maximum # of iterations for EM
+    em_threshold = 1e-4 # convergence threshold
+    seed = 1 # seed for simulating datasets
+
+    ########################################
+    # READ INPUT
+    ########################################
+
+    print "== reading vtree/sdd"
+
+    vtree = Vtree.read(vtree_filename)
+    manager = SddManager(vtree)
+    sdd = SddNode.read(sdd_filename,manager)
+    pmanager = PSddManager(vtree)
+    copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
+    pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
+
+    psdd_parameters = copy.theta_count()
+
+
+    models = []
+    for t in t2model:
+        if not t in t2bad:
+            models.append(tuple(t2model[t]))
+    training = DataSet.to_dict(models)
+
+
+    start_time = time.time()
+    copy.learn(training,psi=psi,scale=scale,show_progress=True)
+    print "== TRAINING =="
+    print "    training time: %.3fs" % (time.time()-start_time)
+    ll = copy.log_likelihood_alt(training)
+    lprior = copy.log_prior(psi=psi,scale=scale)
+    print "   training: %d unique, %d instances" % (len(training),training.N)
+    print "   log likelihood: %.8f" % (ll/training.N)
+    print "   log prior: %.8f" % (lprior/training.N)
+    print "   log posterior: %.8f" % ((ll+lprior)/training.N)
+    print "   log likelihood unnormalized: %.8f" % ll
+    print "   log prior unnormalized: %.8f" % lprior
+    print "   log posterior unnormalized: %.8f" % (ll+lprior)
+    print "   log prior over parameters: %.8f" % (lprior/psdd_parameters)
+
+    print "  zero parameters: %d (should be zero)" % copy.zero_count()
+    copy.marginals()
+    return copy
 
 def generate_copy(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges):
     vtree_filename = '%s.vtree' % fn_prefix
@@ -1405,6 +1583,9 @@ def main():
     fn_prefix_general = '../graphs/general_ends-%d-%d' % (rows,cols)
     data_fn_general = '../datasets/general_ends-%d-%d.txt' % (rows,cols)
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
+
+    copy = generate_copy_new(rows,cols,fn_prefix_general)
+    return
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)

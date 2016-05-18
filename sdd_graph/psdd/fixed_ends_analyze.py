@@ -1016,7 +1016,7 @@ class Path(object):
 def euclidean(pt1,pt2):
     return math.sqrt(math.pow(pt1[0]-pt2[0],2) + math.pow(pt1[1]-pt2[1],2))
 
-def filter_bad_new(copy,bad_fn,rows,cols,edge2index):
+def filter_bad_new(copy,bad_fn,rows,cols,edge2index,man):
     """Create a dataset from the file that consists of only models that are consistent with the sdd
     If there is a file that already contains the indices of the bad paths, then don't recompute.
     If there is no such file, find the bad paths and store their indices in the file with name bad_fn.
@@ -1083,7 +1083,7 @@ def filter_bad_new(copy,bad_fn,rows,cols,edge2index):
                 if bad_printed < 25:
                     bad_printed += 1
                     print "Bad model:"
-                    draw_grid(model,rows,cols,edge2index)
+                    man.draw_grid(model)
                 bad_models[str(model)] = True
                 unique_bad += 1
                 total_bad += 1
@@ -1608,8 +1608,9 @@ def main():
     bad_fn = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
 
     #copy = generate_copy_new(rows,cols,fn_prefix)
+    man = PathManager(rows,cols,edge2index,edge_index2tuple)
     copy = gen_copy(rows,cols,fn_prefix)
-    filter_bad_new(copy,bad_fn,rows,cols,edge2index)
+    filter_bad_new(copy,bad_fn,rows,cols,edge2index,man)
     return
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
     print "COPY GENERATED!!!"
@@ -1617,7 +1618,6 @@ def main():
     return
  
     #find_kl(rows,cols,fn_prefix,bad_fn,data_fn)
-    man = PathManager(rows,cols,edge2index,edge_index2tuple)
     man.analyze_predictions()
     #man.create_first_last2models(data_fn,bad_fn)
     #man.analyze_paths_taken()

@@ -95,7 +95,7 @@ class Graph(object):
 
     def is_simple(self,nodes,first,last):
         cur = first
-        flat_nodes = []
+        flat_nodes = [0]
         for row in nodes:
             for pt in row:
                 flat_nodes.append(pt)
@@ -104,7 +104,7 @@ class Graph(object):
             neighbors = self.neighbor_nodes(cur)
             neighbor = -1
             for n in neighbors:
-                print n
+                #print n
                 if flat_nodes[n] == 1:
                     neighbor = n
                     break

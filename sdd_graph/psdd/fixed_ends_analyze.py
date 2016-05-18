@@ -1265,6 +1265,18 @@ def generate_copy_new(rows,cols,fn_prefix):
     t2bad = pickle.load(open('../pickles/trip_id2bad-10-10.pickle','rb'))
     t2model = pickle.load(open('../pickles/trip_id2model_better.pickle','rb'))
 
+    models = []
+    for t in t2bad:
+        if not t in t2bad:
+            models.append(tuple(t2model[t]))
+    """
+    for t in (1,2,3):
+        models.append(tuple(t2model[t]))
+    """
+    training = DataSet.to_dict(models)
+
+    print training.N
+
     vtree_filename = '%s.vtree' % fn_prefix
     sdd_filename = '%s.sdd' % fn_prefix
 
@@ -1290,15 +1302,6 @@ def generate_copy_new(rows,cols,fn_prefix):
     psdd_parameters = copy.theta_count()
 
 
-    models = []
-    for t in t2bad:
-        if not t in t2bad:
-            models.append(tuple(t2model[t]))
-    """
-    for t in (1,2,3):
-        models.append(tuple(t2model[t]))
-    """
-    training = DataSet.to_dict(models)
 
 
     print "Starting Training"

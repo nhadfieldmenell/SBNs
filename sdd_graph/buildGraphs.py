@@ -99,11 +99,21 @@ class Graph(object):
         for row in nodes:
             for pt in row:
                 flat_nodes.append(pt)
-        print nodes
-        print flat_nodes
-        return
         while cur != last:
-            nodes
+            flat_nodes[cur] = 0
+            neighbors = self.neighbor_nodes(cur)
+            neighbor = -1
+            for n in neighbors:
+                if flat_nodes[n] == 1:
+                    neighbor = n
+                    break
+            if neighbor == -1:
+                return False
+            cur = neighbor
+        flat_nodes[cur] = 0
+        if flat_nodes.count(1) > 0:
+            return False
+        return True
 
     def neighbor_nodes(self,node):
         """Find all the nodes that neighbor a node.
@@ -1111,22 +1121,23 @@ def just_create_paths(graph):
     trip_id2model[trip_id] = p.edges
     num_trips += 1
     fl2t = p
+    id2bad = {}
     while p.next_line != len(graph.lines):
         line_num = p.next_line
         trip_id = normalize_simple(graph.lines[line_num])[0]
-        print trip_id
         p = Path(trip_id,graph,line_num=line_num)
         first,last = p.first_last
-        print first
-        print p.path
-        graph.is_simple(p.path,first,last)
-        return
-
+        simple = graph.is_simple(p.path,first,last)
+        if not simple:
+            print "%d: (%d,%d)" % (trip_id,first,last)
+            graph.draw_grid(p.edges)
+            id2bad[trip_id] = True
         trip_id2model[trip_id] = p.edges
         num_trips += 1
 
-    with open('pickles/trip_id2model_better.pickle','wb') as output:
-        pickle.dump(trip_id2model,output)
+    print len(id2bad.keys())
+    #with open('pickles/trip_id2model_better.pickle','wb') as output:
+    #    pickle.dump(trip_id2model,output)
 
 
 #@profile

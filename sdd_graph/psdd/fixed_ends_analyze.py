@@ -1327,7 +1327,7 @@ def generate_copy_new(rows,cols,fn_prefix):
 def gen_copy(rows,cols,fn_prefix):
     """Generate an untrained PSDD"""
     vtree_filename = '%s.vtree' % fn_prefix
-    dd_filename = '%s.sdd' % fn_prefix
+    sdd_filename = '%s.sdd' % fn_prefix
 
     psi,scale = 2.0,None # learning hyper-parameters
     N,M = 2**10,2**10 # size of training/testing dataset

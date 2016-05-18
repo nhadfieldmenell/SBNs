@@ -93,6 +93,11 @@ class Graph(object):
         neighbors = self.neighbor_nodes(node)
         return map(lambda x: self.edge2index[min(x,node),max(x,node)],neighbors)
 
+    def is_simple(self,nodes,first,last):
+        cur = first
+        while cur != last:
+            nodes
+
     def neighbor_nodes(self,node):
         """Find all the nodes that neighbor a node.
 
@@ -654,7 +659,7 @@ class Path(object):
         if midpoint == None:
             self.midpoint = self.graph.best_node
         #self.path,self.edges,self.good,self.partials = self.create_path()
-        self.path,self.edges = self.create_path_new()
+        self.path,self.edges,self.first_last = self.create_path_new()
 
     def print_path(self):
         """Prints the path edges according to test_graph's draw grids method."""
@@ -839,7 +844,7 @@ class Path(object):
         #if self.trip_id not in self.graph.trip_id2line_num:
         #    self.graph.first_last2trip_ids[tuple(first_lasts[best_index])].append(self.trip_id)
 
-        return matrices[best_index][0],edge_sets[best_index]
+        return matrices[best_index][0],edge_sets[best_index],first_lasts[best_index]
 
     #@profile
     def create_path(self):
@@ -1088,6 +1093,7 @@ def normalize_simple(line):
         lon = float(line[second+1:third])
     return int(line[0:first]),float(line[first+1:second]),lon
 
+
 def just_create_paths(graph):
     """create a dict containing every path"""
     trip_id = 1
@@ -1097,11 +1103,16 @@ def just_create_paths(graph):
     p = Path(trip_id,graph,line_num=line_num)
     trip_id2model[trip_id] = p.edges
     num_trips += 1
+    fl2t = p
     while p.next_line != len(graph.lines):
         line_num = p.next_line
         trip_id = normalize_simple(graph.lines[line_num])[0]
         print trip_id
         p = Path(trip_id,graph,line_num=line_num)
+        first,last = p.first_last
+        print p.path
+        return
+
         trip_id2model[trip_id] = p.edges
         num_trips += 1
 

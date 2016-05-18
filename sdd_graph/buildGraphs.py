@@ -94,6 +94,7 @@ class Graph(object):
         return map(lambda x: self.edge2index[min(x,node),max(x,node)],neighbors)
 
     def is_simple(self,nodes,first,last):
+        print "first: %d" % first
         cur = first
         flat_nodes = [0]
         for row in nodes:
@@ -1125,7 +1126,6 @@ def just_create_paths(graph):
     num_trips += 1
     fl2t = p
     id2bad = {}
-    print "\n"
     while p.next_line != len(graph.lines):
         if trip_id > 10:
             return

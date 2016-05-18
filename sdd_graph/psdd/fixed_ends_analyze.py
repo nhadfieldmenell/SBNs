@@ -1262,7 +1262,7 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
         return full_dataset
 
 def generate_copy_new(rows,cols,fn_prefix):
-    #t2bad = pickle.load(open('../pickles/trip_id2bad-10-10.pickle','rb'))
+    t2bad = pickle.load(open('../pickles/trip_id2bad-10-10.pickle','rb'))
     t2model = pickle.load(open('../pickles/trip_id2model_better.pickle','rb'))
 
     vtree_filename = '%s.vtree' % fn_prefix
@@ -1291,19 +1291,20 @@ def generate_copy_new(rows,cols,fn_prefix):
 
 
     models = []
-    """
-    ifor t in t2model:
+    for t in range(1,100):
         print t
         if not t in t2bad:
             models.append(tuple(t2model[t]))
     """
     for t in (1,2,3):
         models.append(tuple(t2model[t]))
+    """
     training = DataSet.to_dict(models)
 
 
     start_time = time.time()
     copy.learn(training,psi=psi,scale=scale,show_progress=True)
+    print "WORKED FOR TRIPS 1 through 100"
     print "== TRAINING =="
     print "    training time: %.3fs" % (time.time()-start_time)
     ll = copy.log_likelihood_alt(training)

@@ -1109,6 +1109,7 @@ def filter_bad_new(copy,bad_fn,rows,cols,edge2index):
 
         print "total bad: %d, unique bad: %d, total good: %d, unique good: %d" % (total_bad,unique_bad, total_good, unique_good)
 
+        bad_fn = 'bad_new.txt'
         bad_file = open(bad_fn,'w')
         for i in bad_indices.keys():
             bad_file.write("%d\n" % i)
@@ -1323,9 +1324,36 @@ def generate_copy_new(rows,cols,fn_prefix):
     copy.marginals()
     return copy
 
+def gen_copy(rows,cols,fn_prefix):
+    """Generate an untrained PSDD"""
+    vtree_filename = '%s.vtree' % fn_prefix
+    dd_filename = '%s.sdd' % fn_prefix
+
+    psi,scale = 2.0,None # learning hyper-parameters
+    N,M = 2**10,2**10 # size of training/testing dataset
+    em_max_iters = 10 # maximum # of iterations for EM
+    em_threshold = 1e-4 # convergence threshold
+    seed = 1 # seed for simulating datasets
+
+    ########################################
+    # READ INPUT
+    ########################################
+
+    print "== reading vtree/sdd"
+
+    vtree = Vtree.read(vtree_filename)
+    manager = SddManager(vtree)
+    sdd = SddNode.read(sdd_filename,manager)
+    pmanager = PSddManager(vtree)
+    copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
+    pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
+
+    psdd_parameters = copy.theta_count()
+    
+
 def generate_copy(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges):
     vtree_filename = '%s.vtree' % fn_prefix
-    sdd_filename = '%s.sdd' % fn_prefix
+    dd_filename = '%s.sdd' % fn_prefix
 
     psi,scale = 2.0,None # learning hyper-parameters
     N,M = 2**10,2**10 # size of training/testing dataset
@@ -1582,15 +1610,12 @@ def main():
     #man.draw_all_paths()
     #return
 
-    fn_prefix_fixed = '../graphs/fixed_ends-%d-%d-%d-%d' % (rows,cols,start,end)
-    data_fn_fixed = '../datasets/fixed_ends-%d-%d-%d-%d.txt' % (rows,cols,start,end)
-    bad_fn_fixed = 'bad_paths/fixed_bad-%d-%d-%d-%d.txt' % (rows,cols,start,end)
+    fn_prefix = '../graphs/general_ends-%d-%d' % (rows,cols)
+    data_fn = '../datasets/general_ends-%d-%d.txt' % (rows,cols)
+    bad_fn = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
 
-    fn_prefix_general = '../graphs/general_ends-%d-%d' % (rows,cols)
-    data_fn_general = '../datasets/general_ends-%d-%d.txt' % (rows,cols)
-    bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
-
-    copy = generate_copy_new(rows,cols,fn_prefix_general)
+    #copy = generate_copy_new(rows,cols,fn_prefix)
+    copy = gen_copy(rows,cols,fn_prefix)
     filter_bad_new(copy,bad_fn,rows,cols,edge2index)
     return
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
@@ -1598,16 +1623,16 @@ def main():
     print man.best_all_at_once(5,84)
     return
  
-    #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)
+    #find_kl(rows,cols,fn_prefix,bad_fn,data_fn)
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
     man.analyze_predictions()
-    #man.create_first_last2models(data_fn_general,bad_fn_general)
+    #man.create_first_last2models(data_fn,bad_fn)
     #man.analyze_paths_taken()
     #man.compare_observed_models()
     return
 
 
-    copy = generate_copy(rows,cols,start,end,fn_prefix_general,data_fn_general,bad_fn_general,edge2index,num_edges)
+    copy = generate_copy(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges)
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
     man.all_all_predictions()
     return

@@ -652,7 +652,8 @@ class Path(object):
         self.midpoint = midpoint
         if midpoint == None:
             self.midpoint = self.graph.best_node
-        self.path,self.edges,self.good,self.partials = self.create_path()
+        #self.path,self.edges,self.good,self.partials = self.create_path()
+        self.path,self.edges,self.good,self.partials = self.create_path_new()
 
     def print_path(self):
         """Prints the path edges according to test_graph's draw grids method."""
@@ -802,6 +803,9 @@ class Path(object):
             if prev_coords != (-1,-1) and coords[0] != -1 and coords != prev_coords:
                 edge_num = self.graph.edge_num(prev_coords[0],prev_coords[1],coords[0],coords[1])
                 if edge_num == -1:
+                    new_edges = self.find_edges((lat,lon),prev_gps)
+                    for add_edge in new_edges:
+                        edge_sets[matrices_index][add_edge] = 1
                     good_graphs[matrices_index] = False
                 else:
                     edge_sets[matrices_index][edge_num] = 1

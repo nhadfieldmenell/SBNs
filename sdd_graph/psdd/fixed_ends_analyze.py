@@ -1291,7 +1291,7 @@ def generate_copy_new(rows,cols,fn_prefix):
 
 
     models = []
-    for t in range(100,1000):
+    for t in range(1,100):
         print t
         if not t in t2bad:
             models.append(tuple(t2model[t]))
@@ -1304,7 +1304,7 @@ def generate_copy_new(rows,cols,fn_prefix):
 
     start_time = time.time()
     copy.learn(training,psi=psi,scale=scale,show_progress=True)
-    print "WORKED FOR TRIPS 100 through 1000"
+    print "WORKED FOR TRIPS 1 through 100"
     print "== TRAINING =="
     print "    training time: %.3fs" % (time.time()-start_time)
     ll = copy.log_likelihood_alt(training)

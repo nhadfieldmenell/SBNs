@@ -1339,8 +1339,8 @@ def gen_copy(rows,cols,fn_prefix):
     pmanager = PSddManager(vtree)
     copy = pmanager.copy_and_normalize_sdd(sdd,vtree)
     pmanager.make_unique_true_sdds(copy,make_true=False) #AC: set or not set?
+    return copy
 
-    psdd_parameters = copy.theta_count()
     
 
 def generate_copy(rows,cols,start,end,fn_prefix,data_fn,bad_fn,edge2index,num_edges):

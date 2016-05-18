@@ -58,6 +58,7 @@ class Graph(object):
         self.t_id2model = t_id2model
         #self.trip_id2lengths,self.avg_length = self.path_lengths()
 
+
     def draw_grid(self,model):
         m = self.rows
         n = self.cols
@@ -705,10 +706,12 @@ class Path(object):
     def find_edges(self,gps,prev_gps):
         """Find the edges that are traversed going from point gps to prev_gps
         """
+        if prev_gps[0] == prev_gps[1]:
+            return []
         slope = find_slope(prev_gps[0],prev_gps[1],gps[0],gps[1])
         prev_lat,prev_lon = prev_gps
         end_lat,end_lon = gps
-        step = 0.0000001
+        step = 0.000001
         if prev_lat > end_lat:
             step = 0.0-step
         lat = prev_lat
@@ -1379,7 +1382,7 @@ def main():
 
     #TODO: MIGHT NEED TO CHANGE THIS TO CAB_CHRONOLOGICAL.TXT for first_last information
     full_fn = open('cab_trips.txt','r')
-    trip_id2line_num = pickle.load(open('pickles/trip_id2line_num.pickle','rb'))
+    #trip_id2line_num = pickle.load(open('pickles/trip_id2line_num.pickle','rb'))
 
     """full SF coords
     min_lat = 37.72

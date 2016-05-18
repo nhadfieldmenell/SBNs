@@ -712,7 +712,7 @@ class Path(object):
             step = 0.0-step
         lat = prev_lat
         lon = prev_lon
-        prev_coords = self.gps_to_coords(prev_lat,prev_lon)
+        prev_coords = self.graph.gps_to_coords(prev_lat,prev_lon)
         edges = []
         if prev_lat < end_lat:
             while lat < end_lat:

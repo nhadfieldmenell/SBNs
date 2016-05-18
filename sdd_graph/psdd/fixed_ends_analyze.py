@@ -1022,24 +1022,16 @@ def filter_bad_new(copy,bad_fn,rows,cols,edge2index):
     If there is no such file, find the bad paths and store their indices in the file with name bad_fn.
     '../datasets/first_last-%d-%d-%d-%d-%d' % (rows,cols,start,end,run)
     """
-
-    full_file = open(in_fn, "r")
-    full_lines = full_file.readlines()
-    full_file.close()
-
-    full_ints = map(lambda x: map(int,x[:-1].split(',')),full_lines)
-    full_tuple = map(tuple,full_ints)
-
     bad_lines = None
     bad_paths = {}
 
+    """
     trip_id2bad_fn = 'pickles/trip_id2bad-%d-%d.pickle' % (rows,cols)
     file_exists = os.path.isfile(trip_id2bad_fn)
     if file_exists:
         trip_id2bad = pickle.load(open(trip_id2bad_fn,'rb'))
         for trip_id in trip_id2bad:
             bad_paths[trip_id-1] = True
-    """
     file_exists = os.path.isfile(bad_fn)
     if file_exists:
         bad_file = open(bad_fn,'r')

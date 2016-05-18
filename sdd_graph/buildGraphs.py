@@ -706,7 +706,7 @@ class Path(object):
     def find_edges(self,gps,prev_gps):
         """Find the edges that are traversed going from point gps to prev_gps
         """
-        if prev_gps[0] == prev_gps[1]:
+        if prev_gps[0] == gps[0]:
             return []
         slope = find_slope(prev_gps[0],prev_gps[1],gps[0],gps[1])
         prev_lat,prev_lon = prev_gps

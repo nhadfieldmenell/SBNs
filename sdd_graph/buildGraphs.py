@@ -653,7 +653,7 @@ class Path(object):
         if midpoint == None:
             self.midpoint = self.graph.best_node
         #self.path,self.edges,self.good,self.partials = self.create_path()
-        self.path,self.edges,self.good,self.partials = self.create_path_new()
+        self.path,self.edges = self.create_path_new()
 
     def print_path(self):
         """Prints the path edges according to test_graph's draw grids method."""
@@ -764,13 +764,6 @@ class Path(object):
                     We know that the path is not any longer in the direction away from the midpoint.
         """
 
-        partials = []
-        partials.append({})
-        #print self.trip_id
-
-        #this variable is true if we have not yet recorded the first edge of a path
-        first_edge = True
-
         first_lasts = []
         first_lasts.append([0,0])
         matrices = []
@@ -778,11 +771,8 @@ class Path(object):
         edge_sets = []
         edge_sets.append([0 for i in range(self.graph.num_edges)])
         cur_line = self.line_num
-        good_graphs = []
-        good_graphs.append(True)
         nodes_visited = []
         nodes_visited.append([])
-        #normalized = dg.normalize(self.graph.lines[cur_line])
         normalized = normalize_simple(self.graph.lines[cur_line])
         matrices_index = 0
         prev_coords = (-1,-1)
@@ -806,38 +796,15 @@ class Path(object):
                     new_edges = self.find_edges((lat,lon),prev_gps)
                     for add_edge in new_edges:
                         edge_sets[matrices_index][add_edge] = 1
-                    good_graphs[matrices_index] = False
                 else:
                     edge_sets[matrices_index][edge_num] = 1
-                    if edge_num in partials[matrices_index] and partials[matrices_index][edge_num] == 0:
-                        del partials[matrices_index][edge_num]
-                    if not hit_midpoint:
-                        if first_edge:
-                            above = (prev_coords[0]-1,prev_coords[1])
-                            below = (prev_coords[0]+1,prev_coords[1])
-                            left = (prev_coords[0],prev_coords[1]-1)
-                            right = (prev_coords[0],prev_coords[1]+1)
-                            for next_coords in (above,below,left,right):
-                                other_edge = self.graph.edge_num(prev_coords[0],prev_coords[1],next_coords[0],next_coords[1])
-                                if other_edge != -1:
-                                    partials[matrices_index][other_edge] = 0
-                            first_edge = False
-                            if self.graph.coords_to_node(prev_coords[0],prev_coords[1]) == self.midpoint:
-                                hit_midpoint = True
-                        partials[matrices_index][edge_num] = 1
-                        if self.graph.coords_to_node(coords[0],coords[1]) == self.midpoint:
-                            hit_midpoint = True
 
             if coords[0] == -1:
                 matrices.append([np.zeros((self.graph.rows,self.graph.cols)),0])
                 first_lasts.append([0,0])
                 edge_sets.append([0 for i in range(self.graph.num_edges)])
-                good_graphs.append(True)
                 nodes_visited.append([])
                 matrices_index += 1
-                partials.append({})
-                hit_midpoint = False
-                first_edge = True
             
             elif coords[0] < self.graph.rows and coords[1] < self.graph.cols and not matrices[matrices_index][0][coords[0]][coords[1]]:
                 matrices[matrices_index][1] += 1
@@ -849,7 +816,6 @@ class Path(object):
             cur_line += 1
             if cur_line == len(self.graph.lines):
                 break
-            #normalized = dg.normalize(self.graph.lines[cur_line])
             normalized = normalize_simple(self.graph.lines[cur_line])
             prev_gps = (lat,lon)
 
@@ -863,16 +829,13 @@ class Path(object):
                 best_score = matrices[matrix_index][1]
                 best_index = matrix_index
 
-        for coords in nodes_visited[best_index]:
-            self.graph.node_visit(self.trip_id,coords)
-        
+        #for coords in nodes_visited[best_index]:
+        #    self.graph.node_visit(self.trip_id,coords)
 
-        if self.trip_id not in self.graph.trip_id2line_num:
-            #if first_lasts[best_index] == [28,5]:
-            #    print "a to b: %d" % self.trip_id
-            self.graph.first_last2trip_ids[tuple(first_lasts[best_index])].append(self.trip_id)
+        #if self.trip_id not in self.graph.trip_id2line_num:
+        #    self.graph.first_last2trip_ids[tuple(first_lasts[best_index])].append(self.trip_id)
 
-        return matrices[best_index][0],edge_sets[best_index],good_graphs[best_index],partials[best_index]
+        return matrices[best_index][0],edge_sets[best_index]
 
     #@profile
     def create_path(self):

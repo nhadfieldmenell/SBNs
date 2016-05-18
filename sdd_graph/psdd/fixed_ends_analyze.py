@@ -1297,7 +1297,7 @@ def generate_copy_new(rows,cols,fn_prefix):
         if not t in t2bad:
             models.append(tuple(t2model[t]))
     """
-    for i in (1,2,3):
+    for t in (1,2,3):
         models.append(tuple(t2model[t]))
     training = DataSet.to_dict(models)
 

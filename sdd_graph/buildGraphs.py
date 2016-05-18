@@ -104,6 +104,7 @@ class Graph(object):
             print cur
             flat_nodes[cur] = 0
             neighbors = self.neighbor_nodes(cur)
+            print neighbors
             neighbor = -1
             for n in neighbors:
                 #print n

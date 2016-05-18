@@ -20,7 +20,7 @@ def main():
     t_id2testing = {}
     for i in range(2*tenth):
         t_id2testing[all_ids[i]] = True
-    for i in range(2*tenth,len(all_ids)):
+    for i in range(2*tenth-4,len(all_ids)):
         t_id2training[all_ids[i]] = True
     print "Testing instances"
     count = 0

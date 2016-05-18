@@ -1586,6 +1586,9 @@ def main():
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
 
     copy = generate_copy_new(rows,cols,fn_prefix_general)
+    man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
+    print "COPY GENERATED!!!"
+    print man.best_all_at_once(5,84)
     return
  
     #find_kl(rows,cols,fn_prefix_general,bad_fn_general,data_fn_general)

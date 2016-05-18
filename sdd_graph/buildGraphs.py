@@ -1134,11 +1134,11 @@ def just_create_paths(graph):
         trip_id = normalize_simple(graph.lines[line_num])[0]
         p = Path(trip_id,graph,line_num=line_num)
         nodes = [0 for i in range(graph.rows*graph.cols+1)]
-        for edge in p.path:
-            print edge
-            incidents = graph.edge_index2tuple[edge]
-            nodes[incidents[0]] = 1
-            nodes[incidents[1]] = 1
+        for i in range(len(p.edges)):
+            if p.edges[i] == 1:
+                incidents = graph.edge_index2tuple[i]
+                nodes[incidents[0]] = 1
+                nodes[incidents[1]] = 1
 
         first,last = p.first_last
         simple = graph.is_simple(nodes,first,last)

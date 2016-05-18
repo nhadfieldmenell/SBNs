@@ -1262,7 +1262,7 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
         return full_dataset
 
 def generate_copy_new(rows,cols,fn_prefix):
-    t2bad = pickle.load(open('../pickles/trip_id2bad-10-10.pickle','rb'))
+    t2bad = pickle.load(open('../pickles/trip_id2bad_better.pickle','rb'))
     t2model = pickle.load(open('../pickles/trip_id2model_better.pickle','rb'))
 
     models = []

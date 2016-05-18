@@ -1141,9 +1141,12 @@ def just_create_paths(graph):
         first,last = p.first_last
         simple = graph.is_simple(p.edges[:],first,last)
         if not simple:
+            #print "%d: (%d,%d)" % (trip_id,first,last)
+            #graph.draw_grid(p.edges)
+            id2bad[trip_id] = True
+        else:
             print "%d: (%d,%d)" % (trip_id,first,last)
             graph.draw_grid(p.edges)
-            id2bad[trip_id] = True
         trip_id2model[trip_id] = p.edges
         num_trips += 1
 

@@ -13,6 +13,8 @@ def main():
             all_ids.append(i)
     print "%d good instances" % len(all_ids)
     random.shuffle(all_ids)
+    for i in range(10):
+        print all_ids[i]
     tenth = len(all_ids)/10
     t_id2training = {}
     t_id2testing = {}
@@ -42,6 +44,7 @@ def main():
         if t in t_id2testing:
             print "%d in both!"
 
+    
     return
 
 

@@ -1293,6 +1293,7 @@ def generate_copy_new(rows,cols,fn_prefix):
 
     models = []
     for t in t2model:
+        print t
         if not t in t2bad:
             models.append(tuple(t2model[t]))
     training = DataSet.to_dict(models)

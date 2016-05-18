@@ -113,6 +113,7 @@ class Graph(object):
             cur = neighbor
         flat_nodes[cur] = 0
         if flat_nodes.count(1) > 0:
+            print flat_nodes
             return False
         return True
 

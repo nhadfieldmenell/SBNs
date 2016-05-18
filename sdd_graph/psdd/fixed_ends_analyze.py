@@ -1053,7 +1053,7 @@ def filter_bad_new(copy,bad_fn,rows,cols,edge2index,man):
     bad_indices = {}
     good_models = {}
     bad_printed = 0
-    times_printed = 0
+    times_printed = 1
     good_printed = 0
     file_exists = False
 
@@ -1262,7 +1262,7 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
         return full_dataset
 
 def generate_copy_new(rows,cols,fn_prefix):
-    t2bad = pickle.load(open('../pickles/trip_id2bad-10-10.pickle','rb'))
+    #t2bad = pickle.load(open('../pickles/trip_id2bad-10-10.pickle','rb'))
     t2model = pickle.load(open('../pickles/trip_id2model_better.pickle','rb'))
 
     vtree_filename = '%s.vtree' % fn_prefix
@@ -1291,10 +1291,14 @@ def generate_copy_new(rows,cols,fn_prefix):
 
 
     models = []
-    for t in t2model:
+    """
+    ifor t in t2model:
         print t
         if not t in t2bad:
             models.append(tuple(t2model[t]))
+    """
+    for i in (1,2,3):
+        models.append(tuple(t2model[t]))
     training = DataSet.to_dict(models)
 
 
@@ -1607,7 +1611,8 @@ def main():
     data_fn = '../datasets/general_ends-%d-%d.txt' % (rows,cols)
     bad_fn = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
 
-    #copy = generate_copy_new(rows,cols,fn_prefix)
+    copy = generate_copy_new(rows,cols,fn_prefix)
+    return
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
     copy = gen_copy(rows,cols,fn_prefix)
     filter_bad_new(copy,bad_fn,rows,cols,edge2index,man)

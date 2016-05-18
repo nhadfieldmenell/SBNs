@@ -93,30 +93,26 @@ class Graph(object):
         neighbors = self.neighbor_nodes(node)
         return map(lambda x: self.edge2index[min(x,node),max(x,node)],neighbors)
 
-    def is_simple(self,nodes,first,last):
+    def is_simple(self,edges,first,last):
         print "first: %d" % first
         cur = first
-        #flat_nodes = [0]
-        #for row in nodes:
-        #    for pt in row:
-        #        flat_nodes.append(pt)
         while cur != last:
-            print cur
-            nodes[cur] = 0
-            neighbors = self.neighbor_nodes(cur)
-            print neighbors
+            i_es = self.incident_edges(cur)
             neighbor = -1
-            for n in neighbors:
-                #print n
-                if nodes[n] == 1:
-                    neighbor = n
+            for edge in i_es:
+                if edges[edge] == 1:
+                    neighbor = edge
                     break
             if neighbor == -1:
                 return False
-            cur = neighbor
-        nodes[cur] = 0
-        if nodes.count(1) > 0:
-            print nodes
+            nodes = self.edge_index2tuple[neighbor]
+            for node in nodes:
+                if cur != node:
+                    cur = node
+                    break
+            edges[edge] = 0
+        if edges.count(1) > 0:
+            print edges
             return False
         return True
 
@@ -1133,15 +1129,17 @@ def just_create_paths(graph):
         line_num = p.next_line
         trip_id = normalize_simple(graph.lines[line_num])[0]
         p = Path(trip_id,graph,line_num=line_num)
+        """
         nodes = [0 for i in range(graph.rows*graph.cols+1)]
         for i in range(len(p.edges)):
             if p.edges[i] == 1:
                 incidents = graph.edge_index2tuple[i]
                 nodes[incidents[0]] = 1
                 nodes[incidents[1]] = 1
+        """
 
         first,last = p.first_last
-        simple = graph.is_simple(nodes,first,last)
+        simple = graph.is_simple(p.edges[:],first,last)
         if not simple:
             print "%d: (%d,%d)" % (trip_id,first,last)
             graph.draw_grid(p.edges)

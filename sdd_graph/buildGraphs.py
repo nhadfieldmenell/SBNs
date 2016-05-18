@@ -104,6 +104,7 @@ class Graph(object):
             neighbors = self.neighbor_nodes(cur)
             neighbor = -1
             for n in neighbors:
+                print n
                 if flat_nodes[n] == 1:
                     neighbor = n
                     break

@@ -100,6 +100,7 @@ class Graph(object):
             for pt in row:
                 flat_nodes.append(pt)
         while cur != last:
+            print cur
             flat_nodes[cur] = 0
             neighbors = self.neighbor_nodes(cur)
             neighbor = -1

@@ -1048,6 +1048,7 @@ def filter_bad_new(copy,bad_fn,rows,cols,edge2index):
     total_bad = 0
     total_good = 0
     unique_good = 0
+    full_tuple = []
 
     bad_indices = {}
     good_models = {}
@@ -1058,7 +1059,7 @@ def filter_bad_new(copy,bad_fn,rows,cols,edge2index):
 
     t2model = pickle.load(open('../pickles/trip_id2model_better.pickle','rb'))
     for t in t2model:
-        full_tuple.append(t2model[t])
+        full_tuple.append(tuple(t2model[t]))
 
     if not file_exists: 
         cur_time = time.time()

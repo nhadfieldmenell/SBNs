@@ -704,7 +704,7 @@ class Path(object):
     def find_edges(self,gps,prev_gps):
         """Find the edges that are traversed going from point gps to prev_gps
         """
-        slope = slope(prev_gps[0],prev_gps[1],gps[0],gps[1])
+        slope = find_slope(prev_gps[0],prev_gps[1],gps[0],gps[1])
         prev_lat,prev_lon = prev_gps
         end_lat,end_lon = gps
         step = 0.00001
@@ -1067,7 +1067,7 @@ class Path(object):
 
         return edges
 
-def slope(lat1,lon1,lat2,lon2):
+def find_slope(lat1,lon1,lat2,lon2):
     """Find the slope from point A to point B.
     Intended to be used to increment latitude and find change in longitude.
     """

@@ -1016,7 +1016,7 @@ class Path(object):
 def euclidean(pt1,pt2):
     return math.sqrt(math.pow(pt1[0]-pt2[0],2) + math.pow(pt1[1]-pt2[1],2))
 
-def filter_bad_new(copy,in_fn,bad_fn,rows,cols,edge2index):
+def filter_bad_new(copy,bad_fn,rows,cols,edge2index):
     """Create a dataset from the file that consists of only models that are consistent with the sdd
     If there is a file that already contains the indices of the bad paths, then don't recompute.
     If there is no such file, find the bad paths and store their indices in the file with name bad_fn.
@@ -1062,14 +1062,19 @@ def filter_bad_new(copy,in_fn,bad_fn,rows,cols,edge2index):
     bad_printed = 0
     times_printed = 0
     good_printed = 0
+    file_exists = False
+
+    t2model = pickle.load(open('../pickles/trip_id2model_better.pickle','rb'))
+    for t in t2model:
+        full_tuple.append(t2model[t])
 
     if not file_exists: 
         cur_time = time.time()
         for i in range(len(full_tuple)):
             prev_time = cur_time
             cur_time = time.time()
-            #if times_printed < 100:
-            #    print "time to evaluate model %d: %f" % (i-1,cur_time-prev_time)
+            if times_printed < 100:
+                print "time to evaluate model %d: %f" % (i-1,cur_time-prev_time)
             model = full_tuple[i]
             if str(model) in good_models:
                 total_good += 1
@@ -1084,8 +1089,8 @@ def filter_bad_new(copy,in_fn,bad_fn,rows,cols,edge2index):
             if probability == 0:
                 if bad_printed < 25:
                     bad_printed += 1
-                    #print "Bad model:"
-                    #draw_grid(model,rows,cols,edge2index)
+                    print "Bad model:"
+                    draw_grid(model,rows,cols,edge2index)
                 bad_models[str(model)] = True
                 unique_bad += 1
                 total_bad += 1
@@ -1586,6 +1591,8 @@ def main():
     bad_fn_general = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
 
     copy = generate_copy_new(rows,cols,fn_prefix_general)
+    filter_bad_new(copy,bad_fn,rows,cols,edge2index)
+    return
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
     print "COPY GENERATED!!!"
     print man.best_all_at_once(5,84)

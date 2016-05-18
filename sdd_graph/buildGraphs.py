@@ -95,6 +95,13 @@ class Graph(object):
 
     def is_simple(self,nodes,first,last):
         cur = first
+        flat_nodes = []
+        for row in nodes:
+            for pt in row:
+                flat_nodes.append(pt)
+        print nodes
+        print flat_nodes
+        return
         while cur != last:
             nodes
 
@@ -1112,6 +1119,7 @@ def just_create_paths(graph):
         first,last = p.first_last
         print first
         print p.path
+        graph.is_simple(p.path,first,last)
         return
 
         trip_id2model[trip_id] = p.edges

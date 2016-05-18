@@ -708,7 +708,7 @@ class Path(object):
         slope = find_slope(prev_gps[0],prev_gps[1],gps[0],gps[1])
         prev_lat,prev_lon = prev_gps
         end_lat,end_lon = gps
-        step = 0.00001
+        step = 0.0000001
         if prev_lat > end_lat:
             step = 0.0-step
         lat = prev_lat

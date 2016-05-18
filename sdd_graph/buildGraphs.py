@@ -112,7 +112,6 @@ class Graph(object):
                     break
             edges[edge] = 0
         if edges.count(1) > 0:
-            print edges
             return False
         return True
 
@@ -1124,8 +1123,8 @@ def just_create_paths(graph):
     fl2t = p
     id2bad = {}
     while p.next_line != len(graph.lines):
-        if trip_id > 30:
-            return
+        #if trip_id > 30:
+        #    return
         line_num = p.next_line
         trip_id = normalize_simple(graph.lines[line_num])[0]
         p = Path(trip_id,graph,line_num=line_num)
@@ -1141,13 +1140,15 @@ def just_create_paths(graph):
         first,last = p.first_last
         simple = graph.is_simple(p.edges[:],first,last)
         if not simple or p.edges.count(1) == 0:
-            print "%d: (%d,%d)" % (trip_id,first,last)
-            graph.draw_grid(p.edges)
+            #print "%d: (%d,%d)" % (trip_id,first,last)
+            #graph.draw_grid(p.edges)
             id2bad[trip_id] = True
         trip_id2model[trip_id] = p.edges
         num_trips += 1
 
     print len(id2bad.keys())
+    with open('pickles/trip_id2bad-%d-%d.pickle','wb') as output:
+        pickle.dump(id2bad,output)
     #with open('pickles/trip_id2model_better.pickle','wb') as output:
     #    pickle.dump(trip_id2model,output)
 

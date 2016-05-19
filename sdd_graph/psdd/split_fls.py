@@ -14,6 +14,7 @@ def main():
 
     num_splits = 4
     block_size = len(fls)/num_splits
+    print "block size: %d" % block_size
     count = 0
     for i in range(num_splits):
         fn = 'better_pickles/fl_split%d.pickle' % i

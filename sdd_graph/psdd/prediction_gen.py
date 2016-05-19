@@ -2,7 +2,7 @@
 import pickle
 import time
 import sys
-import fixed_end_analyze as an
+import fixed_ends_analyze as an
 
 def main():
     run = sys.argv[1]

@@ -26,7 +26,7 @@ def main():
                 fl2epoch[fls[j]] = True
 
         count += len(fl2epoch)
-        with open(fn % (self.rows,self.cols),'wb') as output:
+        with open(fn as output:
             pickle.dump(fl2epoch,output)
     print count
 

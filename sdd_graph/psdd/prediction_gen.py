@@ -6,6 +6,8 @@ import fixed_ends_analyze as an
 
 def main():
     run = int(sys.argv[1])
+
+    fl_fn = 'better_pickles/fl_split%d.pickle' % run
     fl2in = pickle.load(open(fl_fn,'rb'))
     print len(fl2in)
     rows=cols=10
@@ -15,7 +17,6 @@ def main():
     edge_tuple_filename = '../graphs/edge-to-tuple-%d-%d.pickle' % (rows,cols)
     edge_index2tuple = pickle.load(open(edge_tuple_filename,'rb'))
     num_edges = (rows-1)*cols + (cols-1)*rows
-    fl_fn = 'better_pickles/fl_split%d.pickle' % run
 
     fn_prefix = '../graphs/general_ends-%d-%d' % (rows,cols)
     copy = an.generate_copy_new(fn_prefix)

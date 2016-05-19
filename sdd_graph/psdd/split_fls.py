@@ -8,7 +8,7 @@ def main():
     all_fls = []
     added_fls = []
     orderedfl2in = {}
-    for fl in tl2ts:
+    for fl in fl2ts:
         orderedfl2in[(min(fl[0],fl[1]),max(fl[0],fl[1]))] = True
     print len(orderedfl2in)
 

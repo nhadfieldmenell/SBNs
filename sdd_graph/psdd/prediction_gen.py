@@ -31,7 +31,7 @@ def main():
 
 
     with open(out_fn,'wb') as output:
-        pickle.dump(all_at_once,output)
+        pickle.dump(fl2prediction,output)
 
 
 

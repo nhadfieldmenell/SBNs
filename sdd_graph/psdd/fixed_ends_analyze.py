@@ -1261,19 +1261,14 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
         print "num bad paths: %d" % len(bad_paths)
         return full_dataset
 
-def generate_copy_new(rows,cols,fn_prefix):
-    t2bad = pickle.load(open('../pickles/trip_id2bad_better.pickle','rb'))
-    t2model = pickle.load(open('../pickles/trip_id2model_better.pickle','rb'))
+def generate_copy_new(fn_prefix):
+    t2model = pickle.load(open('better_/pickles/trip_id2model_better.pickle','rb'))
+    t2in = pickle.load(open('better_pickles/t2testing.pickle','rb'))
 
     models = []
-    for t in t2model:
-        print t
-        if not t in t2bad:
-            models.append(tuple(t2model[t]))
-    """
-    for t in (1,2,3):
+    
+    for t in t2in:
         models.append(tuple(t2model[t]))
-    """
     training = DataSet.to_dict(models)
 
     print training.N

@@ -1263,7 +1263,7 @@ def filter_bad(copy,in_fn,bad_fn,rows,cols,edge2index):
 
 def generate_copy_new(fn_prefix):
     t2model = pickle.load(open('better_pickles/trip_id2model.pickle','rb'))
-    t2in = pickle.load(open('better_pickles/t2testing.pickle','rb'))
+    t2in = pickle.load(open('better_pickles/t2training.pickle','rb'))
 
     models = []
     

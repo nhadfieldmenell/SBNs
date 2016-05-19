@@ -24,9 +24,6 @@ def main():
         pickle.dump(t_id2testing,output)
     with open('better_pickles/t2training.pickle','wb') as output:
         pickle.dump(t_id2training,output)
-    print len(t_id2testing)
-    print len(t_id2training)
-    print len(t_id2testing) + len(t_id2training)
 
     
     return

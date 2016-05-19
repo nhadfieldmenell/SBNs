@@ -12,7 +12,7 @@ def main():
     for fl in ordered_fl2in:
         fls.append(fl)
 
-    num_splits = 5
+    num_splits = 4
     block_size = len(fls)/num_splits
     count = 0
     for i in range(num_splits):

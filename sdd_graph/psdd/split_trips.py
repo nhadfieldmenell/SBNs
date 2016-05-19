@@ -12,8 +12,6 @@ def main():
             all_ids.append(i)
     print "%d good instances" % len(all_ids)
     random.shuffle(all_ids)
-    for i in range(10):
-        print all_ids[i]
     tenth = len(all_ids)/10
     t_id2training = {}
     t_id2testing = {}
@@ -26,6 +24,9 @@ def main():
         pickle.dump(t_id2testing,output)
     with open('better_pickles/t2training.pickle','wb') as output:
         pickle.dump(t_id2training,output)
+    print len(t_id2testing)
+    print len(t_id2training)
+    print len(t_id2testing) + len(t_id2training)
 
     
     return

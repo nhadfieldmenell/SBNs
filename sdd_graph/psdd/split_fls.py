@@ -10,6 +10,7 @@ def main():
     orderedfl2in = {}
     for fl in fl2ts:
         orderedfl2in[(min(fl[0],fl[1]),max(fl[0],fl[1]))] = True
+    print len(fl2ts)
     print len(orderedfl2in)
 
 

@@ -23,7 +23,10 @@ def main():
     man = an.PathManager(rows,cols,edge2index,edge_index2tuple,copy)
 
     fl2prediction = {}
+    count = 0
     for fl in fl2in:
+        count += 1
+        print count
         fl2prediction[fl] = man.best_all_at_once(fl[0],fl[1])
 
 

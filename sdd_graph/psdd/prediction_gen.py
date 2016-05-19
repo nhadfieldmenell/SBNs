@@ -27,8 +27,10 @@ def main():
     fl2prediction = {}
     count = 0
     for fl in fl2in:
-        count += 1
         print count
+        count += 1
+        if fl[0] == 0:
+            continue
         fl2prediction[fl] = man.best_all_at_once(fl[0],fl[1])
 
 

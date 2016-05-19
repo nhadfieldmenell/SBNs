@@ -5,7 +5,7 @@ import sys
 import fixed_ends_analyze as an
 
 def main():
-    run = sys.argv[1]
+    run = int(sys.argv[1])
     rows=cols=10
 
     edge_filename = '../graphs/edge-nums-%d-%d.pickle' % (rows,cols)

@@ -424,18 +424,18 @@ class PathManager(object):
                 #    sys.stdout.write("%.3f " % weights_with_diag[i][j])
                 #print ""
                 weight_sum += sum(weights_with_diag[i])
-            print "weight sum: %f" % weight_sum
+            #print "weight sum: %f" % weight_sum
             for i in range(len(model_array)):
                 for j in range(i,len(model_array)):
                     weight = weights_with_diag[i][j]
                     haus,sum_haus,DSN = self.path_diff_measures(model_array[i],model_array[j])
-                    print "%s: haus %.2f, sum_haus %.2f, DSN %.2f" % (str((i,j)),haus,sum_haus,DSN) 
+                    #print "%s: haus %.2f, sum_haus %.2f, DSN %.2f" % (str((i,j)),haus,sum_haus,DSN) 
                     fl2similarity_measures[fl][0] += weight*haus
                     fl2similarity_measures[fl][1] += weight*sum_haus
                     fl2similarity_measures[fl][2] += weight*DSN
             measures = fl2similarity_measures[fl]
 
-            print "overall: haus %.2f, sum_haus %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
+            #print "overall: haus %.2f, sum_haus %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
             #print ""
             #if num_iters > 6:
             #    break
@@ -1804,6 +1804,8 @@ def main():
     fl2models_fn = 'better_pickles/first_last2models.pickle'
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=fl2models_fn)
+    man.compare_observed_models()
+    return
     man.compare_observed_models_new()
     return
     copy = generate_copy_new(rows,cols,fn_prefix)

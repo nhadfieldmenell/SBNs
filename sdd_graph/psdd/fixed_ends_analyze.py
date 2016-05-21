@@ -1813,8 +1813,9 @@ def main():
     fl2models_fn = 'better_pickles/first_last2models.pickle'
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=fl2models_fn)
-    man.compare_observed_models_new()
+    man.analyze_paths_taken()
     return
+    man.compare_observed_models_new()
     man.compare_observed_models()
     return
     copy = generate_copy_new(rows,cols,fn_prefix)

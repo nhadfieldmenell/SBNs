@@ -105,7 +105,7 @@ class PathManager(object):
                 print fl
                 self.draw_grid(model)
                 print ""
-            first_last2models[fl][model].append(trip_id)
+            first_last2models[fl][model].append(t)
             inserted += 1
                 
         """
@@ -290,6 +290,7 @@ class PathManager(object):
         return
 
     def analyze_paths_taken(self):
+        """Find statistics on how many different paths are taken for a given frst,last pair."""
         count_and_fl_long = []
         radius = 6 
         #this will double count overlapping paths going from (i,j) and (j,i)

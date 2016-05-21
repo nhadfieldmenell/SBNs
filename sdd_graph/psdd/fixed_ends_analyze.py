@@ -341,11 +341,13 @@ class PathManager(object):
                 break
             for j in range(quarter_of_fl_long):
                 fl = heapq.heappop(count_and_fl_long)[1]
+                """
                 if j < 2:
                     print "first, last: %s" % str(fl)
                     for model in self.first_last2models[fl]:
                         self.draw_grid(model)
                         print ""
+                """
 
     def node_dist(self,node1,node2):
         return euclidean(self.node_to_tuple(node1),self.node_to_tuple(node2))

@@ -1768,7 +1768,7 @@ def main():
     fl2models_fn = 'better_pickles/first_last2models.pickle'
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=fl2models_fn)
-    man.analyze_paths_taken()
+    man.compare_observed_models()
     return
     copy = generate_copy_new(rows,cols,fn_prefix)
     copy = gen_copy(rows,cols,fn_prefix)
@@ -1781,8 +1781,8 @@ def main():
     return
  
     man.analyze_predictions()
+    man.analyze_paths_taken()
     #find_kl(rows,cols,fn_prefix,bad_fn,data_fn)
-    #man.compare_observed_models()
     return
 
 

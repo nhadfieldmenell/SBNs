@@ -89,12 +89,12 @@ class PathManager(object):
         This function also determines the bad paths as defined by not having a path consistent with ones first, last pair.
             We do not save this right now, but use it in calculating the first_last2models to have the true models
         """
+        trip_id2in = pickle.load(open('better_pickles/trip_id2good.pickle','rb'))
         trip_id2first_last = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (self.rows,self.cols),'rb'))
         first_last2models = {}
         trip_id2model = pickle.load(open('better_pickles/trip_id2model.pickle','rb'))
         bad_paths = {}
         inserted = 0
-        trip_id2in = pickle.load(open('better_pickles/first_last2good.pickle','rb'))
         for t in trip_id2in:
             fl = trip_id2first_last[t]
             if fl not in first_last2models:

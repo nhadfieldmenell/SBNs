@@ -83,15 +83,32 @@ class PathManager(object):
         return False
 
     def create_first_last2models(self,data_fn,bad_fn):
-        """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to lat.
+        """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to last.
         Map those models to the trip_ids of paths that take the model.
 
         This function also determines the bad paths as defined by not having a path consistent with ones first, last pair.
             We do not save this right now, but use it in calculating the first_last2models to have the true models
         """
         trip_id2first_last = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (self.rows,self.cols),'rb'))
-        first_last2trip_ids = defaultdict(list)
+        first_last2models = {}
+        trip_id2model = pickle.load(open('better_pickles/trip_id2model.pickle','rb'))
         bad_paths = {}
+        inserted = 0
+        trip_id2in = pickle.load(open('better_pickles/first_last2good.pickle','rb'))
+        for t in trip_id2in:
+            fl = trip_id2first_last[t]
+            if fl not in first_last2models:
+                first_last2models[fl] = defaultdict(list)
+            model = trip_id2model[t]
+            if inserted < 25:
+                print t
+                print fl
+                self.draw_grid(model)
+                print ""
+            first_last2models[trip_fl][model].append(trip_id)
+            inserted += 1
+                
+        """
         with open(bad_fn,'r') as infile:
             bad_indices = map(int,infile.readlines())
             for index in bad_indices:
@@ -124,10 +141,11 @@ class PathManager(object):
                 inserted += 1
         print "num inserted: %d" % inserted
         self.first_last2models = first_last2models
+        """
         with open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
             pickle.dump(first_last2models,output)
-        with open('pickles/trip_id2bad-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
-            pickle.dump(bad_paths,output)
+        #with open('pickles/trip_id2bad-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
+            #pickle.dump(bad_paths,output)
 
     def analyze_predictions(self):
         """Find similarity measures for the predicted paths
@@ -1611,9 +1629,10 @@ def main():
     data_fn = '../datasets/general_ends-%d-%d.txt' % (rows,cols)
     bad_fn = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
 
-    copy = generate_copy_new(rows,cols,fn_prefix)
-    return
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
+    man.create_first_last2models(data_fn,bad_fn)
+    return
+    copy = generate_copy_new(rows,cols,fn_prefix)
     copy = gen_copy(rows,cols,fn_prefix)
     filter_bad_new(copy,bad_fn,rows,cols,edge2index,man)
     return
@@ -1624,7 +1643,6 @@ def main():
  
     #find_kl(rows,cols,fn_prefix,bad_fn,data_fn)
     man.analyze_predictions()
-    #man.create_first_last2models(data_fn,bad_fn)
     #man.analyze_paths_taken()
     #man.compare_observed_models()
     return

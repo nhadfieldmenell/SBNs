@@ -277,7 +277,7 @@ class PathManager(object):
                 #    sys.stdout.write("%.3f " % weights_with_diag[i][j])
                 #print ""
                 weight_sum += sum(weights_with_diag[i])
-            print "weight sum: %f" % weight_sum
+            #print "weight sum: %f" % weight_sum
             for i in range(len(model_array)):
                 for j in range(i,len(model_array)):
                     weight = weights_with_diag[i][j]
@@ -288,7 +288,7 @@ class PathManager(object):
                     fl2similarity_measures[fl][2] += weight*DSN
             measures = fl2similarity_measures[fl]
 
-            print "overall: haus %.2f, ampsd %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
+            print "overall: haus %.2f, ampsd %.2f, DSN %.2f\n" % (measures[0],measures[1],measures[2])
             #print ""
             #if num_iters > 6:
             #    break
@@ -318,8 +318,15 @@ class PathManager(object):
             dist2haus[i] = dist2haus[i]/dist2tot_trips[i]
             dist2ampsd[i] = dist2ampsd[i]/dist2tot_trips[i]
             dist2DSN[i] = dist2DSN[i]/dist2tot_trips[i]
-            print "\nDiff paths average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus_mult[i],dist2ampsd_mult[i],dist2DSN_mult[i])
-            print "\naverage hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus[i],dist2ampsd[i],dist2DSN[i])
+            print ""
+            if i == 0:
+                print "Radius 0 to %d" % radii[0]
+            elif i < len(radii)-1:
+                print "Radius %d to %d" % (radii[i],radii[i+1])
+            else:
+                print "Radius greater than %d" % radii[-1]
+            print "Diff paths average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus_mult[i],dist2ampsd_mult[i],dist2DSN_mult[i])
+            print "average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus[i],dist2ampsd[i],dist2DSN[i])
         return
 
 

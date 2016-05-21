@@ -254,7 +254,7 @@ class PathManager(object):
                     fl2similarity_measures_mult[fl][0] += weight*haus
                     fl2similarity_measures_mult[fl][1] += weight*ampsd
                     fl2similarity_measures_mult[fl][2] += weight*DSN
-            measures = fl2similarity_measures[fl]
+            measures = fl2similarity_measures_mult[fl]
             print "Diff path overall: haus %.2f, ampsd %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
             """
             for i in range(len(model_array)):

@@ -297,18 +297,34 @@ class PathManager(object):
         total_haus_mult = 0.0
         total_ampsd_mult = 0.0
         total_DSN_mult = 0.0
+        tot_mult_trips = 0.0
+        tot_trips = 0.0
         for fl in fl2num_trips:
             num_trips = fl2num_trips[fl]
+            tot_trips += num_trips
             dist_class = fl2dist_class[fl]
             if len(self.first_last2models[fl]) > 1:
                 mult_meas = fl2similarity_measures_mult[fl]
-                dist2haus_mult[dist_class] += num_trips*mult_meas[0]
-                dist2ampsd_mult[dist_class] += num_trips*mult_meas[1]
-                dist2haus_mult[dist_class] += num_trips*mult_meas[2]
+                weighted_haus = num_trips*mult_meas[0]
+                weighted_ampsd = num_trips*mult_meas[1]
+                weighted_DSN = num_trips*mult_meas[2] 
+                dist2haus_mult[dist_class] += weighted_haus 
+                dist2ampsd_mult[dist_class] += weighted_ampsd 
+                dist2DSN_mult[dist_class] += weightedDSN 
+                tot_haus_mult += weighted_haus
+                tot_ampsd_mult += weighted_ampsd
+                tot_DSN_mult += weighted_DSN
+                tot_mult_trips += num_trips
             meas = fl2similarity_measures[fl]
+            weighted_haus = num_trips*mult[0]
+            weighted_ampsd = num_trips*mult[1]
+            weighted_DSN = num_trips*mult[2] 
             dist2haus[dist_class] += num_trips*meas[0]
             dist2ampsd[dist_class] += num_trips*meas[1]
             dist2DSN[dist_class] += num_trips*meas[2]
+            tot_haus += weighted_haus
+            tot_ampsd += weighted_ampsd
+            tot_DSN += weighted_DSN
         for i in range(num_dists):
             num_trips_mult = dist2tot_trips_mult[i]
             num_trips = dist2tot_trips[i]
@@ -329,6 +345,17 @@ class PathManager(object):
             print "%d total trips" % num_trips
             print "Diff paths average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus_mult[i],dist2ampsd_mult[i],dist2DSN_mult[i])
             print "average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus[i],dist2ampsd[i],dist2DSN[i])
+
+        total_haus_mult = total_haus_mult/tot_mult_trips
+        total_ampsd_mult = total_ampsd_mult/tot_mult_trips
+        total_DSN_mult = total_DSN_mult/tot_mult_trips
+        total_haus = total_haus/tot_trips
+        total_ampsd = total_ampsd/tot_trips
+        total_DSN = total_DSN/tot_trips
+        print ""
+        print "Overall"
+        print "Diff paths average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (total_haus_mult,total_ampsd_mult,total_DSN_mult)
+        print "average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (total_haus,total_ampsd,total_DSN)
         return
 
 

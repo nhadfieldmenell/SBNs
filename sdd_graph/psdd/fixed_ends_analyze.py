@@ -316,7 +316,7 @@ class PathManager(object):
             dist2ampsd_mult[i] = dist2ampsd[i]/dist2tot_trips_mult[i]
             dist2DSN_mult[i] = dist2DSN[i]/dist2tot_trips_mult[i]
             dist2haus[i] = dist2haus[i]/dist2tot_trips[i]
-            dist2ampsd[i] = dist2ampsd[i]/dist2tots_mult[i]
+            dist2ampsd[i] = dist2ampsd[i]/dist2tot_trips[i]
             dist2DSN[i] = dist2DSN[i]/dist2tot_trips[i]
             print "\nDiff paths average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus_mult[i],dist2ampsd_mult[i],dist2DSN_mult[i])
             print "\naverage hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus[i],dist2ampsd[i],dist2DSN[i])

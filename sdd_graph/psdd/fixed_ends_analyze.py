@@ -282,7 +282,7 @@ class PathManager(object):
                 for j in range(i,len(model_array)):
                     weight = weights_with_diag[i][j]
                     haus,ampsd,DSN = self.path_diff_measures(model_array[i],model_array[j])
-                    print "%s: haus %.2f, ampsd %.2f, DSN %.2f" % (str((i,j)),haus,ampsd,DSN) 
+                    #print "%s: haus %.2f, ampsd %.2f, DSN %.2f" % (str((i,j)),haus,ampsd,DSN) 
                     fl2similarity_measures[fl][0] += weight*haus
                     fl2similarity_measures[fl][1] += weight*ampsd
                     fl2similarity_measures[fl][2] += weight*DSN

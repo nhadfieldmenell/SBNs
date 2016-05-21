@@ -193,7 +193,7 @@ class PathManager(object):
         Weight these differences by the proportion of paths that took a given model.
         Radii are distances for splitting paths based on segment distance from first to last.
             first class is 0 <= dist <= radii[0]
-            last class is radii[-1] <= dist
+            last class is radii[-1] < dist
         """
         radii = [3,6]
         num_dists = len(radii)+1
@@ -347,7 +347,7 @@ class PathManager(object):
             elif i < len(radii):
                 print "%d < Radius <= %d" % (radii[i-1],radii[i])
             else:
-                print "%d < Radius" % radii[-1]+1
+                print "%d < Radius" % (radii[-1]+1)
             print "average number of models per fl pair: %.2f" % dist2num_models[i]
             print "%d trips for pairs with multiple paths" % num_trips_mult
             print "%d total trips" % num_trips

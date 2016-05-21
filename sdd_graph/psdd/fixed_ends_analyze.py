@@ -154,7 +154,7 @@ class PathManager(object):
         #fl2prediction = pickle.load(open('pickles/first_last2all_prediction_some-10-10.pickle','rb'))
         total_trips = 0.0
         tot_haus = 0.0
-        tot_sum_haus = 0.0
+        tot_ampsd = 0.0
         tot_DSN = 0.0
         correctly_guessed = 0.0
         fl_pairs_examined = 0
@@ -170,23 +170,157 @@ class PathManager(object):
                 for model in models:
                     model_count = len(models[model])
                     total_trips += model_count
-                    haus,sum_haus,DSN = self.path_diff_measures(model,prediction)
-                    print "%s: haus %.2f, sum_haus %.2f, DSN %.2f" % (str(fl),haus,sum_haus,DSN) 
+                    haus,ampsd,DSN = self.path_diff_measures(model,prediction)
+                    print "%s: haus %.2f, ampsd %.2f, DSN %.2f" % (str(fl),haus,ampsd,DSN) 
                     tot_haus += model_count*haus
-                    tot_sum_haus += model_count*sum_haus
+                    tot_ampsd += model_count*ampsd
                     tot_DSN += model_count*DSN
                     if DSN == 0:
                         correctly_guessed += model_count
         avg_haus = tot_haus/total_trips
-        avg_sum_haus = tot_sum_haus/total_trips
+        avg_ampsd = tot_ampsd/total_trips
         avg_DSN = tot_DSN/total_trips
         correct_pct = correctly_guessed/total_trips
         print "Examined %d first last pairs" % fl_pairs_examined
         print "Average Hausdorff Distance: %.3f" % avg_haus
-        print "Average Sum Hausdorff Distance: %.3f" % avg_sum_haus
+        print "Average Sum Hausdorff Distance: %.3f" % avg_ampsd
         print "Average DSN: %.3f" % avg_DSN
         print "Correct guess percentage: %.3f" % correct_pct
 
+
+    def compare_observed_models_new(self):
+        """Compare the difference between different paths taken for the same start,end pair.
+        Weight these differences by the proportion of paths that took a given model.
+        Radii are distances for splitting paths based on segment distance from first to last.
+            first class is 0 <= dist <= radii[0]
+            last class is radii[-1] <= dist
+        """
+        radii = [3,6]
+        num_dists = len(radii+1)
+        fl2dist_class = {}
+        num_iters = 0
+        fl2num_trips = {}
+        #first element is hausdorff distance, second is sum hausdorff, third is DSN
+        #these are measurements over all combinations of two different paths for a given fl
+        #   pick two paths at random.  If they are the same, pick two paths at random again.
+        fl2similarity_measures_mult = {}
+        dist2tot_trips_mult = defaultdict(float)
+        #these are the measurements for all fl pairs and all models. Do not only examine differing paths
+        fl2similarity_measures = {}
+        dist2tot_trips = defaultdict(float)
+        for fl in self.first_last2models:
+            dist = euclidean(fl[0],fl[1])
+            dist_class = len(radii)
+            for i in range(len(radii)):
+                if dist <= radii[i]:
+                    dist_class = i
+                    break
+            fl2dist_class[fl] = dist_class
+            models = self.first_last2models[fl]
+            num_models = len(models)
+            probs = [0.0 for i in range(len(models))]
+            model_array = []
+            total_trips = 0.0
+            model_i = 0
+            for model in models:
+                count = len(models[model])
+                probs[model_i] += count
+                total_trips += count
+                model_array.append(model)
+                #print "Trips with model %d: %d" % (model_i,count)
+                model_i += 1
+            dist2tot_trips[dist_class] += total_trips
+            fl2num_trips[fl] = total_trips
+            if len(model_array) == 1:
+                for i in range(3):
+                    fl2similarity_measures[fl][i] = 0.0
+                continue
+            dist2tot_trips_mult[dist_class] += total_trips
+            probs = map(lambda x: x/total_trips,probs)
+            diag_sum = sum(map(lambda x: x*x,probs))
+            denom = 1.0-diag_sum
+            weights = [[0.0 for i in range(num_models)] for i in range(num_models)]
+            for i in range(num_models):
+                for j in range(i+1,num_models):
+                    weights[i][j] = (2*probs[i]*probs[j])/denom
+
+            """Calculate weighted similarity measures for different path measurements"""
+            fl2similarity_measures_mult[fl] = [0.0,0.0,0.0]
+            for i in range(len(model_array)):
+                for j in range(i+1,len(model_array)):
+                    weight = weights[i][j]
+                    haus,ampsd,DSN = self.path_diff_measures(model_array[i],model_array[j])
+                    #print "%s: haus %.2f, ampsd %.2f, DSN %.2f" % (str((i,j)),haus,ampsd,DSN) 
+                    fl2similarity_measures_mult[fl][0] += weight*haus
+                    fl2similarity_measures_mult[fl][1] += weight*ampsd
+                    fl2similarity_measures_mult[fl][2] += weight*DSN
+            measures = fl2similarity_measures[fl]
+            print "Diff path overall: haus %.2f, ampsd %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
+            """
+            for i in range(len(model_array)):
+                print "path %d" % i
+                self.draw_grid(model_array[i])
+            """
+            """Reconfigure weights to correspond to all possible combinations"""
+            weights_with_diag = [[0.0 for i in range(num_models)] for i in range(num_models)]
+            for i in range(num_models):
+                for j in range(i,num_models):
+                    if i == j:
+                        weights_with_diag[i][j] = probs[i]*probs[i]
+                    else:
+                        weights_with_diag[i][j] = weights[i][j]*denom
+            """Calculate weighted similarity measures for any two paths, can be the same"""
+            fl2similarity_measures[fl] = [0.0,0.0,0.0]
+            weight_sum = 0.0
+            for i in range(num_models):
+                #for j in range(num_models):
+                #    sys.stdout.write("%.3f " % weights_with_diag[i][j])
+                #print ""
+                weight_sum += sum(weights_with_diag[i])
+            print "weight sum: %f" % weight_sum
+            for i in range(len(model_array)):
+                for j in range(i,len(model_array)):
+                    weight = weights_with_diag[i][j]
+                    haus,ampsd,DSN = self.path_diff_measures(model_array[i],model_array[j])
+                    print "%s: haus %.2f, ampsd %.2f, DSN %.2f" % (str((i,j)),haus,ampsd,DSN) 
+                    fl2similarity_measures[fl][0] += weight*haus
+                    fl2similarity_measures[fl][1] += weight*ampsd
+                    fl2similarity_measures[fl][2] += weight*DSN
+            measures = fl2similarity_measures[fl]
+
+            print "overall: haus %.2f, ampsd %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
+            #print ""
+            #if num_iters > 6:
+            #    break
+            num_iters += 1
+        dist2haus = defaultdict(float)
+        dist2ampsd = defaultdict(float)
+        dist2DSN = defaultdict(float)
+        dist2haus_mult = defaultdict(float)
+        dist2ampsd_mult = defaultdict(float)
+        dist2DSN_mult = defaultdict(float)
+        for fl in fl2num_trips:
+            num_trips = fl2num_trips[fl]
+            dist_class = fl2dist_class[fl]
+            if len(self.first_last2models[fl]) > 1:
+                mult_meas = fl2similarity_measures_mult[fl]
+                dist2haus_mult[dist_class] += num_trips*mult_meas[0]
+                dist2ampsd_mult[dist_class] += num_trips*mult_meas[0]
+                dist2haus_mult[dist_class] += num_trips*mult_meas[0]
+            meas = fl2similarity_measures[fl]
+            dist2haus[dist_class] += num_trips*meas[0]
+            dist2ampsd[dist_class] += num_trips*meas[1]
+            dist2DSN[dist_class] += num_trips*meas[2]
+        for i in range(num_dists):
+            dist2haus_mult[i] = dist2haus[i]/dist2tot_trips_mult[i]
+            dist2ampsd_mult[i] = dist2ampsd[i]/dist2tot_trips_mult[i]
+            dist2DSN_mult[i] = dist2DSN[i]/dist2tot_trips_mult[i]
+            dist2haus[i] = dist2haus[i]/dist2tot_trips[i]
+            dist2ampsd[i] = dist2ampsd[i]/dist2tots_mult[i]
+            dist2DSN[i] = dist2DSN[i]/dist2tot_trips[i]
+            print "\nDiff paths average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus_mult[i],dist2ampsd_mult[i],dist2DSN_mult[i])
+            print "\naverage hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus[i],dist2ampsd[i],dist2DSN[i])
+        return
 
 
     def compare_observed_models(self):
@@ -418,14 +552,14 @@ class PathManager(object):
 
 
     def path_diff_measures(self,edge_path1,edge_path2):
-        haus,sum_haus = self.min_and_sum_hausdorff(edge_path1,edge_path2)
+        haus,ampsd = self.min_and_sum_hausdorff(edge_path1,edge_path2)
         DSN = edge_DSN(edge_path1,edge_path2)
         """
         print "Hausdorff: %f" % haus
-        print "Sum Hausdorff: %f" % sum_haus
+        print "Sum Hausdorff: %f" % ampsd
         print "Dissimilarity: %f" % DSN
         """
-        return haus,sum_haus,DSN
+        return haus,ampsd,DSN
 
 
     def min_and_sum_hausdorff(self,edge_path1,edge_path2):
@@ -1581,10 +1715,10 @@ def test_nearest_neighbor(rows,cols,edge2index,edge_index2tuple):
 
     man.path_diff_measures(edge_path1,edge_path2)
     return
-    haus,sum_haus = man.min_and_sum_hausdorff(edge_path1,edge_path2)
+    haus,ampsd = man.min_and_sum_hausdorff(edge_path1,edge_path2)
 
     print "Hausdorff: %f" % haus
-    print "Sum Hausdorff: %f" % sum_haus
+    print "Sum Hausdorff: %f" % ampsd
 
     return
 

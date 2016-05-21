@@ -291,12 +291,12 @@ class PathManager(object):
         dist2haus_mult = defaultdict(float)
         dist2ampsd_mult = defaultdict(float)
         dist2DSN_mult = defaultdict(float)
-        total_haus = 0.0
-        total_ampsd = 0.0
-        total_DSN = 0.0
-        total_haus_mult = 0.0
-        total_ampsd_mult = 0.0
-        total_DSN_mult = 0.0
+        tot_haus = 0.0
+        tot_ampsd = 0.0
+        tot_DSN = 0.0
+        tot_haus_mult = 0.0
+        tot_ampsd_mult = 0.0
+        tot_DSN_mult = 0.0
         tot_mult_trips = 0.0
         tot_trips = 0.0
         for fl in fl2num_trips:
@@ -346,16 +346,16 @@ class PathManager(object):
             print "Diff paths average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus_mult[i],dist2ampsd_mult[i],dist2DSN_mult[i])
             print "average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus[i],dist2ampsd[i],dist2DSN[i])
 
-        total_haus_mult = total_haus_mult/tot_mult_trips
-        total_ampsd_mult = total_ampsd_mult/tot_mult_trips
-        total_DSN_mult = total_DSN_mult/tot_mult_trips
-        total_haus = total_haus/tot_trips
-        total_ampsd = total_ampsd/tot_trips
-        total_DSN = total_DSN/tot_trips
+        tot_haus_mult = tot_haus_mult/tot_mult_trips
+        tot_ampsd_mult = tot_ampsd_mult/tot_mult_trips
+        tot_DSN_mult = tot_DSN_mult/tot_mult_trips
+        tot_haus = tot_haus/tot_trips
+        tot_ampsd = tot_ampsd/tot_trips
+        tot_DSN = tot_DSN/tot_trips
         print ""
         print "Overall"
-        print "Diff paths average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (total_haus_mult,total_ampsd_mult,total_DSN_mult)
-        print "average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (total_haus,total_ampsd,total_DSN)
+        print "Diff paths average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (tot_haus_mult,tot_ampsd_mult,tot_DSN_mult)
+        print "average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (tot_haus,tot_ampsd,tot_DSN)
         return
 
 

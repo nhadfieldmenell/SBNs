@@ -321,7 +321,7 @@ class PathManager(object):
             print ""
             if i == 0:
                 print "Radius 0 to %d" % radii[0]
-            elif i < len(radii)-1:
+            elif i < len(radii):
                 print "Radius %d to %d" % (radii[i],radii[i+1])
             else:
                 print "Radius greater than %d" % radii[-1]

@@ -1117,7 +1117,8 @@ def normalize_simple(line):
 
 
 def just_create_paths(graph):
-    """create a dict containing every path"""
+    """Create a dict containing every path
+    Also create a dict of all not simple paths"""
     trip_id = 1
     line_num = 0
     num_trips = 0
@@ -1134,29 +1135,22 @@ def just_create_paths(graph):
         line_num = p.next_line
         trip_id = normalize_simple(graph.lines[line_num])[0]
         p = Path(trip_id,graph,line_num=line_num)
-        """
-        nodes = [0 for i in range(graph.rows*graph.cols+1)]
-        for i in range(len(p.edges)):
-            if p.edges[i] == 1:
-                incidents = graph.edge_index2tuple[i]
-                nodes[incidents[0]] = 1
-                nodes[incidents[1]] = 1
-        """
-
         first,last = p.first_last
+        """
         simple = graph.is_simple(p.edges[:],first,last)
         if not simple or p.edges.count(1) == 0:
             #print "%d: (%d,%d)" % (trip_id,first,last)
             #graph.draw_grid(p.edges)
             id2bad[trip_id] = True
+        """
         trip_id2model[trip_id] = p.edges
         num_trips += 1
 
-    print len(id2bad.keys())
-    with open('pickles/trip_id2bad-%d-%d.pickle' % (graph.rows,graph.cols),'wb') as output:
-        pickle.dump(id2bad,output)
-    #with open('pickles/trip_id2model_better.pickle','wb') as output:
-    #    pickle.dump(trip_id2model,output)
+    #print len(id2bad.keys())
+    #with open('pickles/trip_id2bad-%d-%d.pickle' % (graph.rows,graph.cols),'wb') as output:
+    #    pickle.dump(id2bad,output)
+    with open('psdd/better_pickles/trip_id2model.pickle','wb') as output:
+        pickle.dump(trip_id2model,output)
 
 
 #@profile

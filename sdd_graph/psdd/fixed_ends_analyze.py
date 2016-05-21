@@ -312,19 +312,23 @@ class PathManager(object):
             dist2ampsd[dist_class] += num_trips*meas[1]
             dist2DSN[dist_class] += num_trips*meas[2]
         for i in range(num_dists):
-            dist2haus_mult[i] = dist2haus[i]/dist2tot_trips_mult[i]
-            dist2ampsd_mult[i] = dist2ampsd[i]/dist2tot_trips_mult[i]
-            dist2DSN_mult[i] = dist2DSN[i]/dist2tot_trips_mult[i]
-            dist2haus[i] = dist2haus[i]/dist2tot_trips[i]
-            dist2ampsd[i] = dist2ampsd[i]/dist2tot_trips[i]
-            dist2DSN[i] = dist2DSN[i]/dist2tot_trips[i]
+            num_trips_mult = dist2tot_trips_mult[i]
+            num_trips = dist2tot_trips[i]
+            dist2haus_mult[i] = dist2haus[i]/num_trips_mult
+            dist2ampsd_mult[i] = dist2ampsd[i]/num_trips_mult
+            dist2DSN_mult[i] = dist2DSN[i]/num_trips_mult
+            dist2haus[i] = dist2haus[i]/num_trips
+            dist2ampsd[i] = dist2ampsd[i]/num_trips
+            dist2DSN[i] = dist2DSN[i]/num_trips
             print ""
             if i == 0:
                 print "Radius 0 to %d" % radii[0]
             elif i < len(radii):
-                print "Radius %d to %d" % (radii[i],radii[i+1])
+                print "Radius %d to %d" % (radii[i-1],radii[i])
             else:
                 print "Radius greater than %d" % radii[-1]
+            print "%d trips for pairs with multiple paths" % num_trips_mult
+            print "%d total trips" % num_trips
             print "Diff paths average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus_mult[i],dist2ampsd_mult[i],dist2DSN_mult[i])
             print "average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus[i],dist2ampsd[i],dist2DSN[i])
         return

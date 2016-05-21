@@ -310,7 +310,7 @@ class PathManager(object):
                 weighted_DSN = num_trips*mult_meas[2] 
                 dist2haus_mult[dist_class] += weighted_haus 
                 dist2ampsd_mult[dist_class] += weighted_ampsd 
-                dist2DSN_mult[dist_class] += weightedDSN 
+                dist2DSN_mult[dist_class] += weighted_DSN 
                 tot_haus_mult += weighted_haus
                 tot_ampsd_mult += weighted_ampsd
                 tot_DSN_mult += weighted_DSN

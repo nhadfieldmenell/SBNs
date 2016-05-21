@@ -256,7 +256,7 @@ class PathManager(object):
                     fl2similarity_measures_mult[fl][1] += weight*ampsd
                     fl2similarity_measures_mult[fl][2] += weight*DSN
             measures = fl2similarity_measures_mult[fl]
-            #print "Diff path overall: haus %.2f, ampsd %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
+            print "Diff path overall: haus %.2f, ampsd %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
             """Reconfigure weights to correspond to all possible combinations"""
             weights_with_diag = [[0.0 for i in range(num_models)] for i in range(num_models)]
             for i in range(num_models):
@@ -283,7 +283,7 @@ class PathManager(object):
                     fl2similarity_measures[fl][2] += weight*DSN
             measures = fl2similarity_measures[fl]
 
-            #print "overall: haus %.2f, ampsd %.2f, DSN %.2f\n" % (measures[0],measures[1],measures[2])
+            print "overall: haus %.2f, ampsd %.2f, DSN %.2f\n" % (measures[0],measures[1],measures[2])
             num_iters += 1
         dist2haus = defaultdict(float)
         dist2ampsd = defaultdict(float)

@@ -393,7 +393,7 @@ class PathManager(object):
             for i in range(num_models):
                 for j in range(i+1,num_models):
                     weights[i][j] = (2*probs[i]*probs[j])/denom
-            """
+           # """
             fl2similarity_measures[fl] = [0.0,0.0,0.0]
             for i in range(len(model_array)):
                 for j in range(i+1,len(model_array)):
@@ -404,12 +404,11 @@ class PathManager(object):
                     fl2similarity_measures[fl][1] += weight*sum_haus
                     fl2similarity_measures[fl][2] += weight*DSN
             measures = fl2similarity_measures[fl]
-            """
+            #"""
             """
             for i in range(len(model_array)):
                 print "path %d" % i
                 self.draw_grid(model_array[i])
-            """
             weights_with_diag = [[0.0 for i in range(num_models)] for i in range(num_models)]
             for i in range(num_models):
                 for j in range(i,num_models):
@@ -434,7 +433,7 @@ class PathManager(object):
                     fl2similarity_measures[fl][1] += weight*sum_haus
                     fl2similarity_measures[fl][2] += weight*DSN
             measures = fl2similarity_measures[fl]
-
+            """
             #print "overall: haus %.2f, sum_haus %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
             #print ""
             #if num_iters > 6:

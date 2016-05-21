@@ -209,7 +209,7 @@ class PathManager(object):
         fl2similarity_measures = {}
         dist2tot_trips = defaultdict(float)
         for fl in self.first_last2models:
-            dist = euclidean(fl[0],fl[1])
+            dist = euclidean(self.node_to_coords(fl[0]),self.node_to_coords(fl[1]))
             dist_class = len(radii)
             for i in range(len(radii)):
                 if dist <= radii[i]:

@@ -142,7 +142,7 @@ class PathManager(object):
         print "num inserted: %d" % inserted
         self.first_last2models = first_last2models
         """
-        with open('pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
+        with open('better_pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
             pickle.dump(first_last2models,output)
         #with open('pickles/trip_id2bad-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
             #pickle.dump(bad_paths,output)
@@ -1631,12 +1631,13 @@ def main():
     bad_fn = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
-    man.create_first_last2models(data_fn,bad_fn)
+    man.analyze_paths_taken()
     return
     copy = generate_copy_new(rows,cols,fn_prefix)
     copy = gen_copy(rows,cols,fn_prefix)
     filter_bad_new(copy,bad_fn,rows,cols,edge2index,man)
     return
+    man.create_first_last2models(data_fn,bad_fn)
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
     print "COPY GENERATED!!!"
     print man.best_all_at_once(5,84)
@@ -1644,7 +1645,6 @@ def main():
  
     man.analyze_predictions()
     #find_kl(rows,cols,fn_prefix,bad_fn,data_fn)
-    #man.analyze_paths_taken()
     #man.compare_observed_models()
     return
 

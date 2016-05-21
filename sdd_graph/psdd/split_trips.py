@@ -7,9 +7,14 @@ def main():
     t2bad = pickle.load(open('better_pickles/trip_id2bad.pickle','rb'))
     #t2model = pickle.load(open('../pickles/trip_id2model_better.pickle','rb'))
     all_ids = []
+    trip_id2good = {}
     for i in range(1,464046):
         if i not in t2bad:
             all_ids.append(i)
+            trip_id2good[i] = True
+    with open('better_pickles/trip_id2good.pickle','wb') as output:
+        pickle.dump(trip_id2good,output)
+    return
     print "%d good instances" % len(all_ids)
     random.shuffle(all_ids)
     tenth = len(all_ids)/10

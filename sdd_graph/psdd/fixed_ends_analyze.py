@@ -196,7 +196,7 @@ class PathManager(object):
             last class is radii[-1] <= dist
         """
         radii = [3,6]
-        num_dists = len(radii+1)
+        num_dists = len(radii)+1
         fl2dist_class = {}
         num_iters = 0
         fl2num_trips = {}

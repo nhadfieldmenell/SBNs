@@ -303,8 +303,8 @@ class PathManager(object):
             if len(self.first_last2models[fl]) > 1:
                 mult_meas = fl2similarity_measures_mult[fl]
                 dist2haus_mult[dist_class] += num_trips*mult_meas[0]
-                dist2ampsd_mult[dist_class] += num_trips*mult_meas[0]
-                dist2haus_mult[dist_class] += num_trips*mult_meas[0]
+                dist2ampsd_mult[dist_class] += num_trips*mult_meas[1]
+                dist2haus_mult[dist_class] += num_trips*mult_meas[2]
             meas = fl2similarity_measures[fl]
             dist2haus[dist_class] += num_trips*meas[0]
             dist2ampsd[dist_class] += num_trips*meas[1]

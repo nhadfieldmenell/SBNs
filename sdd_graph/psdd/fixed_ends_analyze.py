@@ -208,6 +208,10 @@ class PathManager(object):
         #these are the measurements for all fl pairs and all models. Do not only examine differing paths
         fl2similarity_measures = {}
         dist2tot_trips = defaultdict(float)
+
+        dist2num_models = defaultdict(float)
+        tot_models = 0.0
+
         for fl in self.first_last2models:
             dist = self.node_dist(fl[0],fl[1])
             dist_class = len(radii)
@@ -229,6 +233,8 @@ class PathManager(object):
                 model_array.append(model)
                 #print "Trips with model %d: %d" % (model_i,count)
                 model_i += 1
+            dist2num_models[dist_class] += num_models*total_trips
+            tot_models += num_models*total_trips
             dist2tot_trips[dist_class] += total_trips
             fl2num_trips[fl] = total_trips
             fl2similarity_measures[fl] = [0.0,0.0,0.0]
@@ -256,7 +262,7 @@ class PathManager(object):
                     fl2similarity_measures_mult[fl][1] += weight*ampsd
                     fl2similarity_measures_mult[fl][2] += weight*DSN
             measures = fl2similarity_measures_mult[fl]
-            print "Diff path overall: haus %.2f, ampsd %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
+            #print "Diff path overall: haus %.2f, ampsd %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
             """Reconfigure weights to correspond to all possible combinations"""
             weights_with_diag = [[0.0 for i in range(num_models)] for i in range(num_models)]
             for i in range(num_models):
@@ -283,7 +289,7 @@ class PathManager(object):
                     fl2similarity_measures[fl][2] += weight*DSN
             measures = fl2similarity_measures[fl]
 
-            print "overall: haus %.2f, ampsd %.2f, DSN %.2f\n" % (measures[0],measures[1],measures[2])
+            #print "overall: haus %.2f, ampsd %.2f, DSN %.2f\n" % (measures[0],measures[1],measures[2])
             num_iters += 1
         dist2haus = defaultdict(float)
         dist2ampsd = defaultdict(float)
@@ -328,6 +334,7 @@ class PathManager(object):
         for i in range(num_dists):
             num_trips_mult = dist2tot_trips_mult[i]
             num_trips = dist2tot_trips[i]
+            dist2num_models[i] = dist2num_models[i]/num_trips
             dist2haus_mult[i] = dist2haus_mult[i]/num_trips_mult
             dist2ampsd_mult[i] = dist2ampsd_mult[i]/num_trips_mult
             dist2DSN_mult[i] = dist2DSN_mult[i]/num_trips_mult
@@ -341,11 +348,13 @@ class PathManager(object):
                 print "Radius %d to %d" % (radii[i-1],radii[i])
             else:
                 print "Radius greater than %d" % radii[-1]
+            print "average number of models per fl pair: %.2f" % dist2num_models[i]
             print "%d trips for pairs with multiple paths" % num_trips_mult
             print "%d total trips" % num_trips
             print "Diff paths average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus_mult[i],dist2ampsd_mult[i],dist2DSN_mult[i])
             print "average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (dist2haus[i],dist2ampsd[i],dist2DSN[i])
 
+        tot_models = tot_models/tot_trips
         tot_haus_mult = tot_haus_mult/tot_mult_trips
         tot_ampsd_mult = tot_ampsd_mult/tot_mult_trips
         tot_DSN_mult = tot_DSN_mult/tot_mult_trips
@@ -354,6 +363,7 @@ class PathManager(object):
         tot_DSN = tot_DSN/tot_trips
         print ""
         print "Overall"
+        print "average number of models per fl pair: %.2f" % tot_models
         print "Diff paths average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (tot_haus_mult,tot_ampsd_mult,tot_DSN_mult)
         print "average hausdorff %.2f, average ampsd %.2f, average DSN %.2f" % (tot_haus,tot_ampsd,tot_DSN)
         return
@@ -1803,9 +1813,9 @@ def main():
     fl2models_fn = 'better_pickles/first_last2models.pickle'
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=fl2models_fn)
-    man.compare_observed_models()
-    return
     man.compare_observed_models_new()
+    return
+    man.compare_observed_models()
     return
     copy = generate_copy_new(rows,cols,fn_prefix)
     copy = gen_copy(rows,cols,fn_prefix)

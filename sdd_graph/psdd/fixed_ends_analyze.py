@@ -332,9 +332,11 @@ class PathManager(object):
             count = 0-count
             print "%dth percentile has %d models for long paths (min radius %d)" % ((100-i*25),count,radius)
             print "first, last: %s" % str(fl)
+            """
             for model in self.first_last2models[fl]:
                 self.draw_grid(model)
                 print ""
+            """
             if i == 3:
                 break
             for j in range(quarter_of_fl_long):

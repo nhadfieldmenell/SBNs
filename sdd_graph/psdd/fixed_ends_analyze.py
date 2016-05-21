@@ -343,11 +343,11 @@ class PathManager(object):
             dist2DSN[i] = dist2DSN[i]/num_trips
             print ""
             if i == 0:
-                print "Radius 0 to %d" % radii[0]
+                print "0 <= Radius <= %d" % radii[0]
             elif i < len(radii):
-                print "Radius %d to %d" % (radii[i-1],radii[i])
+                print "%d < Radius <= %d" % (radii[i-1],radii[i])
             else:
-                print "Radius greater than %d" % radii[-1]
+                print "%d < Radius" % radii[-1]+1
             print "average number of models per fl pair: %.2f" % dist2num_models[i]
             print "%d trips for pairs with multiple paths" % num_trips_mult
             print "%d total trips" % num_trips
@@ -1813,9 +1813,8 @@ def main():
     fl2models_fn = 'better_pickles/first_last2models.pickle'
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=fl2models_fn)
-    man.analyze_paths_taken()
-    return
     man.compare_observed_models_new()
+    return
     man.compare_observed_models()
     return
     copy = generate_copy_new(rows,cols,fn_prefix)

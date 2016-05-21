@@ -231,6 +231,7 @@ class PathManager(object):
                 model_i += 1
             dist2tot_trips[dist_class] += total_trips
             fl2num_trips[fl] = total_trips
+            fl2similarity_measures[fl] = [0.0,0.0,0.0]
             if len(model_array) == 1:
                 for i in range(3):
                     fl2similarity_measures[fl][i] = 0.0
@@ -270,7 +271,6 @@ class PathManager(object):
                     else:
                         weights_with_diag[i][j] = weights[i][j]*denom
             """Calculate weighted similarity measures for any two paths, can be the same"""
-            fl2similarity_measures[fl] = [0.0,0.0,0.0]
             weight_sum = 0.0
             for i in range(num_models):
                 #for j in range(num_models):

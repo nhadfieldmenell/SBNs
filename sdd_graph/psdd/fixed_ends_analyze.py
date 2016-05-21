@@ -105,7 +105,7 @@ class PathManager(object):
                 print fl
                 self.draw_grid(model)
                 print ""
-            first_last2models[trip_fl][model].append(trip_id)
+            first_last2models[fl][model].append(trip_id)
             inserted += 1
                 
         """
@@ -1630,7 +1630,6 @@ def main():
     bad_fn = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
-    man.create_first_last2models(data_fn,bad_fn)
     return
     copy = generate_copy_new(rows,cols,fn_prefix)
     copy = gen_copy(rows,cols,fn_prefix)
@@ -1641,8 +1640,9 @@ def main():
     print man.best_all_at_once(5,84)
     return
  
-    #find_kl(rows,cols,fn_prefix,bad_fn,data_fn)
     man.analyze_predictions()
+    #man.create_first_last2models(data_fn,bad_fn)
+    #find_kl(rows,cols,fn_prefix,bad_fn,data_fn)
     #man.analyze_paths_taken()
     #man.compare_observed_models()
     return

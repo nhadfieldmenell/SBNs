@@ -256,12 +256,7 @@ class PathManager(object):
                     fl2similarity_measures_mult[fl][1] += weight*ampsd
                     fl2similarity_measures_mult[fl][2] += weight*DSN
             measures = fl2similarity_measures_mult[fl]
-            print "Diff path overall: haus %.2f, ampsd %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
-            """
-            for i in range(len(model_array)):
-                print "path %d" % i
-                self.draw_grid(model_array[i])
-            """
+            #print "Diff path overall: haus %.2f, ampsd %.2f, DSN %.2f" % (measures[0],measures[1],measures[2])
             """Reconfigure weights to correspond to all possible combinations"""
             weights_with_diag = [[0.0 for i in range(num_models)] for i in range(num_models)]
             for i in range(num_models):
@@ -288,10 +283,7 @@ class PathManager(object):
                     fl2similarity_measures[fl][2] += weight*DSN
             measures = fl2similarity_measures[fl]
 
-            print "overall: haus %.2f, ampsd %.2f, DSN %.2f\n" % (measures[0],measures[1],measures[2])
-            #print ""
-            #if num_iters > 6:
-            #    break
+            #print "overall: haus %.2f, ampsd %.2f, DSN %.2f\n" % (measures[0],measures[1],measures[2])
             num_iters += 1
         dist2haus = defaultdict(float)
         dist2ampsd = defaultdict(float)
@@ -299,6 +291,12 @@ class PathManager(object):
         dist2haus_mult = defaultdict(float)
         dist2ampsd_mult = defaultdict(float)
         dist2DSN_mult = defaultdict(float)
+        total_haus = 0.0
+        total_ampsd = 0.0
+        total_DSN = 0.0
+        total_haus_mult = 0.0
+        total_ampsd_mult = 0.0
+        total_DSN_mult = 0.0
         for fl in fl2num_trips:
             num_trips = fl2num_trips[fl]
             dist_class = fl2dist_class[fl]
@@ -314,9 +312,9 @@ class PathManager(object):
         for i in range(num_dists):
             num_trips_mult = dist2tot_trips_mult[i]
             num_trips = dist2tot_trips[i]
-            dist2haus_mult[i] = dist2haus[i]/num_trips_mult
-            dist2ampsd_mult[i] = dist2ampsd[i]/num_trips_mult
-            dist2DSN_mult[i] = dist2DSN[i]/num_trips_mult
+            dist2haus_mult[i] = dist2haus_mult[i]/num_trips_mult
+            dist2ampsd_mult[i] = dist2ampsd_mult[i]/num_trips_mult
+            dist2DSN_mult[i] = dist2DSN_mult[i]/num_trips_mult
             dist2haus[i] = dist2haus[i]/num_trips
             dist2ampsd[i] = dist2ampsd[i]/num_trips
             dist2DSN[i] = dist2DSN[i]/num_trips

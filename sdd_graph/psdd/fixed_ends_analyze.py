@@ -1630,6 +1630,7 @@ def main():
     bad_fn = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple)
+    man.create_first_last2models(data_fn,bad_fn)
     return
     copy = generate_copy_new(rows,cols,fn_prefix)
     copy = gen_copy(rows,cols,fn_prefix)
@@ -1641,7 +1642,6 @@ def main():
     return
  
     man.analyze_predictions()
-    #man.create_first_last2models(data_fn,bad_fn)
     #find_kl(rows,cols,fn_prefix,bad_fn,data_fn)
     #man.analyze_paths_taken()
     #man.compare_observed_models()

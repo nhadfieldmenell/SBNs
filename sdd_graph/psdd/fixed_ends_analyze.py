@@ -17,7 +17,7 @@ import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
 class PathManager(object):
-    def __init__(self,rows,cols,edge2index,edge_index2tuple,copy=None):
+    def __init__(self,rows,cols,edge2index,edge_index2tuple,first_last2models_fn=None,copy=None):
         self.rows = rows
         self.cols = cols
         self.num_nodes = rows*cols
@@ -26,10 +26,8 @@ class PathManager(object):
         self.edge_index2tuple = edge_index2tuple
         self.paths = []
         self.copy = copy
-        fl2models_fn = 'pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols)
-        fl2models_exists = os.path.isfile(fl2models_fn)
-        if fl2models_exists:
-            self.first_last2models = pickle.load(open(fl2models_fn,'rb'))
+        if first_last2models_fn != None:
+            self.first_last2models = pickle.load(open(first_last2models_fn,'rb'))
 
 
     def all_all_predictions(self):
@@ -1629,8 +1627,9 @@ def main():
     fn_prefix = '../graphs/general_ends-%d-%d' % (rows,cols)
     data_fn = '../datasets/general_ends-%d-%d.txt' % (rows,cols)
     bad_fn = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
+    fl2models_fn = 'better_pickles/first_last2models.pickle' % (self.rows,self.cols)
 
-    man = PathManager(rows,cols,edge2index,edge_index2tuple)
+    man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=fl2models_fn)
     man.analyze_paths_taken()
     return
     copy = generate_copy_new(rows,cols,fn_prefix)

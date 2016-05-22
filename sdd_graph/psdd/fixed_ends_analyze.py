@@ -165,11 +165,11 @@ class PathManager(object):
         fl_pairs_examined = 0
         for first_last in fl2prediction:
             prediction = fl2prediction[first_last]
-            dist = self.node_dist(first_last[0],first_last[1])
-            dist_class = len(radii)
+            distance = self.node_dist(first_last[0],first_last[1])
+            dist = len(radii)
             for i in range(len(radii)):
-                if dist <= radii[i]:
-                    dist_class = i
+                if distance <= radii[i]:
+                    dist = i
                     break
             for fl in (first_last,(first_last[1],first_last[0])):
                 models = None
@@ -196,6 +196,8 @@ class PathManager(object):
 
         for i in range(num_dists):
             num_trips = dist2num_trips[i]
+            if num_trips == 0:
+                print "No paths for group %d" % i
             dist2haus[i] = dist2tot_haus[i]/num_trips
             dist2ampsd[i] = dist2tot_ampsd[i]/num_trips
             dist2dsn[i] = dist2tot_dsn[i]/num_trips

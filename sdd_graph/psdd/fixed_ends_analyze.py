@@ -208,7 +208,7 @@ class PathManager(object):
             elif i < len(radii):
                 print "%d < Radius <= %d" % (radii[i-1],radii[i])
             else:
-                print "%d < Radius" % (radii[-1]+1)
+                print "%d < Radius" % (radii[-1])
             print "Correctly guessed %.2f percent of trips" % (100.0*dist2correct_guess[i])
             print "%d total trips" % num_trips
             print "average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (dist2haus[i],dist2ampsd[i],dist2dsn[i])
@@ -217,11 +217,12 @@ class PathManager(object):
         avg_ampsd = tot_ampsd/total_trips
         avg_dsn = tot_dsn/total_trips
         correct_pct = correctly_guessed/total_trips
+        print "\nOverall"
         print "Examined %d first last pairs" % fl_pairs_examined
         print "Average Hausdorff Distance: %.3f" % avg_haus
         print "Average Average Minimum Point Segment Distance Distance: %.3f" % avg_ampsd
         print "Average dsn: %.3f" % avg_dsn
-        print "Correct guess percentage: %.3f" % correct_pct
+        print "Correctly guessed %.2f percent of trips" % (100.0*correct_pct)
 
     def analyze_predictions(self):
         """Find similarity measures for the predicted paths

@@ -195,7 +195,7 @@ class PathManager(object):
                         dist2correct_guess[dist] += model_count
 
         for i in range(num_dists):
-            num_trips = dist2_trips[i]
+            num_trips = dist2num_trips[i]
             dist2haus[i] = dist2haus[i]/num_trips
             dist2ampsd[i] = dist2ampsd[i]/num_trips
             dist2dsn[i] = dist2dsn[i]/num_trips

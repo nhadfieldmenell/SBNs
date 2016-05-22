@@ -196,9 +196,9 @@ class PathManager(object):
 
         for i in range(num_dists):
             num_trips = dist2num_trips[i]
-            dist2haus[i] = dist2haus[i]/num_trips
-            dist2ampsd[i] = dist2ampsd[i]/num_trips
-            dist2dsn[i] = dist2dsn[i]/num_trips
+            dist2haus[i] = dist2tot_haus[i]/num_trips
+            dist2ampsd[i] = dist2tot_ampsd[i]/num_trips
+            dist2dsn[i] = dist2tot_dsn[i]/num_trips
             dist2correct_guess[i] = dist2correct_guess[i]/num_trips
             print ""
             if i == 0:

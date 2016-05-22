@@ -209,7 +209,7 @@ class PathManager(object):
                 print "%d < Radius <= %d" % (radii[i-1],radii[i])
             else:
                 print "%d < Radius" % (radii[-1]+1)
-            print "Correctly guessed %.2f\% of trips" % (100.0*dist2correct_guess[i])
+            print "Correctly guessed %.2f percent of trips" % (100.0*dist2correct_guess[i])
             print "%d total trips" % num_trips
             print "average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (dist2haus[i],dist2ampsd[i],dist2dsn[i])
 

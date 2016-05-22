@@ -153,9 +153,9 @@ class PathManager(object):
         num_dists = len(radii) + 1
         fl2prediction = pickle.load(open('better_pickles/fl2prediction.pickle','rb'))
         dist2num_trips = defaultdict(float)
-        dist2tot_haus = defaultdict(float)
-        dist2tot_ampsd = defaultdict(float)
-        dist2tot_dsn = defaultdict(float)
+        dist2haus = defaultdict(float)
+        dist2ampsd = defaultdict(float)
+        dist2dsn = defaultdict(float)
         dist2correct_guess = defaultdict(float)
         total_trips = 0.0
         tot_haus = 0.0
@@ -184,9 +184,9 @@ class PathManager(object):
                     dist2num_trips[dist] += model_count
                     haus,ampsd,dsn = self.path_diff_measures(model,prediction)
                     print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str(fl),haus,ampsd,dsn) 
-                    dist2tot_haus[dist] += model_count*haus
-                    dist2tot_ampsd[dist] += model_count*ampsd
-                    dist2tot_dsn[dist] += model_count*dsn
+                    dist2haus[dist] += model_count*haus
+                    dist2ampsd[dist] += model_count*ampsd
+                    dist2dsn[dist] += model_count*dsn
                     tot_haus += model_count*haus
                     tot_ampsd += model_count*ampsd
                     tot_dsn += model_count*dsn
@@ -198,9 +198,9 @@ class PathManager(object):
             num_trips = dist2num_trips[i]
             if num_trips == 0:
                 print "No paths for group %d" % i
-            dist2haus[i] = dist2tot_haus[i]/num_trips
-            dist2ampsd[i] = dist2tot_ampsd[i]/num_trips
-            dist2dsn[i] = dist2tot_dsn[i]/num_trips
+            dist2haus[i] = dist2haus[i]/num_trips
+            dist2ampsd[i] = dist2ampsd[i]/num_trips
+            dist2dsn[i] = dist2dsn[i]/num_trips
             dist2correct_guess[i] = dist2correct_guess[i]/num_trips
             print ""
             if i == 0:

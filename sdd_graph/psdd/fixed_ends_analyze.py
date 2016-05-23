@@ -1907,11 +1907,12 @@ def main():
     data_fn = '../datasets/general_ends-%d-%d.txt' % (rows,cols)
     bad_fn = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
     fl2models_fn = 'better_pickles/first_last2models.pickle'
+    testing_fl2models_fn = 'better_pickles/testing_fl2models.pickle' 
 
-    man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=fl2models_fn)
-    man.testing_fl2models()
-    return
+    man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=testing_fl2models_fn)
     man.analyze_predictions_new()
+    return
+    man.testing_fl2models()
     man.compare_observed_models_new()
     man.compare_observed_models()
     return

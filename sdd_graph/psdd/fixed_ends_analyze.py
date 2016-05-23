@@ -94,7 +94,7 @@ class PathManager(object):
             model = trip_id2model[t]
             first_last2models[fl][model].append(t)
             inserted += 1
-        with open('better_pickles/training_fl2models.pickle','wb') as output:
+        with open('better_pickles/testing_fl2models.pickle','wb') as output:
             pickle.dump(first_last2models,output)
 
 

@@ -80,6 +80,25 @@ class PathManager(object):
         #self.draw_grid(model)
         return False
 
+    def testing_fl2models(self):
+        """Create a dict mapping fl to the models to the trip_ids for that model for the testing dataset"""
+        trip_id2in = pickle.load(open('better_pickles/t2testing.pickle','rb'))
+        trip_id2first_last = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (self.rows,self.cols),'rb'))
+        first_last2models = {}
+        trip_id2model = pickle.load(open('better_pickles/trip_id2model.pickle','rb'))
+        inserted = 0
+        for t in trip_id2in:
+            fl = trip_id2first_last[t]
+            if fl not in first_last2models:
+                first_last2models[fl] = defaultdict(list)
+            model = trip_id2model[t]
+            first_last2models[fl][model].append(t)
+            inserted += 1
+        with open('better_pickles/training_fl2models.pickle','wb') as output:
+            pickle.dump(first_last2models,output)
+
+
+
     def create_first_last2models(self,data_fn,bad_fn):
         """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to last.
         Map those models to the trip_ids of paths that take the model.
@@ -1890,8 +1909,9 @@ def main():
     fl2models_fn = 'better_pickles/first_last2models.pickle'
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=fl2models_fn)
-    man.analyze_predictions_new()
+    man.testing_fl2models()
     return
+    man.analyze_predictions_new()
     man.compare_observed_models_new()
     man.compare_observed_models()
     return

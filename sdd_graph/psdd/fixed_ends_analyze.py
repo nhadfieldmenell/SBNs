@@ -354,6 +354,9 @@ class PathManager(object):
         total = 0.0
         guessed_top = 0.0
         for fl in self.fl2models:
+            dist = self.node_dist(fl[0],fl[1])
+            if dist == 1:
+                continue
             fl_tup = (min(fl[0],fl[1]),max(fl[0],fl[1]))
             if fl_tup not in self.fl2prediction:
                 continue
@@ -2224,7 +2227,8 @@ def main():
 
     print "TESTING DATASET"
     man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn,training_fl2models_fn=training_fl2models_fn)
-    man2.find_better_prediction()
+    man2.number_guess_top_model()
+    #man2.find_better_prediction()
     #man2.compare_testing_training()
     #man2.analyze_predictions_new()
     return

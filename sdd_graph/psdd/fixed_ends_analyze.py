@@ -202,6 +202,8 @@ class PathManager(object):
                     break
             for fl in (first_last,(first_last[1],first_last[0])):
                 if use_most_frequent:
+                    if fl not in training_fl2models:
+                        continue
                     model2ts = training_fl2models[fl]
                     prediction,_ = most_frequent_model(model2ts)
                 models = None
@@ -215,7 +217,7 @@ class PathManager(object):
                     total_trips += model_count
                     dist2num_trips[dist] += model_count
                     haus,ampsd,dsn = self.path_diff_measures(model,prediction)
-                    print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str(fl),haus,ampsd,dsn) 
+                    #print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str(fl),haus,ampsd,dsn) 
                     dist2haus[dist] += model_count*haus
                     dist2ampsd[dist] += model_count*ampsd
                     dist2dsn[dist] += model_count*dsn

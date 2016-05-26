@@ -203,7 +203,7 @@ class PathManager(object):
             for fl in (first_last,(first_last[1],first_last[0])):
                 if use_most_frequent:
                     model2ts = training_fl2models[fl]
-                    prediction = most_frequent_model(model2ts)
+                    prediction,_ = most_frequent_model(model2ts)
                 models = None
                 if fl in self.fl2models:
                     models = self.fl2models[fl]

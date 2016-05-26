@@ -412,7 +412,7 @@ class PathManager(object):
         model2ts = self.fl2models[fl]
         heap = []
         for model in model2ts:
-            heapq.heappush(heap,[(0-len(model)),model])
+            heapq.heappush(heap,[(0-len(model2ts[model])),model])
         while len(heap) > 0:
             score,model = heapq.heappop(heap)
             print score

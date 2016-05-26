@@ -448,10 +448,12 @@ class PathManager(object):
 
         dist2num_models = defaultdict(float)
         tot_models = 0.0
+        num_pairs_analyzed = 0
 
         for fl in self.fl2models:
             if fl not in self.training_fl2models:
                 continue
+            num_pairs_analyzed += 1
             train_models = self.training_fl2models[fl]
             train_model_array,train_probs,train_total_trips,train_num = create_model_array(train_models)
             dist = self.node_dist(fl[0],fl[1])
@@ -518,7 +520,7 @@ class PathManager(object):
             elif i < len(radii):
                 print "%d < Radius <= %d" % (radii[i-1],radii[i])
             else:
-                print "%d < Radius" % (radii[-1]+1)
+                print "%d < Radius" % (radii[-1])
             print "average number of models per fl pair: %.2f" % dist2num_models[i]
             print "%d total trips" % num_trips
             print "average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (dist2haus[i],dist2ampsd[i],dist2dsn[i])
@@ -529,6 +531,7 @@ class PathManager(object):
         tot_dsn = tot_dsn/tot_trips
         print ""
         print "Overall"
+        print "examined %d pairs" % num_pairs_analyzed
         print "average number of models per fl pair: %.2f" % tot_models
         print "average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (tot_haus,tot_ampsd,tot_dsn)
         return

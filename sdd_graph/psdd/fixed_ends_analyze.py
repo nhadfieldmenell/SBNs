@@ -300,6 +300,8 @@ class PathManager(object):
         good_count = 0.0
         total_count = 0.0
         for fl in self.fl2prediction:
+            if fl not in self.fl2models:
+                continue
             if self.prediction_better(fl):
                 good_count += 1
             total_count += 1

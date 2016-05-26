@@ -2191,8 +2191,9 @@ def main():
 
     print "TESTING DATASET"
     man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn,training_fl2models_fn=training_fl2models_fn)
-    man2.compare_testing_training()
+    man2.print_some_instances()
     return
+    man2.compare_testing_training()
     print "ENTIRE DATASET"
     man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
     man.print_some_instances()

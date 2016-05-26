@@ -367,7 +367,6 @@ class PathManager(object):
             total_trips += count
             model_array.append(model)
             model_i += 1
-        tot_models += num_models*total_trips
         if len(model_array) == 1:
             return
         probs = map(lambda x: x/total_trips,probs)

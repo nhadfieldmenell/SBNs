@@ -17,7 +17,7 @@ import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
 class PathManager(object):
-    def __init__(self,rows,cols,edge2index,edge_index2tuple,first_last2models_fn=None,copy=None):
+    def __init__(self,rows,cols,edge2index,edge_index2tuple,first_last2models_fn=None,copy=None,fl2prediction_fn=None):
         self.rows = rows
         self.cols = cols
         self.num_nodes = rows*cols
@@ -28,6 +28,8 @@ class PathManager(object):
         self.copy = copy
         if first_last2models_fn != None:
             self.first_last2models = pickle.load(open(first_last2models_fn,'rb'))
+        if fl2prediction_fn != None:
+            self.fl2prediction = pickle.load(open(fl2pred_fun,'rb'))
 
 
     def all_all_predictions(self):
@@ -170,7 +172,7 @@ class PathManager(object):
         """
         radii = [3,6]
         num_dists = len(radii) + 1
-        fl2prediction = pickle.load(open('better_pickles/fl2prediction.pickle','rb'))
+        #fl2prediction = pickle.load(open('better_pickles/fl2prediction.pickle','rb'))
         dist2num_trips = defaultdict(float)
         dist2haus = defaultdict(float)
         dist2ampsd = defaultdict(float)
@@ -182,8 +184,8 @@ class PathManager(object):
         tot_dsn = 0.0
         correctly_guessed = 0.0
         fl_pairs_examined = 0
-        for first_last in fl2prediction:
-            prediction = fl2prediction[first_last]
+        for first_last in self.fl2prediction:
+            prediction = self.fl2prediction[first_last]
             distance = self.node_dist(first_last[0],first_last[1])
             dist = len(radii)
             for i in range(len(radii)):
@@ -257,8 +259,8 @@ class PathManager(object):
         tot_dsn = 0.0
         correctly_guessed = 0.0
         fl_pairs_examined = 0
-        for first_last in fl2prediction:
-            prediction = fl2prediction[first_last]
+        for first_last in self.fl2prediction:
+            prediction = self.fl2prediction[first_last]
             for fl in (first_last,(first_last[1],first_last[0])):
                 models = None
                 if fl in self.first_last2models:
@@ -285,6 +287,20 @@ class PathManager(object):
         print "Average Average Minimum Point Segment Distance Distance: %.3f" % avg_ampsd
         print "Average dsn: %.3f" % avg_dsn
         print "Correct guess percentage: %.3f" % correct_pct
+
+
+    def understand_similarity(self,fl):
+        """A method used to understand how our similarity measurements work."""
+        models2ts = self.first_last2models[fl]
+        prediction = self.fl2prediction[fl]
+        for model in models:
+            m_count = len(model2ts[model])
+            print m_count
+            self.draw_grid(model)
+            print ""
+        print "PREDICTION"
+        self.draw_grid(prediction)
+
 
 
     def compare_observed_models_new(self):
@@ -1908,10 +1924,12 @@ def main():
     bad_fn = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
     fl2models_fn = 'better_pickles/first_last2models.pickle'
     testing_fl2models_fn = 'better_pickles/testing_fl2models.pickle' 
+    fl2prediction_fn = 'better_pickles/fl2prediction.pickle'
 
-    man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=testing_fl2models_fn)
-    man.analyze_predictions_new()
+    man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn)
+    man.understand_similarity(self,(start,end)):
     return
+    man.analyze_predictions_new()
     man.testing_fl2models()
     man.compare_observed_models_new()
     man.compare_observed_models()

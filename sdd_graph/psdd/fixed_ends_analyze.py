@@ -289,6 +289,13 @@ class PathManager(object):
         print "Correct guess percentage: %.3f" % correct_pct
 
 
+    def print_some_instances(self):
+        count = 0
+        for fl in self.first_last2models:
+            count += 1
+            if count % 400 == 0:
+                self.understand_similarity(fl)
+
     def find_better_prediction(self):
         good_count = 0.0
         total_count = 0.0
@@ -2016,8 +2023,9 @@ def main():
     fl2prediction_fn = 'better_pickles/fl2prediction.pickle'
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
-    man.visualize_similarities((start,end))
+    man.print_some_instances()
     return
+    man.visualize_similarities((start,end))
     man.find_better_prediction()
     #man.understand_similarity((start,end))
     return

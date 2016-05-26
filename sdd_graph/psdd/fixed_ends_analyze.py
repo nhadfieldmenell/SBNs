@@ -291,7 +291,7 @@ class PathManager(object):
 
     def understand_similarity(self,fl):
         """A method used to understand how our similarity measurements work."""
-        models2ts = self.first_last2models[fl]
+        model2ts = self.first_last2models[fl]
         prediction = self.fl2prediction[fl]
         for model in model2ts:
             m_count = len(model2ts[model])

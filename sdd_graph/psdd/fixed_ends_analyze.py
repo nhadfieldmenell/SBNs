@@ -323,15 +323,19 @@ class PathManager(object):
             return True
 
     def number_guess_top_model(self):
+        total = 0.0
         guessed_top = 0.0
         for fl in self.fl2prediction:
+            if fl not in self.fl2models:
+                continue
+            total += 1
             model2ts = self.fl2models[fl]
             best_model,best_score = most_frequent_model(model2ts)
             prediction = self.fl2prediction[fl]
             if best_model == prediction:
                 guessed_top += 1
         print guessed_top
-        best_pct = guessed_top/len(self.fl2prediction)
+        best_pct = guessed_top/total
         print "Pct top %.3f" % best_pct
 
 

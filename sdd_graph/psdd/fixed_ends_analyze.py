@@ -2207,7 +2207,7 @@ def most_frequent_model(model2ts):
             best_model = model
     return best_model,best_score
 
-def create_model_array(model2ts):
+def create_model_array(models):
     """Create an array of each model in the dict.
     Also find the relative frequency of each model and the total number of trips."""
     probs = [0.0 for i in range(len(models))]

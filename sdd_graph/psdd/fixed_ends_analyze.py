@@ -310,8 +310,8 @@ class PathManager(object):
         count = 0
         for fl in self.fl2models:
             count += 1
-            if count % 400 == 0:
-                self.understand_similarity(fl)
+            if count % 800 == 0:
+                self.visualize_similarities(fl)
 
     def find_better_prediction(self):
         good_count = 0.0

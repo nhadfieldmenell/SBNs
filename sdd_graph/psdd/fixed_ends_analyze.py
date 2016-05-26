@@ -482,10 +482,12 @@ class PathManager(object):
         for fl in self.fl2models:
             if fl not in self.training_fl2models:
                 continue
+            dist = self.node_dist(fl[0],fl[1])
+            if dist == 1:
+                continue
             num_pairs_analyzed += 1
             train_models = self.training_fl2models[fl]
             train_model_array,train_probs,train_total_trips,train_num = create_model_array(train_models)
-            dist = self.node_dist(fl[0],fl[1])
             dist_class = len(radii)
             for i in range(len(radii)):
                 if dist <= radii[i]:
@@ -2220,7 +2222,8 @@ def main():
 
     print "TESTING DATASET"
     man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn,training_fl2models_fn=training_fl2models_fn)
-    man2.analyze_predictions_new()
+    man2.compare_testing_training()
+    #man2.analyze_predictions_new()
     return
     print "ENTIRE DATASET"
     man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)

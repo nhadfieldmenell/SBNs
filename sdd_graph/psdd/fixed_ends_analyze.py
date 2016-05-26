@@ -321,7 +321,7 @@ class PathManager(object):
         good_count = 0.0
         total_count = 0.0
         for fl in self.fl2models:
-            if node_dist(fl[0],fl[1]) == 1:
+            if self.node_dist(fl[0],fl[1]) == 1:
                 continue
             if (min(fl[0],fl[1]),max(fl[0],fl[1])) not in self.fl2prediction:
                 continue

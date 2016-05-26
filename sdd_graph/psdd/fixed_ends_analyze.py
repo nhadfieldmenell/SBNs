@@ -313,6 +313,7 @@ class PathManager(object):
         model2ts = self.fl2models[fl]
         prediction_tup = (min(fl[0],fl[1]),max(fl[0],fl[1]))
         if prediction_tup not in self.fl2prediction:
+            print "uh oh"
             return
         prediction = self.fl2prediction[prediction_tup]
         best_model,best_score = most_frequent_model(model2ts)
@@ -320,7 +321,8 @@ class PathManager(object):
             m_count = len(model2ts[model])
         haus,ampsd,dsn = self.evaluate_prediction_vs_models(best_model,model2ts)
         haus_p,ampsd_p,dsn_p = self.evaluate_prediction_vs_models(prediction,model2ts)
-        if haus_p <= haus or ampsd_p <= ampsd or dsn_p <= dsn:
+        #if haus_p <= haus or ampsd_p <= ampsd or dsn_p <= dsn:
+        if ampsd_p <= ampsd:
             #print fl
             #self.understand_similarity(fl)
             return True

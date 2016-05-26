@@ -330,13 +330,14 @@ class PathManager(object):
     def number_guess_top_model(self):
         total = 0.0
         guessed_top = 0.0
-        for fl in self.fl2prediction:
-            if fl not in self.fl2models:
+        for fl in self.fl2models:
+            fl_tup = (min(fl[0],fl[1]),max(fl[0],fl[1]))
+            if fl_tup not in self.fl2prediction:
                 continue
             total += 1
             model2ts = self.fl2models[fl]
             best_model,best_score = most_frequent_model(model2ts)
-            prediction = self.fl2prediction[fl]
+            prediction = self.fl2prediction[fl_tup]
             same = True
             for i in range(len(prediction)):
                 if prediction[i] != best_model[i]:
@@ -2050,10 +2051,12 @@ def main():
 
     print "ENTIRE DATASET"
     man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
-    man.find_better_prediction()
+    man.number_guess_top_model()
+    #man.find_better_prediction()
     print "TESTING DATASET"
     man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn)
-    man2.find_better_prediction()
+    man2.number_guess_top_model()
+    #man2.find_better_prediction()
 
     return
     man.number_guess_top_model()

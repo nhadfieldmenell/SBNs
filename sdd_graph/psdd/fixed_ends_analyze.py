@@ -84,7 +84,12 @@ class PathManager(object):
 
     def testing_fl2models(self):
         """Create a dict mapping fl to the models to the trip_ids for that model for the testing dataset"""
+        training = True
         trip_id2in = pickle.load(open('better_pickles/t2testing.pickle','rb'))
+        out_fn = 'better_pickles/testing_fl2models.pickle' 
+        if training:
+            trip_id2in = pickle.load(open('better_pickles/t2training.pickle','rb'))
+            out_fn = 'better_pickles/training_fl2models.pickle'
         trip_id2fl = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (self.rows,self.cols),'rb'))
         fl2models = {}
         trip_id2model = pickle.load(open('better_pickles/trip_id2model.pickle','rb'))
@@ -96,7 +101,7 @@ class PathManager(object):
             model = trip_id2model[t]
             fl2models[fl][model].append(t)
             inserted += 1
-        with open('better_pickles/testing_fl2models.pickle','wb') as output:
+        with open(out_fn,'wb') as output:
             pickle.dump(fl2models,output)
 
 
@@ -170,9 +175,12 @@ class PathManager(object):
         """Find similarity measures for the predicted paths
         Weight measures by the frequency of a given path (# of trips for that path, not first last pair)
         """
+        #when true, just take the most frequent path from the dataset
+        #when false, use the prediction
+        use_most_frequent = True
+        training_fl2models = pickle.load(open('better_pickles/training_fl2models.pickle','rb'))
         radii = [3,6]
         num_dists = len(radii) + 1
-        #fl2prediction = pickle.load(open('better_pickles/fl2prediction.pickle','rb'))
         dist2num_trips = defaultdict(float)
         dist2haus = defaultdict(float)
         dist2ampsd = defaultdict(float)
@@ -193,6 +201,8 @@ class PathManager(object):
                     dist = i
                     break
             for fl in (first_last,(first_last[1],first_last[0])):
+                if use_most_frequent:
+                    model2ts = 
                 models = None
                 if fl in self.fl2models:
                     models = self.fl2models[fl]
@@ -2051,8 +2061,9 @@ def main():
 
     print "ENTIRE DATASET"
     man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
-    man.print_some_instances()
+    man.testing_fl2models()
     return
+    man.print_some_instances()
     print "TESTING DATASET"
     man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn)
 
@@ -2064,7 +2075,6 @@ def main():
     #man.understand_similarity((start,end))
     return
     man.analyze_predictions_new()
-    man.testing_fl2models()
     man.compare_observed_models_new()
     man.compare_observed_models()
     return

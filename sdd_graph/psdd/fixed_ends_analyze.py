@@ -310,7 +310,7 @@ class PathManager(object):
         haus,ampsd,dsn = self.evaluate_prediction_vs_models(prediction,model2ts)
         print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus,ampsd,dsn) 
         
-    def evaluate_prediction_vs_models(prediction,model2ts):
+    def evaluate_prediction_vs_models(self,prediction,model2ts):
         """Find the weighted average of the similarity measures between the prediction and the models."""
         haus=ampsd=dsn=0.0
         tot_trips = 0.0

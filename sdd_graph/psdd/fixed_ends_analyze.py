@@ -427,9 +427,9 @@ class PathManager(object):
                 model_1 = model_array[i]
                 model_2 = model_array[j]
                 haus,ampsd,dsn = self.path_diff_measures(model_1,model_2)
+                print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str((i,j)),haus,ampsd,dsn) 
                 self.draw_grid(model_1)
                 self.draw_grid(model_2)
-                print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str((i,j)),haus,ampsd,dsn) 
 
     def compare_testing_training(self):
         """Compare the difference between different paths taken for the same start,end pair.

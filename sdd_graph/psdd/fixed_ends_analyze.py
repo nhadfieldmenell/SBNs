@@ -416,13 +416,17 @@ class PathManager(object):
         _,ampsd,_ = evaluate_prediction_vs_models(prediction,model2ts)
         print "Prediction average AMPSD %.3f" % ampsd
         heap = []
+        total_trips = 0
         for model in model2ts:
-            heapq.heappush(heap,[(0-len(model2ts[model])),model])
+            count = len(model2ts[model[)
+            total_trips += count
+            heapq.heappush(heap,[(0-count),model])
         while len(heap) > 0:
             score,model = heapq.heappop(heap)
             print (0-score)
             self.draw_grid(model)
             print ""
+        print "%d total trips\n" % total_trips
 
 
     def visualize_similarities(self,fl):

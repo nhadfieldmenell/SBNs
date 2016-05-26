@@ -17,7 +17,7 @@ import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
 class PathManager(object):
-    def __init__(self,rows,cols,edge2index,edge_index2tuple,fl2models_fn=None,copy=None,fl2prediction_fn=None):
+    def __init__(self,rows,cols,edge2index,edge_index2tuple,fl2models_fn=None,copy=None,fl2prediction_fn=None,training_fl2models_fn=None):
         self.rows = rows
         self.cols = cols
         self.num_nodes = rows*cols
@@ -30,6 +30,8 @@ class PathManager(object):
             self.fl2models = pickle.load(open(fl2models_fn,'rb'))
         if fl2prediction_fn != None:
             self.fl2prediction = pickle.load(open(fl2prediction_fn,'rb'))
+        if training_fl2models_fn != None:
+            self.training_fl2models = pickle.load(open(training_fl2models_fn,'rb'))
 
 
     def all_all_predictions(self):
@@ -178,7 +180,6 @@ class PathManager(object):
         #when true, just take the most frequent path from the dataset
         #when false, use the prediction
         use_most_frequent = False
-        training_fl2models = pickle.load(open('better_pickles/training_fl2models.pickle','rb'))
         radii = [3,6]
         num_dists = len(radii) + 1
         dist2num_trips = defaultdict(float)
@@ -202,12 +203,12 @@ class PathManager(object):
                     break
             for fl in (first_last,(first_last[1],first_last[0])):
                 if use_most_frequent:
-                    if fl not in training_fl2models:
+                    if fl not in self.training_fl2models:
                         continue
-                    model2ts = training_fl2models[fl]
+                    model2ts = self.training_fl2models[fl]
                     prediction,_ = most_frequent_model(model2ts)
                 models = None
-                if fl in training_fl2models:
+                if fl not in self.training_fl2models:
                     continue
                 if fl in self.fl2models:
                     models = self.fl2models[fl]
@@ -429,6 +430,172 @@ class PathManager(object):
                 self.draw_grid(model_2)
                 print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str((i,j)),haus,ampsd,dsn) 
 
+    def compare_testing_training(self):
+        """Compare the difference between different paths taken for the same start,end pair.
+        Weight these differences by the proportion of paths that took a given model.
+        Radii are distances for splitting paths based on segment distance from first to last.
+            first class is 0 <= dist <= radii[0]
+            last class is radii[-1] < dist
+        """
+        radii = [3,6]
+        num_dists = len(radii)+1
+        fl2dist_class = {}
+        num_iters = 0
+        fl2num_trips = {}
+        #first element is hausdorff distance, second is sum hausdorff, third is dsn
+        fl2similarity_measures = {}
+        dist2tot_trips = defaultdict(float)
+
+        dist2num_models = defaultdict(float)
+        tot_models = 0.0
+
+        for fl in self.fl2models:
+            if fl not in self.training_fl2models:
+                continue
+            train_models = self.training_fl2models[fl]
+            train_model_array,train_probs,train_total_trips = create_model_array(train_models)
+            print train_probs
+            return
+            dist = self.node_dist(fl[0],fl[1])
+            dist_class = len(radii)
+            for i in range(len(radii)):
+                if dist <= radii[i]:
+                    dist_class = i
+                    break
+            fl2dist_class[fl] = dist_class
+            models = self.fl2models[fl]
+            num_models = len(models)
+            model_array,probs,total_trips = create_model_array(models)
+            dist2num_models[dist_class] += num_models*total_trips
+            tot_models += num_models*total_trips
+            dist2tot_trips[dist_class] += total_trips
+            fl2num_trips[fl] = total_trips
+            fl2similarity_measures[fl] = [0.0,0.0,0.0]
+            if len(model_array) == 1:
+                for i in range(3):
+                    fl2similarity_measures[fl][i] = 0.0
+                continue
+            dist2tot_trips_mult[dist_class] += total_trips
+            diag_sum = sum(map(lambda x: x*x,probs))
+            denom = 1.0-diag_sum
+            weights = [[0.0 for i in range(num_models)] for i in range(num_models)]
+            for i in range(num_models):
+                for j in range(i+1,num_models):
+                    weights[i][j] = (2*probs[i]*probs[j])/denom
+
+            """Calculate weighted similarity measures for different path measurements"""
+            fl2similarity_measures_mult[fl] = [0.0,0.0,0.0]
+            for i in range(len(model_array)):
+                for j in range(i+1,len(model_array)):
+                    weight = weights[i][j]
+                    haus,ampsd,dsn = self.path_diff_measures(model_array[i],model_array[j])
+                    #print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str((i,j)),haus,ampsd,dsn) 
+                    fl2similarity_measures_mult[fl][0] += weight*haus
+                    fl2similarity_measures_mult[fl][1] += weight*ampsd
+                    fl2similarity_measures_mult[fl][2] += weight*dsn
+            measures = fl2similarity_measures_mult[fl]
+            #print "Diff path overall: haus %.2f, ampsd %.2f, dsn %.2f" % (measures[0],measures[1],measures[2])
+            """Reconfigure weights to correspond to all possible combinations"""
+            weights_with_diag = [[0.0 for i in range(num_models)] for i in range(num_models)]
+            for i in range(num_models):
+                for j in range(i,num_models):
+                    if i == j:
+                        weights_with_diag[i][j] = probs[i]*probs[i]
+                    else:
+                        weights_with_diag[i][j] = weights[i][j]*denom
+            """Calculate weighted similarity measures for any two paths, can be the same"""
+            weight_sum = 0.0
+            for i in range(num_models):
+                weight_sum += sum(weights_with_diag[i])
+            #print "weight sum: %f" % weight_sum
+            for i in range(len(model_array)):
+                for j in range(i,len(model_array)):
+                    weight = weights_with_diag[i][j]
+                    haus,ampsd,dsn = self.path_diff_measures(model_array[i],model_array[j])
+                    #print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str((i,j)),haus,ampsd,dsn) 
+                    fl2similarity_measures[fl][0] += weight*haus
+                    fl2similarity_measures[fl][1] += weight*ampsd
+                    fl2similarity_measures[fl][2] += weight*dsn
+            measures = fl2similarity_measures[fl]
+
+            #print "overall: haus %.2f, ampsd %.2f, dsn %.2f\n" % (measures[0],measures[1],measures[2])
+            num_iters += 1
+        dist2haus = defaultdict(float)
+        dist2ampsd = defaultdict(float)
+        dist2dsn = defaultdict(float)
+        dist2haus_mult = defaultdict(float)
+        dist2ampsd_mult = defaultdict(float)
+        dist2dsn_mult = defaultdict(float)
+        tot_haus = 0.0
+        tot_ampsd = 0.0
+        tot_dsn = 0.0
+        tot_haus_mult = 0.0
+        tot_ampsd_mult = 0.0
+        tot_dsn_mult = 0.0
+        tot_mult_trips = 0.0
+        tot_trips = 0.0
+        for fl in fl2num_trips:
+            num_trips = fl2num_trips[fl]
+            tot_trips += num_trips
+            dist_class = fl2dist_class[fl]
+            if len(self.fl2models[fl]) > 1:
+                mult_meas = fl2similarity_measures_mult[fl]
+                weighted_haus = num_trips*mult_meas[0]
+                weighted_ampsd = num_trips*mult_meas[1]
+                weighted_dsn = num_trips*mult_meas[2] 
+                dist2haus_mult[dist_class] += weighted_haus 
+                dist2ampsd_mult[dist_class] += weighted_ampsd 
+                dist2dsn_mult[dist_class] += weighted_dsn 
+                tot_haus_mult += weighted_haus
+                tot_ampsd_mult += weighted_ampsd
+                tot_dsn_mult += weighted_dsn
+                tot_mult_trips += num_trips
+            meas = fl2similarity_measures[fl]
+            weighted_haus = num_trips*meas[0]
+            weighted_ampsd = num_trips*meas[1]
+            weighted_dsn = num_trips*meas[2] 
+            dist2haus[dist_class] += weighted_haus
+            dist2ampsd[dist_class] += weighted_ampsd
+            dist2dsn[dist_class] += weighted_dsn
+            tot_haus += weighted_haus
+            tot_ampsd += weighted_ampsd
+            tot_dsn += weighted_dsn
+        for i in range(num_dists):
+            num_trips_mult = dist2tot_trips_mult[i]
+            num_trips = dist2tot_trips[i]
+            dist2num_models[i] = dist2num_models[i]/num_trips
+            dist2haus_mult[i] = dist2haus_mult[i]/num_trips_mult
+            dist2ampsd_mult[i] = dist2ampsd_mult[i]/num_trips_mult
+            dist2dsn_mult[i] = dist2dsn_mult[i]/num_trips_mult
+            dist2haus[i] = dist2haus[i]/num_trips
+            dist2ampsd[i] = dist2ampsd[i]/num_trips
+            dist2dsn[i] = dist2dsn[i]/num_trips
+            print ""
+            if i == 0:
+                print "0 <= Radius <= %d" % radii[0]
+            elif i < len(radii):
+                print "%d < Radius <= %d" % (radii[i-1],radii[i])
+            else:
+                print "%d < Radius" % (radii[-1]+1)
+            print "average number of models per fl pair: %.2f" % dist2num_models[i]
+            print "%d trips for pairs with multiple paths" % num_trips_mult
+            print "%d total trips" % num_trips
+            print "Diff paths average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (dist2haus_mult[i],dist2ampsd_mult[i],dist2dsn_mult[i])
+            print "average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (dist2haus[i],dist2ampsd[i],dist2dsn[i])
+
+        tot_models = tot_models/tot_trips
+        tot_haus_mult = tot_haus_mult/tot_mult_trips
+        tot_ampsd_mult = tot_ampsd_mult/tot_mult_trips
+        tot_dsn_mult = tot_dsn_mult/tot_mult_trips
+        tot_haus = tot_haus/tot_trips
+        tot_ampsd = tot_ampsd/tot_trips
+        tot_dsn = tot_dsn/tot_trips
+        print ""
+        print "Overall"
+        print "average number of models per fl pair: %.2f" % tot_models
+        print "Diff paths average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (tot_haus_mult,tot_ampsd_mult,tot_dsn_mult)
+        print "average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (tot_haus,tot_ampsd,tot_dsn)
+        return
 
 
     def compare_observed_models_new(self):
@@ -2040,6 +2207,23 @@ def most_frequent_model(model2ts):
             best_model = model
     return best_model,best_score
 
+def create_model_array(model2ts):
+    """Create an array of each model in the dict.
+    Also find the relative frequency of each model and the total number of trips."""
+    probs = [0.0 for i in range(len(models))]
+    model_array = []
+    total_trips = 0.0
+    model_i = 0
+    for model in models:
+        count = len(models[model])
+        probs[model_i] += count
+        total_trips += count
+        model_array.append(model)
+        model_i += 1
+    probs = map(lambda x: x/total_trips,probs)
+    return model_array,probs,total_trips
+
+
 def main():
     rows = int(sys.argv[1])
     cols = int(sys.argv[2])
@@ -2063,17 +2247,19 @@ def main():
     bad_fn = 'bad_paths/general_bad-%d-%d.txt' % (rows,cols)
     fl2models_fn = 'better_pickles/first_last2models.pickle'
     testing_fl2models_fn = 'better_pickles/testing_fl2models.pickle' 
+    training_fl2models_fn = 'better_pickles/training_fl2models.pickle'
     fl2prediction_fn = 'better_pickles/fl2prediction.pickle'
 
     print "TESTING DATASET"
-    man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn)
-    man2.analyze_predictions_new()
+    man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn,training_fl2models_fn=training_fl2models_fn)
+    man2.compare_testing_training()
     return
     print "ENTIRE DATASET"
     man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
     man.print_some_instances()
 
     return
+    man2.analyze_predictions_new()
     man.testing_fl2models()
     man.number_guess_top_model()
     #man.find_better_prediction()

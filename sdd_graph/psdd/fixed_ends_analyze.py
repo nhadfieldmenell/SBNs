@@ -412,6 +412,7 @@ class PathManager(object):
         print "PREDICTION"
         fl_tuple = (min(fl[0],fl[1]),max(fl[0],fl[1]))
         prediction = self.fl2prediction[fl_tuple]
+        self.draw_grid(prediction)
         model2ts = self.fl2models[fl]
         _,ampsd,_ = self.evaluate_prediction_vs_models(prediction,model2ts)
         print "Prediction average AMPSD %.3f" % ampsd

@@ -474,7 +474,6 @@ class PathManager(object):
                 for j in range(train_num):
                     weights[i][j] = (probs[i]*train_probs[j])
 
-            fl2similarity_measures_mult[fl] = [0.0,0.0,0.0]
             for i in range(len(model_array)):
                 for j in range(train_num):
                     weight = weights[i][j]

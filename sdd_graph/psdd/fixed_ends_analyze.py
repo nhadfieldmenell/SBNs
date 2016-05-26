@@ -453,9 +453,7 @@ class PathManager(object):
             if fl not in self.training_fl2models:
                 continue
             train_models = self.training_fl2models[fl]
-            train_model_array,train_probs,train_total_trips = create_model_array(train_models)
-            print train_probs
-            return
+            train_model_array,train_probs,train_total_trips,train_num = create_model_array(train_models)
             dist = self.node_dist(fl[0],fl[1])
             dist_class = len(radii)
             for i in range(len(radii)):
@@ -464,92 +462,41 @@ class PathManager(object):
                     break
             fl2dist_class[fl] = dist_class
             models = self.fl2models[fl]
-            num_models = len(models)
-            model_array,probs,total_trips = create_model_array(models)
+            model_array,probs,total_trips,num_models = create_model_array(models)
             dist2num_models[dist_class] += num_models*total_trips
             tot_models += num_models*total_trips
             dist2tot_trips[dist_class] += total_trips
             fl2num_trips[fl] = total_trips
             fl2similarity_measures[fl] = [0.0,0.0,0.0]
-            if len(model_array) == 1:
-                for i in range(3):
-                    fl2similarity_measures[fl][i] = 0.0
-                continue
-            dist2tot_trips_mult[dist_class] += total_trips
-            diag_sum = sum(map(lambda x: x*x,probs))
-            denom = 1.0-diag_sum
-            weights = [[0.0 for i in range(num_models)] for i in range(num_models)]
+            #rows indexed by testing, cols indexed by training
+            weights = [[0.0 for i in range(train_num)] for i in range(num_models)]
             for i in range(num_models):
-                for j in range(i+1,num_models):
-                    weights[i][j] = (2*probs[i]*probs[j])/denom
+                for j in range(train_num):
+                    weights[i][j] = (probs[i]*train_probs[j])
 
-            """Calculate weighted similarity measures for different path measurements"""
             fl2similarity_measures_mult[fl] = [0.0,0.0,0.0]
             for i in range(len(model_array)):
-                for j in range(i+1,len(model_array)):
+                for j in range(train_num):
                     weight = weights[i][j]
-                    haus,ampsd,dsn = self.path_diff_measures(model_array[i],model_array[j])
+                    haus,ampsd,dsn = self.path_diff_measures(model_array[i],train_model_array[j])
                     #print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str((i,j)),haus,ampsd,dsn) 
                     fl2similarity_measures_mult[fl][0] += weight*haus
                     fl2similarity_measures_mult[fl][1] += weight*ampsd
                     fl2similarity_measures_mult[fl][2] += weight*dsn
             measures = fl2similarity_measures_mult[fl]
             #print "Diff path overall: haus %.2f, ampsd %.2f, dsn %.2f" % (measures[0],measures[1],measures[2])
-            """Reconfigure weights to correspond to all possible combinations"""
-            weights_with_diag = [[0.0 for i in range(num_models)] for i in range(num_models)]
-            for i in range(num_models):
-                for j in range(i,num_models):
-                    if i == j:
-                        weights_with_diag[i][j] = probs[i]*probs[i]
-                    else:
-                        weights_with_diag[i][j] = weights[i][j]*denom
-            """Calculate weighted similarity measures for any two paths, can be the same"""
-            weight_sum = 0.0
-            for i in range(num_models):
-                weight_sum += sum(weights_with_diag[i])
-            #print "weight sum: %f" % weight_sum
-            for i in range(len(model_array)):
-                for j in range(i,len(model_array)):
-                    weight = weights_with_diag[i][j]
-                    haus,ampsd,dsn = self.path_diff_measures(model_array[i],model_array[j])
-                    #print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str((i,j)),haus,ampsd,dsn) 
-                    fl2similarity_measures[fl][0] += weight*haus
-                    fl2similarity_measures[fl][1] += weight*ampsd
-                    fl2similarity_measures[fl][2] += weight*dsn
-            measures = fl2similarity_measures[fl]
-
-            #print "overall: haus %.2f, ampsd %.2f, dsn %.2f\n" % (measures[0],measures[1],measures[2])
             num_iters += 1
         dist2haus = defaultdict(float)
         dist2ampsd = defaultdict(float)
         dist2dsn = defaultdict(float)
-        dist2haus_mult = defaultdict(float)
-        dist2ampsd_mult = defaultdict(float)
-        dist2dsn_mult = defaultdict(float)
         tot_haus = 0.0
         tot_ampsd = 0.0
         tot_dsn = 0.0
-        tot_haus_mult = 0.0
-        tot_ampsd_mult = 0.0
-        tot_dsn_mult = 0.0
-        tot_mult_trips = 0.0
         tot_trips = 0.0
-        for fl in fl2num_trips:
+        for fl in fl2similarity_measures:
             num_trips = fl2num_trips[fl]
             tot_trips += num_trips
             dist_class = fl2dist_class[fl]
-            if len(self.fl2models[fl]) > 1:
-                mult_meas = fl2similarity_measures_mult[fl]
-                weighted_haus = num_trips*mult_meas[0]
-                weighted_ampsd = num_trips*mult_meas[1]
-                weighted_dsn = num_trips*mult_meas[2] 
-                dist2haus_mult[dist_class] += weighted_haus 
-                dist2ampsd_mult[dist_class] += weighted_ampsd 
-                dist2dsn_mult[dist_class] += weighted_dsn 
-                tot_haus_mult += weighted_haus
-                tot_ampsd_mult += weighted_ampsd
-                tot_dsn_mult += weighted_dsn
-                tot_mult_trips += num_trips
             meas = fl2similarity_measures[fl]
             weighted_haus = num_trips*meas[0]
             weighted_ampsd = num_trips*meas[1]
@@ -561,12 +508,8 @@ class PathManager(object):
             tot_ampsd += weighted_ampsd
             tot_dsn += weighted_dsn
         for i in range(num_dists):
-            num_trips_mult = dist2tot_trips_mult[i]
             num_trips = dist2tot_trips[i]
             dist2num_models[i] = dist2num_models[i]/num_trips
-            dist2haus_mult[i] = dist2haus_mult[i]/num_trips_mult
-            dist2ampsd_mult[i] = dist2ampsd_mult[i]/num_trips_mult
-            dist2dsn_mult[i] = dist2dsn_mult[i]/num_trips_mult
             dist2haus[i] = dist2haus[i]/num_trips
             dist2ampsd[i] = dist2ampsd[i]/num_trips
             dist2dsn[i] = dist2dsn[i]/num_trips
@@ -578,15 +521,10 @@ class PathManager(object):
             else:
                 print "%d < Radius" % (radii[-1]+1)
             print "average number of models per fl pair: %.2f" % dist2num_models[i]
-            print "%d trips for pairs with multiple paths" % num_trips_mult
             print "%d total trips" % num_trips
-            print "Diff paths average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (dist2haus_mult[i],dist2ampsd_mult[i],dist2dsn_mult[i])
             print "average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (dist2haus[i],dist2ampsd[i],dist2dsn[i])
 
         tot_models = tot_models/tot_trips
-        tot_haus_mult = tot_haus_mult/tot_mult_trips
-        tot_ampsd_mult = tot_ampsd_mult/tot_mult_trips
-        tot_dsn_mult = tot_dsn_mult/tot_mult_trips
         tot_haus = tot_haus/tot_trips
         tot_ampsd = tot_ampsd/tot_trips
         tot_dsn = tot_dsn/tot_trips
@@ -2221,7 +2159,7 @@ def create_model_array(models):
         model_array.append(model)
         model_i += 1
     probs = map(lambda x: x/total_trips,probs)
-    return model_array,probs,total_trips
+    return model_array,probs,total_trips,len(models)
 
 
 def main():

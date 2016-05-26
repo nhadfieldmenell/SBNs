@@ -303,11 +303,11 @@ class PathManager(object):
         print "BEST MODEL"
         print best_score
         self.draw_grid(best_model)
-        haus,ampsd,dsn = evaluate_prediction_vs_models(best_model,model2ts)
+        haus,ampsd,dsn = self.evaluate_prediction_vs_models(best_model,model2ts)
         print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus,ampsd,dsn) 
         print "PREDICTION"
         self.draw_grid(prediction)
-        haus,ampsd,dsn = evaluate_prediction_vs_models(prediction,model2ts)
+        haus,ampsd,dsn = self.evaluate_prediction_vs_models(prediction,model2ts)
         print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus,ampsd,dsn) 
         
     def evaluate_prediction_vs_models(prediction,model2ts):

@@ -479,10 +479,10 @@ class PathManager(object):
                     weight = weights[i][j]
                     haus,ampsd,dsn = self.path_diff_measures(model_array[i],train_model_array[j])
                     #print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str((i,j)),haus,ampsd,dsn) 
-                    fl2similarity_measures_mult[fl][0] += weight*haus
-                    fl2similarity_measures_mult[fl][1] += weight*ampsd
-                    fl2similarity_measures_mult[fl][2] += weight*dsn
-            measures = fl2similarity_measures_mult[fl]
+                    fl2similarity_measures[fl][0] += weight*haus
+                    fl2similarity_measures[fl][1] += weight*ampsd
+                    fl2similarity_measures[fl][2] += weight*dsn
+            measures = fl2similarity_measures[fl]
             #print "Diff path overall: haus %.2f, ampsd %.2f, dsn %.2f" % (measures[0],measures[1],measures[2])
             num_iters += 1
         dist2haus = defaultdict(float)

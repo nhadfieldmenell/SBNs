@@ -521,9 +521,9 @@ class PathManager(object):
                 print "%d < Radius <= %d" % (radii[i-1],radii[i])
             else:
                 print "%d < Radius" % (radii[-1])
-            print "average number of models per fl pair: %.2f" % dist2num_models[i]
+            print "average number of models per fl pair: %.3f" % dist2num_models[i]
             print "%d total trips" % num_trips
-            print "average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (dist2haus[i],dist2ampsd[i],dist2dsn[i])
+            print "average hausdorff %.3f, average ampsd %.3f, average dsn %.3f" % (dist2haus[i],dist2ampsd[i],dist2dsn[i])
 
         tot_models = tot_models/tot_trips
         tot_haus = tot_haus/tot_trips
@@ -532,8 +532,8 @@ class PathManager(object):
         print ""
         print "Overall"
         print "examined %d pairs" % num_pairs_analyzed
-        print "average number of models per fl pair: %.2f" % tot_models
-        print "average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (tot_haus,tot_ampsd,tot_dsn)
+        print "average number of models per fl pair: %.3f" % tot_models
+        print "average hausdorff %.3f, average ampsd %.3f, average dsn %.3f" % (tot_haus,tot_ampsd,tot_dsn)
         return
 
 

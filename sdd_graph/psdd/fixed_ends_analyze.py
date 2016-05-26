@@ -311,7 +311,8 @@ class PathManager(object):
         for fl in self.fl2models:
             count += 1
             if count % 800 == 0:
-                self.visualize_similarities(fl)
+                #self.visualize_similarities(fl)
+                self.print_ordered_models(fl)
                 print ""
 
     def find_better_prediction(self):
@@ -405,6 +406,18 @@ class PathManager(object):
         ampsd = ampsd/tot_trips
         dsn = dsn/tot_trips
         return haus,ampsd,dsn
+
+    def print_ordered_models(self,fl):
+        model2ts = self.fl2models[fl]
+        heap = []
+        for model in model2ts:
+            heapq.heappush(heap,[(0-len(model)),model])
+        while len(heap) > 0:
+            score,model = heapq.heappop(heap)
+            print (0-score)
+            self.draw_grid(model)
+            print ""
+
 
     def visualize_similarities(self,fl):
         models = self.fl2models[fl]

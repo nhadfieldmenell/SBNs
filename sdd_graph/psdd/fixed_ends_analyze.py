@@ -2060,22 +2060,22 @@ def main():
     testing_fl2models_fn = 'better_pickles/testing_fl2models.pickle' 
     fl2prediction_fn = 'better_pickles/fl2prediction.pickle'
 
-    print "ENTIRE DATASET"
-    man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
-    man.testing_fl2models()
-    return
-    man.print_some_instances()
     print "TESTING DATASET"
     man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn)
+    man.analyze_predictions_new()
+    return
+    print "ENTIRE DATASET"
+    man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
+    man.print_some_instances()
 
     return
+    man.testing_fl2models()
     man.number_guess_top_model()
     #man.find_better_prediction()
     man.number_guess_top_model()
     man.visualize_similarities((start,end))
     #man.understand_similarity((start,end))
     return
-    man.analyze_predictions_new()
     man.compare_observed_models_new()
     man.compare_observed_models()
     return

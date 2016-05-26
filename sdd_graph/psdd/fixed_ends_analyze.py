@@ -17,7 +17,7 @@ import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
 class PathManager(object):
-    def __init__(self,rows,cols,edge2index,edge_index2tuple,first_last2models_fn=None,copy=None,fl2prediction_fn=None):
+    def __init__(self,rows,cols,edge2index,edge_index2tuple,fl2models_fn=None,copy=None,fl2prediction_fn=None):
         self.rows = rows
         self.cols = cols
         self.num_nodes = rows*cols
@@ -26,8 +26,8 @@ class PathManager(object):
         self.edge_index2tuple = edge_index2tuple
         self.paths = []
         self.copy = copy
-        if first_last2models_fn != None:
-            self.first_last2models = pickle.load(open(first_last2models_fn,'rb'))
+        if fl2models_fn != None:
+            self.fl2models = pickle.load(open(fl2models_fn,'rb'))
         if fl2prediction_fn != None:
             self.fl2prediction = pickle.load(open(fl2prediction_fn,'rb'))
 
@@ -36,15 +36,15 @@ class PathManager(object):
         """Find and save all the all-at-once predictions for a given grid.
         only gets prediction for (min(i,j),max(i,j)) since prediction for (i,j) == prediction for (j,i)
         """
-        first_last2all_prediction = {}
+        fl2all_prediction = {}
         count = 0
-        for fl in self.first_last2models:
+        for fl in self.fl2models:
             key = (min(fl[0],fl[1]),max(fl[0],fl[1]))
-            if key not in first_last2all_prediction:
+            if key not in fl2all_prediction:
                 print count
                 count += 1
                 all_prediction = self.best_all_at_once(fl[0],fl[1])
-                first_last2all_prediction[key] = all_prediction
+                fl2all_prediction[key] = all_prediction
             if count > 100:
                 break
         """
@@ -52,18 +52,18 @@ class PathManager(object):
             for j in range(i+1,self.num_nodes+1):
                 print (i,j)
                 all_prediction = self.best_all_at_once(i,j)
-                first_last2all_prediction[(i,j)] = all_prediction
+                fl2all_prediction[(i,j)] = all_prediction
                 reverse_prediction = self.best_all_at_once(j,i) 
                 for k in range(len(all_prediction)):
                     if all_prediction[k] != reverse_prediction[k]:
                         print "reverse not same! %s" % str((i,j))
                 """
-                #first_last2all_prediction[(j,i)] = first_last2all_prediction[(i,j)]
+                #fl2all_prediction[(j,i)] = fl2all_prediction[(i,j)]
 
         #with open('pickles/first_last2all_prediction_taken-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
         #with open('pickles/first_last2all_prediction-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
         with open('pickles/first_last2all_prediction_100_filter_more-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
-            pickle.dump(first_last2all_prediction,output)
+            pickle.dump(fl2all_prediction,output)
 
         
 
@@ -85,46 +85,46 @@ class PathManager(object):
     def testing_fl2models(self):
         """Create a dict mapping fl to the models to the trip_ids for that model for the testing dataset"""
         trip_id2in = pickle.load(open('better_pickles/t2testing.pickle','rb'))
-        trip_id2first_last = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (self.rows,self.cols),'rb'))
-        first_last2models = {}
+        trip_id2fl = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (self.rows,self.cols),'rb'))
+        fl2models = {}
         trip_id2model = pickle.load(open('better_pickles/trip_id2model.pickle','rb'))
         inserted = 0
         for t in trip_id2in:
-            fl = trip_id2first_last[t]
-            if fl not in first_last2models:
-                first_last2models[fl] = defaultdict(list)
+            fl = trip_id2fl[t]
+            if fl not in fl2models:
+                fl2models[fl] = defaultdict(list)
             model = trip_id2model[t]
-            first_last2models[fl][model].append(t)
+            fl2models[fl][model].append(t)
             inserted += 1
         with open('better_pickles/testing_fl2models.pickle','wb') as output:
-            pickle.dump(first_last2models,output)
+            pickle.dump(fl2models,output)
 
 
 
-    def create_first_last2models(self,data_fn,bad_fn):
+    def create_fl2models(self,data_fn,bad_fn):
         """Create a dictionary that maps a (first,last) tuple to the path models taken to get from first to last.
         Map those models to the trip_ids of paths that take the model.
 
         This function also determines the bad paths as defined by not having a path consistent with ones first, last pair.
-            We do not save this right now, but use it in calculating the first_last2models to have the true models
+            We do not save this right now, but use it in calculating the fl2models to have the true models
         """
         trip_id2in = pickle.load(open('better_pickles/trip_id2good.pickle','rb'))
-        trip_id2first_last = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (self.rows,self.cols),'rb'))
-        first_last2models = {}
+        trip_id2fl = pickle.load(open('../pickles/trip_id2first_last-%d-%d.pickle' % (self.rows,self.cols),'rb'))
+        fl2models = {}
         trip_id2model = pickle.load(open('better_pickles/trip_id2model.pickle','rb'))
         bad_paths = {}
         inserted = 0
         for t in trip_id2in:
-            fl = trip_id2first_last[t]
-            if fl not in first_last2models:
-                first_last2models[fl] = defaultdict(list)
+            fl = trip_id2fl[t]
+            if fl not in fl2models:
+                fl2models[fl] = defaultdict(list)
             model = trip_id2model[t]
             if inserted < 25:
                 print t
                 print fl
                 self.draw_grid(model)
                 print ""
-            first_last2models[fl][model].append(t)
+            fl2models[fl][model].append(t)
             inserted += 1
                 
         """
@@ -138,14 +138,14 @@ class PathManager(object):
             full_tuple = map(tuple,full_ints)
         #to deal with the 1-indexing of trip ids
         full_tuple.insert(0,0)
-        first_last2models = {}
+        fl2models = {}
         inserted = 0
         for trip_id in range(1,len(full_tuple)):
             #if trip_id > 25:
             #    return
             if (trip_id) not in bad_paths:
                 #print "inserting trip: %d" % trip_id
-                trip_fl = trip_id2first_last[trip_id]
+                trip_fl = trip_id2fl[trip_id]
                 #print "trip first last: %s" % str(trip_fl)
                 model = full_tuple[trip_id]
                 if not self.model_matches_fl(model,trip_fl) or trip_fl[0] == trip_fl[1]:
@@ -153,16 +153,16 @@ class PathManager(object):
                     #    print trip_id
                     bad_paths[trip_id] = True
                     continue
-                if trip_fl not in first_last2models:
-                    first_last2models[trip_fl] = defaultdict(list)
+                if trip_fl not in fl2models:
+                    fl2models[trip_fl] = defaultdict(list)
                 #self.draw_grid(model)
-                first_last2models[trip_fl][model].append(trip_id)
+                fl2models[trip_fl][model].append(trip_id)
                 inserted += 1
         print "num inserted: %d" % inserted
-        self.first_last2models = first_last2models
+        self.fl2models = fl2models
         """
         with open('better_pickles/first_last2models-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
-            pickle.dump(first_last2models,output)
+            pickle.dump(fl2models,output)
         #with open('pickles/trip_id2bad-%d-%d.pickle' % (self.rows,self.cols),'wb') as output:
             #pickle.dump(bad_paths,output)
 
@@ -194,8 +194,8 @@ class PathManager(object):
                     break
             for fl in (first_last,(first_last[1],first_last[0])):
                 models = None
-                if fl in self.first_last2models:
-                    models = self.first_last2models[fl]
+                if fl in self.fl2models:
+                    models = self.fl2models[fl]
                 else:
                     continue
                 fl_pairs_examined += 1
@@ -263,8 +263,8 @@ class PathManager(object):
             prediction = self.fl2prediction[first_last]
             for fl in (first_last,(first_last[1],first_last[0])):
                 models = None
-                if fl in self.first_last2models:
-                    models = self.first_last2models[fl]
+                if fl in self.fl2models:
+                    models = self.fl2models[fl]
                 else:
                     continue
                 fl_pairs_examined += 1
@@ -291,7 +291,7 @@ class PathManager(object):
 
     def print_some_instances(self):
         count = 0
-        for fl in self.first_last2models:
+        for fl in self.fl2models:
             count += 1
             if count % 400 == 0:
                 self.understand_similarity(fl)
@@ -299,7 +299,7 @@ class PathManager(object):
     def find_better_prediction(self):
         good_count = 0.0
         total_count = 0.0
-        for fl in self.first_last2models:
+        for fl in self.fl2models:
             if self.prediction_better(fl):
                 good_count += 1
             total_count += 1
@@ -307,7 +307,8 @@ class PathManager(object):
 
 
     def prediction_better(self,fl):
-        model2ts = self.first_last2models[fl]
+        """Find the S,E pairs where the prediction has better similarity than the most frequent model"""
+        model2ts = self.fl2models[fl]
         if fl not in self.fl2prediction:
             return
         prediction = self.fl2prediction[fl]
@@ -321,10 +322,22 @@ class PathManager(object):
             self.understand_similarity(fl)
             return True
 
+    def number_guess_top_model(self):
+        guessed_top = 0.0
+        for fl in self.fl2prediction:
+            model2ts = self.fl2models[fl]
+            best_model,best_score = most_frequent_model(model2ts)
+            prediction = self.fl2prediction[fl]
+            if best_model == prediction:
+                guessed_top += 1
+        print guessed_top
+        best_pct = guessed_top/len(self.fl2prediction)
+        print "Pct top %.3f" % best_pct
+
 
     def understand_similarity(self,fl):
         """A method used to understand how our similarity measurements work."""
-        model2ts = self.first_last2models[fl]
+        model2ts = self.fl2models[fl]
         if fl not in self.fl2prediction:
             return
         prediction = self.fl2prediction[fl]
@@ -362,7 +375,7 @@ class PathManager(object):
         return haus,ampsd,dsn
 
     def visualize_similarities(self,fl):
-        models = self.first_last2models[fl]
+        models = self.fl2models[fl]
         model_array = []
         num_models = len(models)
         probs = [0.0 for i in range(num_models)]
@@ -412,7 +425,7 @@ class PathManager(object):
         dist2num_models = defaultdict(float)
         tot_models = 0.0
 
-        for fl in self.first_last2models:
+        for fl in self.fl2models:
             dist = self.node_dist(fl[0],fl[1])
             dist_class = len(radii)
             for i in range(len(radii)):
@@ -420,7 +433,7 @@ class PathManager(object):
                     dist_class = i
                     break
             fl2dist_class[fl] = dist_class
-            models = self.first_last2models[fl]
+            models = self.fl2models[fl]
             num_models = len(models)
             probs = [0.0 for i in range(len(models))]
             model_array = []
@@ -506,7 +519,7 @@ class PathManager(object):
             num_trips = fl2num_trips[fl]
             tot_trips += num_trips
             dist_class = fl2dist_class[fl]
-            if len(self.first_last2models[fl]) > 1:
+            if len(self.fl2models[fl]) > 1:
                 mult_meas = fl2similarity_measures_mult[fl]
                 weighted_haus = num_trips*mult_meas[0]
                 weighted_ampsd = num_trips*mult_meas[1]
@@ -575,8 +588,8 @@ class PathManager(object):
         fl2num_trips = {}
         #first element is hausdorff distance, second is sum hausdorff, third is dsn
         fl2similarity_measures = {}
-        for fl in self.first_last2models:
-            models = self.first_last2models[fl]
+        for fl in self.fl2models:
+            models = self.fl2models[fl]
             num_models = len(models)
             probs = [0.0 for i in range(len(models))]
             model_array = []
@@ -650,7 +663,7 @@ class PathManager(object):
         overall_sum_haus = 0.0
         overall_dsn = 0.0
         for fl in fl2num_trips:
-            if len(self.first_last2models[fl]) == 1:
+            if len(self.fl2models[fl]) == 1:
                 continue
             num_trips = fl2num_trips[fl]
             meas = fl2similarity_measures[fl]
@@ -676,10 +689,10 @@ class PathManager(object):
         total_long_trips = 0
         total_trips = 0
         weighted_total_paths = 0
-        for first_last in self.first_last2models:
-            models = self.first_last2models[first_last]
+        for fl in self.fl2models:
+            models = self.fl2models[fl]
             total_fl_pairs += 1
-            num_paths = len(self.first_last2models[first_last])
+            num_paths = len(self.fl2models[fl])
             total_paths += num_paths
             num_trips = 0
             for model in models:
@@ -687,12 +700,12 @@ class PathManager(object):
             total_trips += num_trips
             weighted_total_paths += num_trips*num_paths
 
-            if self.node_dist(first_last[0],first_last[1]) > radius:
+            if self.node_dist(fl[0],fl[1]) > radius:
                 total_long_trips += num_trips
                 total_long_pairs += 1
                 total_long_paths += num_paths
                 weighted_total_long_paths += num_trips*num_paths
-                heapq.heappush(count_and_fl_long,[(0-num_paths),first_last])
+                heapq.heappush(count_and_fl_long,[(0-num_paths),fl])
         print "total paths: %d" % total_paths
         print "average paths per fl pair: %f" % (float(total_paths)/total_fl_pairs)
         print "weighted average number of paths per fl pair: %f" % (float(weighted_total_paths)/(total_trips))
@@ -709,7 +722,7 @@ class PathManager(object):
             print "%dth percentile has %d models for long paths (min radius %d)" % ((100-i*25),count,radius)
             print "first, last: %s" % str(fl)
             """
-            for model in self.first_last2models[fl]:
+            for model in self.fl2models[fl]:
                 self.draw_grid(model)
                 print ""
             """
@@ -720,7 +733,7 @@ class PathManager(object):
                 """
                 if j < 2:
                     print "first, last: %s" % str(fl)
-                    for model in self.first_last2models[fl]:
+                    for model in self.fl2models[fl]:
                         self.draw_grid(model)
                         print ""
                 """
@@ -2022,9 +2035,15 @@ def main():
     testing_fl2models_fn = 'better_pickles/testing_fl2models.pickle' 
     fl2prediction_fn = 'better_pickles/fl2prediction.pickle'
 
-    man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
-    man.print_some_instances()
+    print "ENTIRE DATASET"
+    man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
+    man.number_guess_top_model()
+    print "TESTING DATASET"
+    man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn)
+    man2.number_guess_top_model()
+
     return
+    man.print_some_instances()
     man.visualize_similarities((start,end))
     man.find_better_prediction()
     #man.understand_similarity((start,end))
@@ -2038,7 +2057,7 @@ def main():
     copy = gen_copy(rows,cols,fn_prefix)
     filter_bad_new(copy,bad_fn,rows,cols,edge2index,man)
     return
-    man.create_first_last2models(data_fn,bad_fn)
+    man.create_fl2models(data_fn,bad_fn)
     man = PathManager(rows,cols,edge2index,edge_index2tuple,copy)
     print "COPY GENERATED!!!"
     print man.best_all_at_once(5,84)

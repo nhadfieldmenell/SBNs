@@ -1927,7 +1927,7 @@ def main():
     fl2prediction_fn = 'better_pickles/fl2prediction.pickle'
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn)
-    man.understand_similarity(self,(start,end)):
+    man.understand_similarity(self,(start,end))
     return
     man.analyze_predictions_new()
     man.testing_fl2models()

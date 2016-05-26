@@ -250,7 +250,7 @@ class PathManager(object):
                 print "%d < Radius" % (radii[-1])
             print "Correctly guessed %.2f percent of trips" % (100.0*dist2correct_guess[i])
             print "%d total trips" % num_trips
-            print "average hausdorff %.3f, average ampsd %.3f, average dsn %.3" % (dist2haus[i],dist2ampsd[i],dist2dsn[i])
+            print "average hausdorff %.3f, average ampsd %.3f, average dsn %.3f" % (dist2haus[i],dist2ampsd[i],dist2dsn[i])
 
         avg_haus = tot_haus/total_trips
         avg_ampsd = tot_ampsd/total_trips

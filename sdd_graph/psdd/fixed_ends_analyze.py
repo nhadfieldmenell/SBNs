@@ -177,7 +177,7 @@ class PathManager(object):
         """
         #when true, just take the most frequent path from the dataset
         #when false, use the prediction
-        use_most_frequent = True
+        use_most_frequent = False
         training_fl2models = pickle.load(open('better_pickles/training_fl2models.pickle','rb'))
         radii = [3,6]
         num_dists = len(radii) + 1
@@ -207,6 +207,8 @@ class PathManager(object):
                     model2ts = training_fl2models[fl]
                     prediction,_ = most_frequent_model(model2ts)
                 models = None
+                if fl not in training_fl2models:
+                    continue
                 if fl in self.fl2models:
                     models = self.fl2models[fl]
                 else:

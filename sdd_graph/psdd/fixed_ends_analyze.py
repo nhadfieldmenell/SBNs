@@ -196,6 +196,8 @@ class PathManager(object):
         for first_last in self.fl2prediction:
             prediction = self.fl2prediction[first_last]
             distance = self.node_dist(first_last[0],first_last[1])
+            if distance == 0:
+                continue
             dist = len(radii)
             for i in range(len(radii)):
                 if distance <= radii[i]:
@@ -2216,12 +2218,14 @@ def main():
     training_fl2models_fn = 'better_pickles/training_fl2models.pickle'
     fl2prediction_fn = 'better_pickles/fl2prediction.pickle'
 
+    print "TESTING DATASET"
+    man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn,training_fl2models_fn=training_fl2models_fn)
+    man2.analyze_predictions_new()
+    return
     print "ENTIRE DATASET"
     man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
     man.print_some_instances()
     return
-    print "TESTING DATASET"
-    man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn,training_fl2models_fn=training_fl2models_fn)
     man2.print_some_instances()
     man2.compare_testing_training()
 

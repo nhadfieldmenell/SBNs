@@ -319,7 +319,7 @@ class PathManager(object):
             m_count = len(model2ts[model])
         haus,ampsd,dsn = self.evaluate_prediction_vs_models(best_model,model2ts)
         haus_p,ampsd_p,dsn_p = self.evaluate_prediction_vs_models(prediction,model2ts)
-        if haus_p <= haus or ampsd_p <= ampsd or dsn_p <= dsn:
+        if haus_p < haus or ampsd_p < ampsd or dsn_p < dsn:
             #print fl
             #self.understand_similarity(fl)
             return True

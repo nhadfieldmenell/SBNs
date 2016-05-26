@@ -413,7 +413,7 @@ class PathManager(object):
         fl_tuple = (min(fl[0],fl[1]),max(fl[0],fl[1]))
         prediction = self.fl2prediction[fl_tuple]
         model2ts = self.fl2models[fl]
-        _,ampsd,_ = evaluate_prediction_vs_models(prediction,model2ts)
+        _,ampsd,_ = self.evaluate_prediction_vs_models(prediction,model2ts)
         print "Prediction average AMPSD %.3f" % ampsd
         heap = []
         total_trips = 0

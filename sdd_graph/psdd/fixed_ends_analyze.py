@@ -2045,15 +2045,15 @@ def main():
 
     print "ENTIRE DATASET"
     man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
-    man.number_guess_top_model()
+    man.find_better_prediction()
     print "TESTING DATASET"
     man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn)
-    man2.number_guess_top_model()
+    man2.find_better_prediction()
 
     return
+    man.number_guess_top_model()
     man.print_some_instances()
     man.visualize_similarities((start,end))
-    man.find_better_prediction()
     #man.understand_similarity((start,end))
     return
     man.analyze_predictions_new()

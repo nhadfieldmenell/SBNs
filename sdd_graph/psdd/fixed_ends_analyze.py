@@ -408,13 +408,14 @@ class PathManager(object):
         return haus,ampsd,dsn
 
     def print_ordered_models(self,fl):
+        print fl
         model2ts = self.fl2models[fl]
         heap = []
         for model in model2ts:
             heapq.heappush(heap,[(0-len(model)),model])
         while len(heap) > 0:
             score,model = heapq.heappop(heap)
-            print (0-score)
+            print score
             self.draw_grid(model)
             print ""
 

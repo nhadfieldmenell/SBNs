@@ -303,9 +303,29 @@ class PathManager(object):
         print "BEST MODEL"
         print best_score
         self.draw_grid(best_model)
+        haus,ampsd,dsn = evaluate_prediction_vs_models(best_model,model2ts)
+        print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus,ampsd,dsn) 
         print "PREDICTION"
         self.draw_grid(prediction)
+        haus,ampsd,dsn = evaluate_prediction_vs_models(prediction,model2ts)
+        print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus,ampsd,dsn) 
         
+    def evaluate_prediction_vs_models(prediction,model2ts):
+        """Find the weighted average of the similarity measures between the prediction and the models."""
+        haus=ampsd=dsn=0.0
+        tot_trips = 0.0
+        for model in model2ts:
+            count = len(model2ts[model])
+            tot_trips += count
+            haus_i,ampsd_i,dsn_i = self.path_diff_measures(model,prediction)
+            haus += count*haus_i
+            ampsd += count*ampsd_i
+            dsn += count*dsn_i
+        haus = haus/tot_trips
+        ampsd = ampsd/tot_trips
+        dsn = dsn/tot_trips
+        return haus,ampsd,dsn
+
 
 
     def compare_observed_models_new(self):

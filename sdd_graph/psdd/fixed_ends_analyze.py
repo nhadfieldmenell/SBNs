@@ -415,7 +415,7 @@ class PathManager(object):
             heapq.heappush(heap,[(0-len(model2ts[model])),model])
         while len(heap) > 0:
             score,model = heapq.heappop(heap)
-            print score
+            print (0-score)
             self.draw_grid(model)
             print ""
 

@@ -409,7 +409,12 @@ class PathManager(object):
 
     def print_ordered_models(self,fl):
         print fl
+        print "PREDICTION"
+        fl_tuple = (min(fl[0],fl[1]),max(fl[0],fl[1]))
+        prediction = self.fl2prediction[fl_tuple]
         model2ts = self.fl2models[fl]
+        _,ampsd,_ = evaluate_prediction_vs_models(prediction,model2ts)
+        print "Prediction average AMPSD %.3f" % ampsd
         heap = []
         for model in model2ts:
             heapq.heappush(heap,[(0-len(model2ts[model])),model])

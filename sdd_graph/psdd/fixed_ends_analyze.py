@@ -293,14 +293,18 @@ class PathManager(object):
         """A method used to understand how our similarity measurements work."""
         model2ts = self.first_last2models[fl]
         prediction = self.fl2prediction[fl]
+        #haus,ampsd,dsn = self.path_diff_measures(model,prediction)
+        best_model = most_frequent_model(model2ts)
         for model in model2ts:
             m_count = len(model2ts[model])
             print m_count
             self.draw_grid(model)
             print ""
+        print "BEST MODEL"
+        self.draw_grid(best_model)
         print "PREDICTION"
         self.draw_grid(prediction)
-
+        
 
 
     def compare_observed_models_new(self):
@@ -1900,6 +1904,17 @@ def exactly_one(edges,model):
         return True
     else:
         return False
+
+def most_frequent_model(model2ts):
+    """Given a dict mapping models to a list of trip ids that have that model, return the model with the most trips."""
+    best_score = 0
+    best_model = None
+    for model in model2ts:
+        score = len(model2ts[model])
+        if score > best_score:
+            best_score = score
+            best_model = model
+    return best_model
 
 def main():
     rows = int(sys.argv[1])

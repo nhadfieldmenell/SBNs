@@ -179,7 +179,7 @@ class PathManager(object):
         """
         #when true, just take the most frequent path from the dataset
         #when false, use the prediction
-        use_most_frequent = False
+        use_most_frequent = True
         radii = [3,6]
         num_dists = len(radii) + 1
         dist2num_trips = defaultdict(float)
@@ -2227,10 +2227,10 @@ def main():
 
     print "TESTING DATASET"
     man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn,training_fl2models_fn=training_fl2models_fn)
-    man2.number_guess_top_model()
+    #man2.number_guess_top_model()
     #man2.find_better_prediction()
     #man2.compare_testing_training()
-    #man2.analyze_predictions_new()
+    man2.analyze_predictions_new()
     return
     print "ENTIRE DATASET"
     man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)

@@ -310,7 +310,7 @@ class PathManager(object):
         count = 0
         for fl in self.fl2models:
             count += 1
-            if count % 800 == 0:
+            if count % 801 == 0:
                 #self.visualize_similarities(fl)
                 self.print_ordered_models(fl)
                 print ""

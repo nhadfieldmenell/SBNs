@@ -312,6 +312,7 @@ class PathManager(object):
             count += 1
             if count % 800 == 0:
                 self.visualize_similarities(fl)
+                print ""
 
     def find_better_prediction(self):
         good_count = 0.0

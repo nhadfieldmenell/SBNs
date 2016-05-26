@@ -243,14 +243,14 @@ class PathManager(object):
             dist2correct_guess[i] = dist2correct_guess[i]/num_trips
             print ""
             if i == 0:
-                print "0 <= Radius <= %d" % radii[0]
+                print "1 < Radius <= %d" % radii[0]
             elif i < len(radii):
                 print "%d < Radius <= %d" % (radii[i-1],radii[i])
             else:
                 print "%d < Radius" % (radii[-1])
             print "Correctly guessed %.2f percent of trips" % (100.0*dist2correct_guess[i])
             print "%d total trips" % num_trips
-            print "average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (dist2haus[i],dist2ampsd[i],dist2dsn[i])
+            print "average hausdorff %.3f, average ampsd %.3f, average dsn %.3" % (dist2haus[i],dist2ampsd[i],dist2dsn[i])
 
         avg_haus = tot_haus/total_trips
         avg_ampsd = tot_ampsd/total_trips
@@ -547,7 +547,7 @@ class PathManager(object):
             dist2dsn[i] = dist2dsn[i]/num_trips
             print ""
             if i == 0:
-                print "0 <= Radius <= %d" % radii[0]
+                print "1 < Radius <= %d" % radii[0]
             elif i < len(radii):
                 print "%d < Radius <= %d" % (radii[i-1],radii[i])
             else:
@@ -2222,8 +2222,8 @@ def main():
 
     print "TESTING DATASET"
     man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn,training_fl2models_fn=training_fl2models_fn)
-    man2.compare_testing_training()
-    #man2.analyze_predictions_new()
+    #man2.compare_testing_training()
+    man2.analyze_predictions_new()
     return
     print "ENTIRE DATASET"
     man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)

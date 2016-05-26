@@ -409,7 +409,7 @@ class PathManager(object):
 
     def print_ordered_models(self,fl):
         print fl
-        print "PREDICTION"
+        print "PREDICTION\n"
         fl_tuple = (min(fl[0],fl[1]),max(fl[0],fl[1]))
         prediction = self.fl2prediction[fl_tuple]
         self.draw_grid(prediction)
@@ -425,8 +425,9 @@ class PathManager(object):
         while len(heap) > 0:
             score,model = heapq.heappop(heap)
             print (0-score)
-            self.draw_grid(model)
             print ""
+            self.draw_grid(model)
+            print "\n"
         print "%d total trips\n" % total_trips
 
 

@@ -369,11 +369,9 @@ class PathManager(object):
             model_i += 1
         if len(model_array) == 1:
             return
-        probs = map(lambda x: x/total_trips,probs)
 
         for i in range(len(model_array)):
             for j in range(i+1,len(model_array)):
-                weight = weights[i][j]
                 model_1 = model_array[i]
                 model_2 = model_array[2]
                 haus,ampsd,dsn = self.path_diff_measures(model_1,model_2)

@@ -290,8 +290,30 @@ class PathManager(object):
 
 
     def find_better_prediction(self):
+        good_count = 0.0
+        total_count = 0.0
         for fl in self.first_last2models:
+            if self.prediction_better(fl):
+                good_count += 1
+            total_count += 1
+        print "Prediction was better: %.2f percent of the time" % (good_count/total_count)
+
+
+    def prediction_better(self,fl):
+        model2ts = self.first_last2models[fl]
+        if fl not in self.fl2prediction:
+            return
+        prediction = self.fl2prediction[fl]
+        best_model,best_score = most_frequent_model(model2ts)
+        for model in model2ts:
+            m_count = len(model2ts[model])
+        haus,ampsd,dsn = self.evaluate_prediction_vs_models(best_model,model2ts)
+        haus_p,ampsd_p,dsn_p = self.evaluate_prediction_vs_models(prediction,model2ts)
+        if haus_p < haus or ampsd_p < ampsd or dsn_p < dsn:
+            print fl
             self.understand_similarity(fl)
+            return True
+
 
     def understand_similarity(self,fl):
         """A method used to understand how our similarity measurements work."""
@@ -299,24 +321,21 @@ class PathManager(object):
         if fl not in self.fl2prediction:
             return
         prediction = self.fl2prediction[fl]
-        #haus,ampsd,dsn = self.path_diff_measures(model,prediction)
         best_model,best_score = most_frequent_model(model2ts)
         for model in model2ts:
             m_count = len(model2ts[model])
-            #print m_count
-            #self.draw_grid(model)
-            #print ""
-        #print "BEST MODEL"
-        #print best_score
-        #self.draw_grid(best_model)
+            print m_count
+            self.draw_grid(model)
+            print ""
+        print "BEST MODEL"
+        print best_score
+        self.draw_grid(best_model)
         haus,ampsd,dsn = self.evaluate_prediction_vs_models(best_model,model2ts)
-        #print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus,ampsd,dsn) 
-        #print "PREDICTION"
-        #self.draw_grid(prediction)
+        print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus,ampsd,dsn) 
+        print "PREDICTION"
+        self.draw_grid(prediction)
         haus_p,ampsd_p,dsn_p = self.evaluate_prediction_vs_models(prediction,model2ts)
-        #print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus_p,ampsd_p,dsn_p) 
-        if haus_p < haus or ampsd_p < ampsd or dsn_p < dsn:
-            print fl
+        print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus_p,ampsd_p,dsn_p) 
 
         
     def evaluate_prediction_vs_models(self,prediction,model2ts):

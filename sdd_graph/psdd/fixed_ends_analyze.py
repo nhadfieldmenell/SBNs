@@ -430,6 +430,7 @@ class PathManager(object):
                 print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str((i,j)),haus,ampsd,dsn) 
                 self.draw_grid(model_1)
                 self.draw_grid(model_2)
+                print ""
 
     def compare_testing_training(self):
         """Compare the difference between different paths taken for the same start,end pair.

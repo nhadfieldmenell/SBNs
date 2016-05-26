@@ -297,8 +297,8 @@ class PathManager(object):
                 self.understand_similarity(fl)
 
     def find_better_prediction(self):
-        print len(fl2prediction)
-        print len(fl2models)
+        print len(self.fl2prediction)
+        print len(self.fl2models)
         good_count = 0.0
         total_count = 0.0
         for fl in self.fl2prediction:

@@ -373,7 +373,7 @@ class PathManager(object):
         for i in range(len(model_array)):
             for j in range(i+1,len(model_array)):
                 model_1 = model_array[i]
-                model_2 = model_array[2]
+                model_2 = model_array[j]
                 haus,ampsd,dsn = self.path_diff_measures(model_1,model_2)
                 self.draw_grid(model_1)
                 self.draw_grid(model_2)

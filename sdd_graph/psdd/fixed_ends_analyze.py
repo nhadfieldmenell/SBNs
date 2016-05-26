@@ -289,6 +289,10 @@ class PathManager(object):
         print "Correct guess percentage: %.3f" % correct_pct
 
 
+    def find_better_prediction(self):
+        for fl in self.first_last2models:
+            self.understand_similarity(fl)
+
     def understand_similarity(self,fl):
         """A method used to understand how our similarity measurements work."""
         model2ts = self.first_last2models[fl]
@@ -297,18 +301,21 @@ class PathManager(object):
         best_model,best_score = most_frequent_model(model2ts)
         for model in model2ts:
             m_count = len(model2ts[model])
-            print m_count
-            self.draw_grid(model)
-            print ""
-        print "BEST MODEL"
-        print best_score
-        self.draw_grid(best_model)
+            #print m_count
+            #self.draw_grid(model)
+            #print ""
+        #print "BEST MODEL"
+        #print best_score
+        #self.draw_grid(best_model)
         haus,ampsd,dsn = self.evaluate_prediction_vs_models(best_model,model2ts)
-        print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus,ampsd,dsn) 
-        print "PREDICTION"
-        self.draw_grid(prediction)
-        haus,ampsd,dsn = self.evaluate_prediction_vs_models(prediction,model2ts)
-        print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus,ampsd,dsn) 
+        #print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus,ampsd,dsn) 
+        #print "PREDICTION"
+        #self.draw_grid(prediction)
+        haus_p,ampsd_p,dsn_p = self.evaluate_prediction_vs_models(prediction,model2ts)
+        #print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus_p,ampsd_p,dsn_p) 
+        if haus_p < haus or ampsd_p < ampsd or dsn_d < dsn:
+            print fl
+
         
     def evaluate_prediction_vs_models(self,prediction,model2ts):
         """Find the weighted average of the similarity measures between the prediction and the models."""
@@ -1963,7 +1970,8 @@ def main():
     fl2prediction_fn = 'better_pickles/fl2prediction.pickle'
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
-    man.understand_similarity((start,end))
+    man.find_better_prediction()
+    #man.understand_similarity((start,end))
     return
     man.analyze_predictions_new()
     man.testing_fl2models()

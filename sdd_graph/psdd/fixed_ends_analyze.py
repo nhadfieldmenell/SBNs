@@ -332,7 +332,12 @@ class PathManager(object):
             model2ts = self.fl2models[fl]
             best_model,best_score = most_frequent_model(model2ts)
             prediction = self.fl2prediction[fl]
-            if best_model == prediction:
+            same = True
+            for i in range(len(prediction)):
+                if prediction[i] != best_model[i]:
+                    same = False
+
+            if same == True:
                 guessed_top += 1
         print guessed_top
         best_pct = guessed_top/total

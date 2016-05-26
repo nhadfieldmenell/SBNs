@@ -207,7 +207,7 @@ class PathManager(object):
                     model2ts = training_fl2models[fl]
                     prediction,_ = most_frequent_model(model2ts)
                 models = None
-                if fl not in training_fl2models:
+                if fl in training_fl2models:
                     continue
                 if fl in self.fl2models:
                     models = self.fl2models[fl]
@@ -303,6 +303,7 @@ class PathManager(object):
         print "Average dsn: %.3f" % avg_dsn
         print "Correct guess percentage: %.3f" % correct_pct
 
+    
 
     def print_some_instances(self):
         count = 0

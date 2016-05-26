@@ -29,7 +29,7 @@ class PathManager(object):
         if first_last2models_fn != None:
             self.first_last2models = pickle.load(open(first_last2models_fn,'rb'))
         if fl2prediction_fn != None:
-            self.fl2prediction = pickle.load(open(fl2prediction_fun,'rb'))
+            self.fl2prediction = pickle.load(open(fl2prediction_fn,'rb'))
 
 
     def all_all_predictions(self):

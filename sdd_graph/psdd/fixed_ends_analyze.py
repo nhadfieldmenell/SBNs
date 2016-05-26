@@ -530,7 +530,6 @@ class PathManager(object):
         print ""
         print "Overall"
         print "average number of models per fl pair: %.2f" % tot_models
-        print "Diff paths average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (tot_haus_mult,tot_ampsd_mult,tot_dsn_mult)
         print "average hausdorff %.2f, average ampsd %.2f, average dsn %.2f" % (tot_haus,tot_ampsd,tot_dsn)
         return
 

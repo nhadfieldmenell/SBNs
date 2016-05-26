@@ -354,6 +354,34 @@ class PathManager(object):
         dsn = dsn/tot_trips
         return haus,ampsd,dsn
 
+    def visualize_similarities(self,fl):
+        models = self.first_last2models[fl]
+        model_array = []
+        num_models = len(models)
+        probs = [0.0 for i in range(num_models)]
+        total_trips = 0.0
+        model_i = 0
+        for model in models:
+            count = len(models[model])
+            probs[model_i] += count
+            total_trips += count
+            model_array.append(model)
+            model_i += 1
+        tot_models += num_models*total_trips
+        if len(model_array) == 1:
+            return
+        probs = map(lambda x: x/total_trips,probs)
+
+        for i in range(len(model_array)):
+            for j in range(i+1,len(model_array)):
+                weight = weights[i][j]
+                model_1 = model_array[i]
+                model_2 = model_array[2]
+                haus,ampsd,dsn = self.path_diff_measures(model_1,model_2)
+                self.draw_grid(model_1)
+                self.draw_grid(model_2)
+                print "%s: haus %.2f, ampsd %.2f, dsn %.2f" % (str((i,j)),haus,ampsd,dsn) 
+
 
 
     def compare_observed_models_new(self):
@@ -1991,6 +2019,8 @@ def main():
     fl2prediction_fn = 'better_pickles/fl2prediction.pickle'
 
     man = PathManager(rows,cols,edge2index,edge_index2tuple,first_last2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
+    man.visualize_similarities((start,end))
+    return
     man.find_better_prediction()
     #man.understand_similarity((start,end))
     return

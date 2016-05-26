@@ -1009,7 +1009,7 @@ class PathManager(object):
                 for j in xrange(n):
                     edge = (i*m+j+1,i*m+m+j+1)
                     index = self.edge2index[edge]
-                    sys.stdout.write('|' if model[index] == 1 else '    ')
+                    sys.stdout.write('|   ' if model[index] == 1 else '    ')
                     sys.stdout.write(' ')
             sys.stdout.write('\n')
 

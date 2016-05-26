@@ -296,6 +296,8 @@ class PathManager(object):
     def understand_similarity(self,fl):
         """A method used to understand how our similarity measurements work."""
         model2ts = self.first_last2models[fl]
+        if fl not in self.fl2prediction:
+            return
         prediction = self.fl2prediction[fl]
         #haus,ampsd,dsn = self.path_diff_measures(model,prediction)
         best_model,best_score = most_frequent_model(model2ts)

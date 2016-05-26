@@ -294,13 +294,14 @@ class PathManager(object):
         model2ts = self.first_last2models[fl]
         prediction = self.fl2prediction[fl]
         #haus,ampsd,dsn = self.path_diff_measures(model,prediction)
-        best_model = most_frequent_model(model2ts)
+        best_model,best_score = most_frequent_model(model2ts)
         for model in model2ts:
             m_count = len(model2ts[model])
             print m_count
             self.draw_grid(model)
             print ""
         print "BEST MODEL"
+        print best_score
         self.draw_grid(best_model)
         print "PREDICTION"
         self.draw_grid(prediction)
@@ -1914,7 +1915,7 @@ def most_frequent_model(model2ts):
         if score > best_score:
             best_score = score
             best_model = model
-    return best_model
+    return best_model,best_score
 
 def main():
     rows = int(sys.argv[1])

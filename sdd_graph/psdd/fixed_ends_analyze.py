@@ -315,7 +315,7 @@ class PathManager(object):
         #self.draw_grid(prediction)
         haus_p,ampsd_p,dsn_p = self.evaluate_prediction_vs_models(prediction,model2ts)
         #print "haus %.2f, ampsd %.2f, dsn %.2f" % (haus_p,ampsd_p,dsn_p) 
-        if haus_p < haus or ampsd_p < ampsd or dsn_d < dsn:
+        if haus_p < haus or ampsd_p < ampsd or dsn_p < dsn:
             print fl
 
         

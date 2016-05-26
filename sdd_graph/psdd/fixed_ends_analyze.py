@@ -293,7 +293,7 @@ class PathManager(object):
         """A method used to understand how our similarity measurements work."""
         models2ts = self.first_last2models[fl]
         prediction = self.fl2prediction[fl]
-        for model in models:
+        for model in model2ts:
             m_count = len(model2ts[model])
             print m_count
             self.draw_grid(model)

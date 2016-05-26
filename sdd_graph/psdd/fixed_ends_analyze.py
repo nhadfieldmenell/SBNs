@@ -297,12 +297,10 @@ class PathManager(object):
                 self.understand_similarity(fl)
 
     def find_better_prediction(self):
-        print len(self.fl2prediction)
-        print len(self.fl2models)
         good_count = 0.0
         total_count = 0.0
-        for fl in self.fl2prediction:
-            if fl not in self.fl2models:
+        for fl in self.fl2models:
+            if (min(fl[0],fl[1]),max(fl[0],fl[1])) not in self.fl2prediction:
                 continue
             if self.prediction_better(fl):
                 good_count += 1
@@ -313,9 +311,10 @@ class PathManager(object):
     def prediction_better(self,fl):
         """Find the S,E pairs where the prediction has better similarity than the most frequent model"""
         model2ts = self.fl2models[fl]
-        if fl not in self.fl2prediction:
+        prediction_tup = (min(fl[0],fl[1]),max(fl[0],fl[1]))
+        if prediction_tup not in self.fl2prediction:
             return
-        prediction = self.fl2prediction[fl]
+        prediction = self.fl2prediction[prediction_tup]
         best_model,best_score = most_frequent_model(model2ts)
         for model in model2ts:
             m_count = len(model2ts[model])

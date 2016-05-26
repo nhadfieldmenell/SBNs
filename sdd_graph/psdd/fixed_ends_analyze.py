@@ -418,7 +418,7 @@ class PathManager(object):
         heap = []
         total_trips = 0
         for model in model2ts:
-            count = len(model2ts[model[)
+            count = len(model2ts[model])
             total_trips += count
             heapq.heappush(heap,[(0-count),model])
         while len(heap) > 0:

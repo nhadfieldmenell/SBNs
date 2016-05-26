@@ -196,7 +196,7 @@ class PathManager(object):
         for first_last in self.fl2prediction:
             prediction = self.fl2prediction[first_last]
             distance = self.node_dist(first_last[0],first_last[1])
-            if distance == 0:
+            if distance == 1:
                 continue
             dist = len(radii)
             for i in range(len(radii)):

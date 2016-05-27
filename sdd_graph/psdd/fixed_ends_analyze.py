@@ -312,7 +312,7 @@ class PathManager(object):
         count = 0
         for fl in self.fl2models:
             count += 1
-            if count % 801 == 0:
+            if count % 802 == 0:
                 #self.visualize_similarities(fl)
                 self.print_ordered_models(fl)
                 print ""
@@ -2225,16 +2225,16 @@ def main():
     training_fl2models_fn = 'better_pickles/training_fl2models.pickle'
     fl2prediction_fn = 'better_pickles/fl2prediction.pickle'
 
+    print "ENTIRE DATASET"
+    man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
+    man.print_some_instances()
+    return
     print "TESTING DATASET"
     man2 = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=testing_fl2models_fn,fl2prediction_fn=fl2prediction_fn,training_fl2models_fn=training_fl2models_fn)
     #man2.number_guess_top_model()
     #man2.find_better_prediction()
     #man2.compare_testing_training()
     man2.analyze_predictions_new()
-    return
-    print "ENTIRE DATASET"
-    man = PathManager(rows,cols,edge2index,edge_index2tuple,fl2models_fn=fl2models_fn,fl2prediction_fn=fl2prediction_fn)
-    man.print_some_instances()
     return
     man2.print_some_instances()
     man2.compare_testing_training()
